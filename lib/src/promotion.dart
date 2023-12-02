@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:coffee/src/blog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -148,6 +149,84 @@ class _Promotion extends State<Promotion> {
             InProgress(),
             Ended(),
           ],
+        ),
+        bottomNavigationBar: BottomAppBar(
+          height: 50,
+          color: const Color.fromARGB(255, 255, 255, 255),
+          child: SizedBox(
+            height: 30,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Dashboard()));
+                  },
+                  child: const Icon(
+                    Icons.home,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
+                ),
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Myproduct(initialPage: 0)));
+                  },
+                  child: const Icon(
+                    Icons.view_cozy,
+                    color: Colors.grey,
+                  ),
+                ),
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => ));
+                  },
+                  child: const Icon(
+                    Icons.leaderboard,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
+                ),
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Marketing(
+                              containSelectedBox: [],
+                            )));
+                  },
+                  child: const Icon(
+                    Icons.api_sharp,
+                    color: Color.fromARGB(255, 181, 57, 5),
+                    size: 25,
+                  ),
+                ),
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BlogView(ind: 0)));
+                  },
+                  child: const Icon(
+                    Icons.app_registration,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         floatingActionButton: SizedBox(
           height: 40,

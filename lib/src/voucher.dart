@@ -180,7 +180,7 @@ class _Voucher_home extends State<Voucher_home> {
                   },
                   child: const Icon(
                     Icons.home,
-                    color: Color.fromARGB(255, 181, 57, 5),
+                    color: Colors.grey,
                     size: 25,
                   ),
                 ),
@@ -219,7 +219,7 @@ class _Voucher_home extends State<Voucher_home> {
                   },
                   child: const Icon(
                     Icons.api_sharp,
-                    color: Colors.grey,
+                    color: Color.fromARGB(255, 181, 57, 5),
                     size: 25,
                   ),
                 ),
