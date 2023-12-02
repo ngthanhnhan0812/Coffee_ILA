@@ -136,10 +136,10 @@ class _NewPromotion extends State<NewPromotion> {
                           DateTime startDate = DateTime.parse(firstDate.text);
                           DateTime endDate = DateTime.parse(value);
 
-                          if (endDate.isBefore(startDate)) {
+                          if (endDate.isBefore(startDate) ||
+                              endDate.isAtSameMomentAs(startDate)) {
                             return 'End date must be after the start date';
                           }
-
                           return null;
                         },
                         controller: lastDate,
@@ -151,9 +151,9 @@ class _NewPromotion extends State<NewPromotion> {
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
                               initialDate:
-                                  DateTime.now().add(const Duration(days: 1)),
+                                  DateTime.now().add(const Duration(days: 2)),
                               firstDate:
-                                  DateTime.now().add(const Duration(days: 1)),
+                                  DateTime.now().add(const Duration(days: 2)),
                               lastDate: DateTime(2099));
 
                           if (pickedDate != null) {
@@ -234,12 +234,12 @@ class _NewPromotion extends State<NewPromotion> {
                 crossAxisCount: 3,
                 children: List.generate(containSelectedBo.length, (index) {
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                     child: Column(
                       children: [
                         Container(
-                          height: 60,
-                          width: 60,
+                          height: 54,
+                          width: 57,
                           decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(10)),
@@ -252,6 +252,8 @@ class _NewPromotion extends State<NewPromotion> {
                           height: 5,
                         ),
                         Text(containSelectedBo[index].title,
+                            // maxLines: 5,
+                            // softWrap: true,
                             style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -259,7 +261,7 @@ class _NewPromotion extends State<NewPromotion> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Text(' ${containSelectedBo[index].price.toString()}',
+                        Text('\$${containSelectedBo[index].price.toString()}',
                             style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -282,7 +284,8 @@ class _NewPromotion extends State<NewPromotion> {
             double? discountValueInput = double.tryParse(_discount.text);
             if (_formKey.currentState!.validate()) {
               // ignore: unnecessary_null_comparison
-              isSelectedProduct = containSelectedBo.any((element) => element != null);
+              isSelectedProduct =
+                  containSelectedBo.any((element) => element != null);
               if (!isSelectedProduct) {
                 final snackBar = SnackBar(
                   content: const Text('Please select product'),

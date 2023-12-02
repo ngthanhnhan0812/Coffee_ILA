@@ -179,6 +179,8 @@ class _NewVoucher extends State<NewVoucher> {
                                   // FilteringTextInputFormatter.allow(
                                   //     RegExp(r'^[1-9]')),
                                   FilteringTextInputFormatter.deny(
+                                      RegExp(r'^0+')),
+                                  FilteringTextInputFormatter.deny(
                                       RegExp(r'-')),
                                   FilteringTextInputFormatter.deny(
                                       RegExp(r' ')),
@@ -265,6 +267,7 @@ class _NewVoucher extends State<NewVoucher> {
                             },
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(5),
+                              FilteringTextInputFormatter.deny(RegExp(r'^0+')),
                               FilteringTextInputFormatter.deny(RegExp(r'-')),
                               FilteringTextInputFormatter.deny(RegExp(r' ')),
                               FilteringTextInputFormatter.deny(RegExp(r'^-+')),
@@ -388,7 +391,8 @@ class _NewVoucher extends State<NewVoucher> {
                                       DateTime.parse(firstDate.text);
                                   DateTime endDate = DateTime.parse(value);
 
-                                  if (endDate.isBefore(startDate)) {
+                                  if (endDate.isBefore(startDate) ||
+                                      endDate.isAtSameMomentAs(startDate)) {
                                     return 'End date must be after the start date';
                                   }
                                   return null;
@@ -603,49 +607,6 @@ class _NewVoucher extends State<NewVoucher> {
                                               style: GoogleFonts.openSans(),
                                             ),
                                           ],
-                                        ),
-                                        const SizedBox(
-                                          width: 6,
-                                        ),
-                                        Container(
-                                          height: 40,
-                                          width: 1,
-                                          color: const Color.fromARGB(
-                                              255, 167, 167, 167),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.edit_note_outlined,
-                                              color: Color.fromARGB(
-                                                  255, 148, 148, 148),
-                                            )),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () {},
-                                          style: ElevatedButton.styleFrom(
-                                              padding: const EdgeInsets.all(0),
-                                              backgroundColor:
-                                                  const Color.fromARGB(
-                                                      255, 181, 57, 5),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-
-                                                // <-- Radius
-                                              ),
-                                              minimumSize: const Size(70, 30)),
-                                          child: const Text(
-                                            'Delete',
-                                            style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255)),
-                                          ),
                                         ),
                                       ],
                                     )

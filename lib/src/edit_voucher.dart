@@ -256,8 +256,8 @@ class _EditVoucher extends State<EditVoucher> {
                             onTap: () async {
                               DateTime? pickedDate = await showDatePicker(
                                   context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
+                                  initialDate: DateTime.parse(firstDate.text),
+                                  firstDate: DateTime.now().add(const Duration(days:1)),
                                   lastDate: DateTime(2099));
 
                               if (pickedDate != null) {
@@ -312,8 +312,8 @@ class _EditVoucher extends State<EditVoucher> {
                             onTap: () async {
                               DateTime? pickedDate = await showDatePicker(
                                   context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
+                                  initialDate: DateTime.parse(lastDate.text),
+                                  firstDate: DateTime.now().add(const Duration(days: 2)),
                                   lastDate: DateTime(2099));
                               if (pickedDate != null) {
                                 String formattedDate =
