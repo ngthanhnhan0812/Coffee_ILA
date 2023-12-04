@@ -935,7 +935,7 @@ class _Ended_Voucher extends State<Ended_Voucher> {
                                             ),
                                             const Text(' - '),
                                             Text(
-                                              snapshot.data![index].startDate,
+                                              snapshot.data![index].endDate,
                                               style: GoogleFonts.openSans(
                                                 textStyle: const TextStyle(
                                                     fontWeight:
