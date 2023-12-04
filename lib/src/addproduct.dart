@@ -6,6 +6,7 @@ import 'package:coffee/ip/ip.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:path/path.dart' as path;
@@ -727,6 +728,10 @@ class _Addproduct extends State<Addproduct> {
                                   fontSize: 15, fontWeight: FontWeight.bold),
                             ),
                             TextFormField(
+                               inputFormatters: [
+                            
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
                               decoration:
                                   InputDecoration(border: InputBorder.none),
                               controller: _nameproduct,
@@ -769,6 +774,10 @@ class _Addproduct extends State<Addproduct> {
                           decoration: InputDecoration(border: InputBorder.none),
                           maxLength: 2000,
                           maxLines: null,
+                           inputFormatters: [
+                            
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
                           keyboardType: TextInputType.multiline,
                           controller: _description,
                           validator: (value) {

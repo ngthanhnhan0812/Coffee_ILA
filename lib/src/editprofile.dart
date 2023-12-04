@@ -318,6 +318,10 @@ class _Editprofile extends State<Editprofile> {
                         ),
                         TextFormField(
                           decoration: InputDecoration(border: InputBorder.none),
+                           inputFormatters: [
+                            
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
                           controller: _title,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -445,7 +449,10 @@ class _Editprofile extends State<Editprofile> {
                         ),
                         TextFormField(
                           decoration: InputDecoration(border: InputBorder.none),
-                      
+                       inputFormatters: [
+                            
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
                           keyboardType: TextInputType.streetAddress,
                           controller: _address,
                           validator: (value) {
@@ -487,6 +494,10 @@ class _Editprofile extends State<Editprofile> {
                           ],
                         ),
                         TextFormField(
+                           inputFormatters: [
+                            
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
                           decoration: InputDecoration(border: InputBorder.none),
                           controller: _username,
                           validator: (value) {

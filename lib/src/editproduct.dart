@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -830,6 +831,10 @@ class _EditProduct extends State<EditProduct> {
                                   fontSize: 15, fontWeight: FontWeight.bold),
                             ),
                             TextFormField(
+                               inputFormatters: [
+                            
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
                               controller: _nameproduct,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -870,6 +875,10 @@ class _EditProduct extends State<EditProduct> {
                               fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         TextFormField(
+                           inputFormatters: [
+                            
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
                           maxLength: 2000,
                           keyboardType: TextInputType.multiline,
                           validator: (value) {
