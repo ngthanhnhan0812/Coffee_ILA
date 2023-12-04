@@ -37,10 +37,12 @@ class _Edit_BlogState extends State<Edit_Blog> {
   final storage = FirebaseStorage.instance;
   late CollectionReference imgRef;
   late firebase_storage.Reference ref;
+  bool noimg = false;
   String? _image;
+  bool _im = true;
   File? img;
   final picker = ImagePicker();
-  bool? imgCheck;
+  bool imgCheck = true;
   @override
   void initState() {
     super.initState();
@@ -83,7 +85,7 @@ class _Edit_BlogState extends State<Edit_Blog> {
             children: [
               Center(
                   child: SizedBox(
-                child: _image != ''
+                child: _im
                     ? Stack(
                         children: [
                           SizedBox(
@@ -99,9 +101,10 @@ class _Edit_BlogState extends State<Edit_Blog> {
                             child: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    _image = '';
+                                   _im = false;
+                                    imgCheck = false;
                                   });
-                                  CheckImageSelected();
+                                 
                                 },
                                 icon: const Icon(
                                   Icons.cancel,
@@ -206,7 +209,7 @@ class _Edit_BlogState extends State<Edit_Blog> {
                               right: -12,
                               child: IconButton(
                                   onPressed: () {
-                                    removeImage(img!);
+                                    removeImage();
                                   },
                                   icon: const Icon(
                                     Icons.cancel,
@@ -286,17 +289,17 @@ class _Edit_BlogState extends State<Edit_Blog> {
   }
 
   // ignore: non_constant_identifier_names
-  CheckImageSelected() {
-    if (img == null) {
-      setState(() {
-        imgCheck = false;
-      });
-    } else {
-      setState(() {
-        imgCheck = true;
-      });
-    }
-  }
+  // CheckImageSelected() {
+  //   if (img == null) {
+  //     setState(() {
+  //       imgCheck = false;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       imgCheck = true;
+  //     });
+  //   }
+  // }
 
   chooseImage() async {
     final pickedFile =
@@ -315,8 +318,9 @@ class _Edit_BlogState extends State<Edit_Blog> {
 
     setState(() {
       img = File(compressedImage!.path);
+      imgCheck = true;
     });
-    CheckImageSelected();
+    
   }
 
   takeImage() async {
@@ -334,26 +338,23 @@ class _Edit_BlogState extends State<Edit_Blog> {
         minWidth: 900, minHeight: 900, quality: 50);
     setState(() {
       img = File(compressedImage!.path);
+      imgCheck = true;
     });
   }
 
-  removeImage(File imm) async {
+  removeImage() async {
     setState(() {
       img = null;
+      imgCheck = false;
     });
   }
 
-  Future deleteFile(String url) async {
-    ref = FirebaseStorage.instance.refFromURL(url);
-    await ref.delete();
-  }
-
-  UploadTask? uploadTask;
+ UploadTask? uploadTask;
   Future<http.Response> updateBlog() async {
     final metadata = SettableMetadata(contentType: "image/jpeg");
     if (img != null) {
       final getImg = FirebaseStorage.instance.refFromURL(_image.toString());
-      getImg.delete();
+     await getImg.delete();
       final String imagePath = 'images/${DateTime.now()}.jpg';
       final file = File(img!.path);
       final ref =
@@ -385,7 +386,7 @@ class _Edit_BlogState extends State<Edit_Blog> {
 
   Future<void> updateBlogDialog() async {
     // ignore: unrelated_type_equality_checks
-    if (_image == '' || _title.text == '' || _description.text == '') {
+    if (imgCheck == false || _title.text == '' || _description.text == '') {
       return showDialog<void>(
         context: context,
         barrierDismissible: false,
