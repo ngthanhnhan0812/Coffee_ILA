@@ -29,10 +29,12 @@ class _NewVoucher extends State<NewVoucher> {
   final TextEditingController _condition = TextEditingController();
   TextEditingController firstDate = TextEditingController();
   TextEditingController lastDate = TextEditingController();
-
+  
   Future<Voucher>? _futureVoucher;
 
   // ignore: non_constant_identifier_names
+
+
 
   @override
   void dispose() {
@@ -59,12 +61,16 @@ class _NewVoucher extends State<NewVoucher> {
 
     print(response.body);
     if (response.statusCode == 200) {
+     
       setState(() {
         isDuplicate = response.body;
       });
+
+    
     } else {
       throw Exception('Unable to fetch!');
     }
+   
   }
 
 //   String? validateString(String value) {
@@ -437,7 +443,7 @@ class _NewVoucher extends State<NewVoucher> {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter voucher code';
                                   }
-
+                                 
                                   return null;
                                 },
                                 inputFormatters: [
@@ -453,6 +459,7 @@ class _NewVoucher extends State<NewVoucher> {
                                 maxLines: 1,
                                 controller: _id),
                           ),
+                        
                         ],
                       ),
                     ],
@@ -627,14 +634,14 @@ class _NewVoucher extends State<NewVoucher> {
                 onPressed: () {
                   // _validateDateRange();
                   if (_formKey.currentState!.validate()) {
-                    insertVoucher();
-                    showLoadingDialog(context, () {
-                      final snackBar = SnackBar(
-                          content: const Text('Add voucher successfully!'),
-                          action:
-                              SnackBarAction(label: 'Undo', onPressed: () {}));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    });
+                    insertVoucherDialog();
+                    // showLoadingDialog(context, () {
+                    //   final snackBar = SnackBar(
+                    //       content: const Text('Add voucher successfully!'),
+                    //       action:
+                    //           SnackBarAction(label: 'Undo', onPressed: () {}));
+                    //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    // });
                   }
                 },
                 child: const Text('Confirm', textAlign: TextAlign.center),
@@ -644,66 +651,29 @@ class _NewVoucher extends State<NewVoucher> {
     );
   }
 
-  Future<void> showLoadingDialog(
-      BuildContext context, VoidCallback onDismissed) async {
-    await checkDuplicateId(_id.text, "ADMIN");
-    if (isDuplicate == "true") {
-      // ignore: use_build_context_synchronously
-      return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text(
-              'Failed',
-              style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
-            ),
-            content: const SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text('Voucher code has been duplicated, please input again!'),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.blue),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      // ignore: use_build_context_synchronously
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const Center(child: CircularProgressIndicator());
-        },
-      );
+  void showLoadingDialog(BuildContext context, VoidCallback onDismissed) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
 
-      Future.delayed(const Duration(seconds: 2), () {
-        DateTime currentDate = DateTime.now();
-        DateTime voucherStartDate = DateTime.parse(firstDate.text);
+    Future.delayed(const Duration(seconds: 2), () {
+      DateTime currentDate = DateTime.now();
+      DateTime voucherStartDate = DateTime.parse(firstDate.text);
 
-        if (currentDate.isBefore(voucherStartDate)) {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Voucher_home(ind: 0)));
-        } else if (currentDate.isAfter(voucherStartDate)) {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Voucher_home(ind: 1)));
-        }
+      if (currentDate.isBefore(voucherStartDate)) {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => Voucher_home(ind: 0)));
+      } else if (currentDate.isAfter(voucherStartDate)) {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => Voucher_home(ind: 1)));
+      }
 
-        onDismissed();
-      });
-    }
+      onDismissed();
+    });
   }
 
   Future<http.Response> insertVoucher() async {
@@ -733,4 +703,84 @@ class _NewVoucher extends State<NewVoucher> {
     }
     return response;
   }
+  Future<void> insertVoucherDialog() async {
+   await checkDuplicateId(_id.text , "ADMIN");
+    if ( isDuplicate == "true") {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Insert Voucher',
+              style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+            ),
+            content: const SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Failed'),
+                  Text('Voucher code available'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
+      await insertVoucher().whenComplete(
+        () {
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text(
+                  'Insert voucher ',
+                  style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+                ),
+                content: const SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text('Success'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text(
+                      'Approve',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onPressed: () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context)=>UpComing_Voucher()));
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+  }
+
+
 }
