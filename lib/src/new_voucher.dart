@@ -29,10 +29,12 @@ class _NewVoucher extends State<NewVoucher> {
   final TextEditingController _condition = TextEditingController();
   TextEditingController firstDate = TextEditingController();
   TextEditingController lastDate = TextEditingController();
-  String a = '';
+  
   Future<Voucher>? _futureVoucher;
 
   // ignore: non_constant_identifier_names
+
+
 
   @override
   void dispose() {
@@ -46,7 +48,7 @@ class _NewVoucher extends State<NewVoucher> {
 
   final _formKey = GlobalKey<FormState>();
 
-  bool isDuplicate = false;
+  String isDuplicate = "true";
 
   checkDuplicateId(String id, String userCreate) async {
     var checkUserV = {};
@@ -59,18 +61,16 @@ class _NewVoucher extends State<NewVoucher> {
 
     print(response.body);
     if (response.statusCode == 200) {
-      // bool duplicate = true;
-      // setState(() {
-      //   isDuplicate = duplicate;
-      // });
-
+     
       setState(() {
-        a = response.body;
+        isDuplicate = response.body;
       });
+
+    
     } else {
       throw Exception('Unable to fetch!');
     }
-    return a;
+   
   }
 
 //   String? validateString(String value) {
@@ -443,10 +443,7 @@ class _NewVoucher extends State<NewVoucher> {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter voucher code';
                                   }
-                                  if (checkDuplicateId(value, 'ADMIN') ==
-                                      'true') {
-                                    return 'ngu';
-                                  }
+                                 
                                   return null;
                                 },
                                 inputFormatters: [
@@ -462,10 +459,7 @@ class _NewVoucher extends State<NewVoucher> {
                                 maxLines: 1,
                                 controller: _id),
                           ),
-                          isDuplicate
-                              ? const Text('Voucher code is duplicate!',
-                                  style: TextStyle(color: Colors.red))
-                              : const SizedBox()
+                        
                         ],
                       ),
                     ],
@@ -640,14 +634,14 @@ class _NewVoucher extends State<NewVoucher> {
                 onPressed: () {
                   // _validateDateRange();
                   if (_formKey.currentState!.validate()) {
-                    insertVoucher();
-                    showLoadingDialog(context, () {
-                      final snackBar = SnackBar(
-                          content: const Text('Add voucher successfully!'),
-                          action:
-                              SnackBarAction(label: 'Undo', onPressed: () {}));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    });
+                    insertVoucherDialog();
+                    // showLoadingDialog(context, () {
+                    //   final snackBar = SnackBar(
+                    //       content: const Text('Add voucher successfully!'),
+                    //       action:
+                    //           SnackBarAction(label: 'Undo', onPressed: () {}));
+                    //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    // });
                   }
                 },
                 child: const Text('Confirm', textAlign: TextAlign.center),
@@ -709,4 +703,84 @@ class _NewVoucher extends State<NewVoucher> {
     }
     return response;
   }
+  Future<void> insertVoucherDialog() async {
+   await checkDuplicateId(_id.text , "ADMIN");
+    if ( isDuplicate == "true") {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Insert Voucher',
+              style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+            ),
+            content: const SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Failed'),
+                  Text('Voucher code available'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
+      await insertVoucher().whenComplete(
+        () {
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text(
+                  'Insert voucher ',
+                  style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+                ),
+                content: const SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text('Success'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text(
+                      'Approve',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onPressed: () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context)=>UpComing_Voucher()));
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+  }
+
+
 }
