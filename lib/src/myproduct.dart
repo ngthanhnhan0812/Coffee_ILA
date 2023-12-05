@@ -3,13 +3,11 @@ import 'dart:io';
 
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
-import 'package:coffee/src/editproduct.dart';
 import 'package:coffee/src/itemsWidget.dart';
 import 'package:coffee/src/marketing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class Product {
@@ -105,6 +103,7 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
         ),
         bottom: TabBar(
             controller: _tabController,
+          
             labelColor: Color.fromARGB(255, 181, 57, 5),
             unselectedLabelColor: Colors.black.withOpacity(0.5),
             isScrollable: false,

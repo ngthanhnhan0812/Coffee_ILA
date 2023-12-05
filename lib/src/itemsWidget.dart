@@ -25,6 +25,12 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
     fetchProduct(1);
     super.initState();
   }
+  @override
+  void dispose(){
+    
+    fetchProduct(1);
+    super.dispose();
+  }
 
   Widget build(BuildContext context) {
     return Column(
@@ -546,7 +552,12 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
     fetchProduct(0);
     super.initState();
   }
-
+@override
+  void dispose(){
+   
+    fetchProduct(0);
+    super.dispose();
+  }
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -939,7 +950,12 @@ class _ItemsWidget2 extends State<ItemsWidget2> {
     fetchProduct(2);
     super.initState();
   }
-
+@override
+  void dispose(){
+ 
+    fetchProduct(2);
+    super.dispose();
+  }
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -1315,7 +1331,12 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
     });
     super.initState();
   }
-
+@override
+  void dispose(){
+   
+    fetchProduct(3);
+    super.dispose();
+  }
   Widget build(BuildContext context) {
     return Column(
       children: [
