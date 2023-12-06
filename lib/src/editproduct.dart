@@ -1361,7 +1361,7 @@ class _EditProduct extends State<EditProduct> {
         final rg = RegExp(r'-');
         final file = File(img.path);
         String a = uuid.v1().trim().replaceAll(rg, '');
-      final String imagePath = '${a.toString()+img!.path}';
+      final String imagePath = '${a+'.jpg'}';
         final ref =
             FirebaseStorage.instance.ref().child(path.basename(imagePath));
         uploadTask = ref.putFile(file, metadata);

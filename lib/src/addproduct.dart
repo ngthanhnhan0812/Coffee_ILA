@@ -1243,8 +1243,8 @@ List <File?> abc = [im,im1,im2,im3];
     for (var img in abc) {
       var uuid = Uuid();
       String a = uuid.v1().trim().replaceAll(rg, '');
-      final String imagePath = '${a.toString()+img!.path}';
-      final file = File(img.path);
+      final String imagePath = '${a+'.jpg'}';
+      final file = File(img!.path);
       final ref =
           FirebaseStorage.instance.ref().child(path.basename(imagePath));
       uploadTask = ref.putFile(file, metadata);
