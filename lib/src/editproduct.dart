@@ -15,6 +15,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class EditProduct extends StatefulWidget {
   final Product product;
@@ -1356,8 +1357,11 @@ class _EditProduct extends State<EditProduct> {
     }
     if (_image.isNotEmpty) {
       for (var img in _image) {
+         var uuid = Uuid();
+        final rg = RegExp(r'-');
         final file = File(img.path);
-         final String imagePath = 'images/${DateTime.now()}.jpg';
+        String a = uuid.v1().trim().replaceAll(rg, '');
+      final String imagePath = '${a.toString()+img!.path}';
         final ref =
             FirebaseStorage.instance.ref().child(path.basename(imagePath));
         uploadTask = ref.putFile(file, metadata);

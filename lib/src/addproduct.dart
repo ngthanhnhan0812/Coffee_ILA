@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
-
+import 'package:uuid/uuid.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -1238,10 +1238,13 @@ class _Addproduct extends State<Addproduct> {
   final metadata = SettableMetadata(contentType: "image/jpeg");
   Future<http.Response> getImageUrl() async {
     List<String> imagesUrls = [];
+    final rg = RegExp(r'-');
 List <File?> abc = [im,im1,im2,im3];
     for (var img in abc) {
-      final String imagePath = 'images/${DateTime.now()}.jpg';
-      final file = File(img!.path);
+      var uuid = Uuid();
+      String a = uuid.v1().trim().replaceAll(rg, '');
+      final String imagePath = '${a.toString()+img!.path}';
+      final file = File(img.path);
       final ref =
           FirebaseStorage.instance.ref().child(path.basename(imagePath));
       uploadTask = ref.putFile(file, metadata);

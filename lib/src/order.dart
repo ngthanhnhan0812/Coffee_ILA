@@ -135,59 +135,65 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => Dashboard()));
-              },
-              icon: Icon(Icons.arrow_back_ios)),
-          toolbarHeight: 70,
-          centerTitle: true,
-          title: Text(
-            "ORDER",
-            style: TextStyle(fontWeight: FontWeight.bold),
+    return DefaultTabController(
+      length: 5,
+      child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Dashboard()));
+                },
+                icon: Icon(Icons.arrow_back_ios)),
+            toolbarHeight: 70,
+            centerTitle: true,
+            title: Text(
+              "ORDER",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            bottom: TabBar(
+              tabAlignment: TabAlignment.start ,
+              
+                controller: _tabController,
+                labelColor: Color.fromARGB(255, 181, 57, 5),
+                unselectedLabelColor: Colors.black.withOpacity(0.5),
+                isScrollable: true,
+                indicatorPadding: EdgeInsets.all(0),
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(
+                      width: 3, color: Color.fromARGB(255, 181, 57, 5)),
+                ),
+                labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                tabs: [
+                  
+                  Tab(
+                    text: "Waiting",
+                  ),
+                  Tab(
+                    text: "Delivering",
+                  ),
+                  Tab(
+                    text: "Delivered",
+                  ),
+                  Tab(
+                    text: "Cancelled",
+                  ),
+                  Tab(
+                    text: "Review of order",
+                  )
+                ]),
+                
           ),
-          bottom: TabBar(
-            
-              controller: _tabController,
-              labelColor: Color.fromARGB(255, 181, 57, 5),
-              unselectedLabelColor: Colors.black.withOpacity(0.5),
-              isScrollable: true,
-              indicatorPadding: EdgeInsets.all(0),
-              indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(
-                    width: 3, color: Color.fromARGB(255, 181, 57, 5)),
-              ),
-              labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              tabs: [
-                Tab(
-                  text: "Waiting",
-                ),
-                Tab(
-                  text: "Delivering",
-                ),
-                Tab(
-                  text: "Delivered",
-                ),
-                Tab(
-                  text: "Cancelled",
-                ),
-                Tab(
-                  text: "Review of order",
-                )
-              ]),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            OrderWidget1(),
-            OrderWidget2(),
-            OrderWidget3(),
-            OrderWidget4(),
-            OrderWidget5(),
-          ],
-        ));
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              OrderWidget1(),
+              OrderWidget2(),
+              OrderWidget3(),
+              OrderWidget4(),
+              OrderWidget5(),
+            ],
+          )),
+    );
   }
 }

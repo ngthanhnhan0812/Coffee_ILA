@@ -463,7 +463,7 @@ class _Editprofile extends State<Editprofile> {
                                 .hasMatch(value)) {
                               return 'Address is not accepted';
                             }
-                            if (value.length >= 100) {
+                            if (value.length > 100) {
                               return ' Address is too long';
                             }
                             return null; // Return null if the validation is successful
@@ -474,51 +474,9 @@ class _Editprofile extends State<Editprofile> {
                           width: 380,
                           color: Color.fromARGB(255, 236, 235, 235),
                         ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.person,
-                              size: 13,
-                              color: Color.fromARGB(255, 155, 155, 155),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              'Username',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 155, 155, 155),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        TextFormField(
-                           inputFormatters: [
-                            
-                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
-                          ],
-                          decoration: InputDecoration(border: InputBorder.none),
-                          controller: _username,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter an username';
-                            }
-                            if (!RegExp(r"^[a-zA-Z0-9]+$")
-                                .hasMatch(value)) {
-                              return 'Username is not accepted';
-                            }
-                            if (value.length >= 20) {
-                              return ' Username is too long';
-                            }
-                            return null; // Return null if the validation is successful
-                          },
-                        ),
-                        Container(
-                          height: 1,
-                          width: 380,
-                          color: Color.fromARGB(255, 236, 235, 235),
-                        ),
+                        
+                       
+                       
                         SizedBox(
                           height: 30,
                         ),

@@ -19,7 +19,7 @@ class _Dashboard extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
        resizeToAvoidBottomInset: false, 
-        backgroundColor: Color.fromARGB(255, 181, 57, 5),
+        backgroundColor: Colors.transparent,
         drawer: Sidebar(),
         appBar: AppBar(
       
