@@ -1110,7 +1110,7 @@ class _EditProduct extends State<EditProduct> {
                     ),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Myproduct(initialPage: 0)));
+                          builder: (context) => Myproduct(initialPage: 1)));
                     },
                   ),
                 ],

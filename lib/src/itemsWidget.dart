@@ -891,7 +891,7 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          Productdetail(
+                                                          Productdetail1(
                                                               pro: snapshot
                                                                       .data![
                                                                   index]),
@@ -1270,7 +1270,7 @@ class _ItemsWidget2 extends State<ItemsWidget2> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          Productdetail(
+                                                          Productdetail1(
                                                               pro: snapshot
                                                                       .data![
                                                                   index]),
