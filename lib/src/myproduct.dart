@@ -85,141 +85,147 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false, 
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => Dashboard()));
-            },
-            icon: Icon(Icons.arrow_back_ios)),
-        automaticallyImplyLeading: false,
-        toolbarHeight: 70,
-        centerTitle: true,
-        title: Text(
-          "MY PRODUCTS",
-          style: TextStyle(fontWeight: FontWeight.bold),
+    // ignore: deprecated_member_use
+    return WillPopScope(
+ onWillPop: () async {
+        return _onWillPop();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false, 
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => Dashboard()));
+              },
+              icon: Icon(Icons.arrow_back_ios)),
+          automaticallyImplyLeading: false,
+          toolbarHeight: 70,
+          centerTitle: true,
+          title: Text(
+            "MY PRODUCTS",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          bottom: TabBar(
+              controller: _tabController,
+            
+              labelColor: Color.fromARGB(255, 181, 57, 5),
+              unselectedLabelColor: Colors.black.withOpacity(0.5),
+              isScrollable: false,
+              labelPadding:EdgeInsets.all(0),
+              indicator: UnderlineTabIndicator(
+                borderSide:
+                    BorderSide(width: 3, color: Color.fromARGB(255, 181, 57, 5)),
+              ),
+              labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              tabs: [
+                Tab(
+                  text: "Approved",
+                ),
+                Tab(
+                  text: "Waiting",
+                ),
+                Tab(
+                  text: "Cancelled",
+                ),
+                Tab(
+                  text: "Hidden",
+                )
+              ]),
         ),
-        bottom: TabBar(
-            controller: _tabController,
-          
-            labelColor: Color.fromARGB(255, 181, 57, 5),
-            unselectedLabelColor: Colors.black.withOpacity(0.5),
-            isScrollable: false,
-            labelPadding:EdgeInsets.all(0),
-            indicator: UnderlineTabIndicator(
-              borderSide:
-                  BorderSide(width: 3, color: Color.fromARGB(255, 181, 57, 5)),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            RefreshIndicator(child: ItemsWidget1(), onRefresh: _refresh),
+            RefreshIndicator(child: ItemsWidget0(), onRefresh: _refresh),
+            RefreshIndicator(child: ItemsWidget2(), onRefresh: _refresh),
+            RefreshIndicator(child: ItemsWidget3(), onRefresh: _refresh),
+          ],
+        ),
+        floatingActionButton: Container(
+          height: 40,
+          width: 40,
+          child: FloatingActionButton(
+            backgroundColor: Color.fromARGB(255, 250, 211, 211),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(50.0))),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Addproduct()),
+              );
+            },
+            child: Icon(
+              Icons.add,
+              size: 25,
+              color: Color.fromARGB(255, 181, 57, 5),
             ),
-            labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            tabs: [
-              Tab(
-                text: "Approved",
-              ),
-              Tab(
-                text: "Waiting",
-              ),
-              Tab(
-                text: "Cancelled",
-              ),
-              Tab(
-                text: "Hidden",
-              )
-            ]),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          RefreshIndicator(child: ItemsWidget1(), onRefresh: _refresh),
-          RefreshIndicator(child: ItemsWidget0(), onRefresh: _refresh),
-          RefreshIndicator(child: ItemsWidget2(), onRefresh: _refresh),
-          RefreshIndicator(child: ItemsWidget3(), onRefresh: _refresh),
-        ],
-      ),
-      floatingActionButton: Container(
-        height: 40,
-        width: 40,
-        child: FloatingActionButton(
-          backgroundColor: Color.fromARGB(255, 250, 211, 211),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(50.0))),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Addproduct()),
-            );
-          },
-          child: Icon(
-            Icons.add,
-            size: 25,
-            color: Color.fromARGB(255, 181, 57, 5),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        height: 50,
-        color: Color.fromARGB(255, 255, 255, 255),
-        child: Container(
-          height: 30,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              MaterialButton(
-                minWidth: 40,
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Dashboard()));
-                },
-                child: Icon(
-                  Icons.home,
-                  color: Colors.grey,
-                  size: 25,
+        bottomNavigationBar: BottomAppBar(
+          height: 50,
+          color: Color.fromARGB(255, 255, 255, 255),
+          child: Container(
+            height: 30,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Dashboard()));
+                  },
+                  child: Icon(
+                    Icons.home,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
                 ),
-              ),
-              MaterialButton(
-                minWidth: 40,
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Myproduct(initialPage: 0)));
-                },
-                child: Icon(
-                  Icons.view_cozy,
-                  color: Color.fromARGB(255, 181, 57, 5),
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Myproduct(initialPage: 0)));
+                  },
+                  child: Icon(
+                    Icons.view_cozy,
+                    color: Color.fromARGB(255, 181, 57, 5),
+                  ),
                 ),
-              ),
-              MaterialButton(
-                minWidth: 40,
-                onPressed: () {},
-                child: Icon(
-                  Icons.leaderboard,
-                  color: Colors.grey,
-                  size: 25,
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {},
+                  child: Icon(
+                    Icons.leaderboard,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
                 ),
-              ),
-              MaterialButton(
-                minWidth: 40,
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Marketing(containSelectedBox: [],)));
-                },
-                child: Icon(
-                  Icons.api_sharp,
-                  color: Colors.grey,
-                  size: 25,
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Marketing(containSelectedBox: [],)));
+                  },
+                  child: Icon(
+                    Icons.api_sharp,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
                 ),
-              ),
-              MaterialButton(
-                minWidth: 40,
-                onPressed: () {},
-                child: Icon(
-                  Icons.app_registration,
-                  color: Colors.grey,
-                  size: 25,
+                MaterialButton(
+                  minWidth: 40,
+                  onPressed: () {},
+                  child: Icon(
+                    Icons.app_registration,
+                    color: Colors.grey,
+                    size: 25,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -363,7 +369,10 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
           );
         });
   }
-
+Future<bool> _onWillPop() async {
+    return false;
+          
+  }
   Future<void> _refresh() {
     return Future.delayed(Duration(seconds: 1));
   }

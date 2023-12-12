@@ -29,12 +29,10 @@ class _NewVoucher extends State<NewVoucher> {
   final TextEditingController _condition = TextEditingController();
   TextEditingController firstDate = TextEditingController();
   TextEditingController lastDate = TextEditingController();
-  
+
   Future<Voucher>? _futureVoucher;
 
   // ignore: non_constant_identifier_names
-
-
 
   @override
   void dispose() {
@@ -61,16 +59,12 @@ class _NewVoucher extends State<NewVoucher> {
 
     print(response.body);
     if (response.statusCode == 200) {
-     
       setState(() {
         isDuplicate = response.body;
       });
-
-    
     } else {
       throw Exception('Unable to fetch!');
     }
-   
   }
 
 //   String? validateString(String value) {
@@ -443,7 +437,7 @@ class _NewVoucher extends State<NewVoucher> {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter voucher code';
                                   }
-                                 
+
                                   return null;
                                 },
                                 inputFormatters: [
@@ -459,7 +453,6 @@ class _NewVoucher extends State<NewVoucher> {
                                 maxLines: 1,
                                 controller: _id),
                           ),
-                        
                         ],
                       ),
                     ],
@@ -703,9 +696,10 @@ class _NewVoucher extends State<NewVoucher> {
     }
     return response;
   }
+
   Future<void> insertVoucherDialog() async {
-   await checkDuplicateId(_id.text , "ADMIN");
-    if ( isDuplicate == "true") {
+    await checkDuplicateId(_id.text, "ADMIN");
+    if (isDuplicate == "true") {
       return showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -770,7 +764,10 @@ class _NewVoucher extends State<NewVoucher> {
                       style: TextStyle(color: Colors.blue),
                     ),
                     onPressed: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>UpComing_Voucher()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UpComing_Voucher()));
                     },
                   ),
                 ],
@@ -781,6 +778,4 @@ class _NewVoucher extends State<NewVoucher> {
       );
     }
   }
-
-
 }
