@@ -5,14 +5,14 @@ import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
+
 
 import 'package:coffee/src/sidebar.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+
 
 import 'package:image_picker/image_picker.dart';
 

@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+
 
 class Editprofile extends StatefulWidget {
   final Supplier profile;
