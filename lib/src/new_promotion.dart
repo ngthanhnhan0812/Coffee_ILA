@@ -306,14 +306,17 @@ class _NewPromotion extends State<NewPromotion> {
                   ),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              } else if (_navigateAndDisplaySelection(context) == null) {
+                final snackBar = SnackBar(
+                  content: const Text('No product selected!'),
+                  action: SnackBarAction(
+                    label: 'Dismiss',
+                    onPressed: () {},
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               } else {
-                insertDiscount();
-                showInsertDialog(context, () {
-                  final snackBar = SnackBar(
-                      content: const Text('Add discount successfully!'),
-                      action: SnackBarAction(label: 'Undo', onPressed: () {}));
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                });
+                insertDiscountDialog();
               }
             }
           },
@@ -369,28 +372,59 @@ class _NewPromotion extends State<NewPromotion> {
     return http.Response('Finished!', 200);
   }
 
-  void showInsertDialog(BuildContext context, VoidCallback onDismissed) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
-
-    Future.delayed(const Duration(seconds: 2), () {
-      DateTime currentDate = DateTime.now();
-      DateTime discountStartDate = DateTime.parse(firstDate.text);
-
-      if (currentDate.isBefore(discountStartDate)) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Promotion(ind: 0)));
-      } else if (currentDate.isAfter(discountStartDate)) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Promotion(ind: 1)));
-      }
-
-      onDismissed();
-    });
+  Future<void> insertDiscountDialog() async {
+    {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
+      Future.delayed(const Duration(seconds: 2), () async {
+        await insertDiscount().whenComplete(
+          () {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text(
+                    'Insert discount ',
+                    style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+                  ),
+                  content: const SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Success'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text(
+                        'Approve',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Promotion(ind: 0)));
+                        setState(() {
+                          final snackBar = SnackBar(
+                              content: const Text('Add discount successfully!'),
+                              action: SnackBarAction(
+                                  label: 'Undo', onPressed: () {}));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        });
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      });
+    }
   }
 }

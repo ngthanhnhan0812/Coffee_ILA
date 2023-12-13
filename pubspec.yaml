@@ -21,6 +21,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   path_provider: ^2.1.1
   uuid: ^4.2.1
+  comment_tree: ^0.3.0
 
 
 dev_dependencies:

@@ -700,6 +700,7 @@ class _NewVoucher extends State<NewVoucher> {
   Future<void> insertVoucherDialog() async {
     await checkDuplicateId(_id.text, "ADMIN");
     if (isDuplicate == "true") {
+      // ignore: use_build_context_synchronously
       return showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -732,6 +733,7 @@ class _NewVoucher extends State<NewVoucher> {
         },
       );
     } else {
+      // ignore: use_build_context_synchronously
       showDialog(
           context: context,
           builder: (context) {
@@ -767,7 +769,7 @@ class _NewVoucher extends State<NewVoucher> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => UpComing_Voucher()));
+                              builder: (context) => const UpComing_Voucher()));
                     },
                   ),
                 ],

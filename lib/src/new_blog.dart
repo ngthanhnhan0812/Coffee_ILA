@@ -211,6 +211,8 @@ class _NewBlogState extends State<NewBlog> {
                               return 'Please enter title here';
                             } else if (value.length > 50) {
                               return 'The limitation of title is 50';
+                            } else if (value.contains('  ')) {
+                              return 'Check your space between';
                             }
                             return null;
                           },
@@ -246,17 +248,20 @@ class _NewBlogState extends State<NewBlog> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter content here';
                             } else if (value.length > 2000) {
-                              'The limitation of description is 2000';
+                              return 'The limitation of description is 2000';
+                            } else if (value.contains('  ')){
+                              return 'Check your space between'; 
                             }
                             return null;
                           },
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
                           maxLength: 2000,
+                          maxLines: null,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(2000),
                             FilteringTextInputFormatter.deny(RegExp(r'^ +'))
                           ],
-                          decoration:
-                              const InputDecoration(border: InputBorder.none),
                           keyboardType: TextInputType.multiline,
                           controller: _description,
                         ),

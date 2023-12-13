@@ -257,7 +257,8 @@ class _EditVoucher extends State<EditVoucher> {
                               DateTime? pickedDate = await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.parse(firstDate.text),
-                                  firstDate: DateTime.now().add(const Duration(days:1)),
+                                  firstDate: DateTime.now()
+                                      .add(const Duration(days: 1)),
                                   lastDate: DateTime(2099));
 
                               if (pickedDate != null) {
@@ -313,7 +314,8 @@ class _EditVoucher extends State<EditVoucher> {
                               DateTime? pickedDate = await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.parse(lastDate.text),
-                                  firstDate: DateTime.now().add(const Duration(days: 2)),
+                                  firstDate: DateTime.now()
+                                      .add(const Duration(days: 2)),
                                   lastDate: DateTime(2099));
                               if (pickedDate != null) {
                                 String formattedDate =
@@ -476,6 +478,15 @@ class _EditVoucher extends State<EditVoucher> {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => Voucher_home(ind: 0)));
+                          setState(() {
+                            final snackBar = SnackBar(
+                                content:
+                                    const Text('Edit voucher successfully!'),
+                                action: SnackBarAction(
+                                    label: 'Undo', onPressed: () {}));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          });
                         },
                       ),
                     ]);

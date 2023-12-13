@@ -59,7 +59,8 @@ class New_Prod_Product extends StatefulWidget {
 class _New_Prod_Product extends State<New_Prod_Product> {
   FetchProduct productList = FetchProduct();
   // ignore: non_constant_identifier_names
-  final List<int> _selected_Prod = [];
+  List<int> _selected_Prod = [];
+  List<int> _selectAll = [];
   int _counter = 0;
 
   final _formKey = GlobalKey<FormState>();
@@ -75,6 +76,10 @@ class _New_Prod_Product extends State<New_Prod_Product> {
     setState(() {
       _counter--;
     });
+  }
+
+  void setCounter() {
+    setState(() {});
   }
 
   @override
@@ -151,6 +156,30 @@ class _New_Prod_Product extends State<New_Prod_Product> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
+                        InkWell(
+                          onTap: () => setState(() {
+                            _selectAll.clear();
+                            for (var element in productList.data) {
+                              if (element["isActive"] == 1) {
+                                _selectAll.add(element);
+                                _selectAll = _selected_Prod;
+                                print(_selectAll);
+                              } else {
+                                _selectAll.remove(element);
+                                _selectAll = _selected_Prod;
+                                print(_selectAll);
+                              }
+                            }
+                          }),
+                          child: const Text(
+                            "Select All",
+                            style: TextStyle(
+                              fontSize: 22.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                         ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -187,10 +216,6 @@ class _New_Prod_Product extends State<New_Prod_Product> {
                                             incCounter();
                                           });
                                         }
-                                        // if (containSelectedBox[index].price <
-                                        //     widget.discount.discount) {
-                                        //   return 'Product must be lower than Discount!';
-                                        // }
                                       }),
                                   const VerticalDivider(width: 5),
                                   Column(

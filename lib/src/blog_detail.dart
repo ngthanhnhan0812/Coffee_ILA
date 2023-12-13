@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:coffee/src/comments.dart';
+import 'package:comment_tree/comment_tree.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:readmore/readmore.dart';
@@ -33,6 +35,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
     super.dispose();
   }
 
+  final List<Comment> commentLi = [];
   @override
   Widget build(BuildContext context) {
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -147,6 +150,14 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                       ),
                     ],
                   ),
+                  Column(
+                    children: <Widget>[
+                      for (int i = 0; i < 3; i++)
+                        Comments(commentList: commentLi),
+                      // Comments(commentList: commentLi),
+                      // NewMessage()
+                    ],
+                  )
                 ],
               );
             }))

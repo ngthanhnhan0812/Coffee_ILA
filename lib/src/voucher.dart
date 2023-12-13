@@ -295,8 +295,6 @@ class _UpComing_Voucher extends State<UpComing_Voucher> {
       print(
           'Failed to delete Voucher: ${response.statusCode}\t ${response.body}');
     }
-    // ignore: unused_element
-
     return response;
   }
 

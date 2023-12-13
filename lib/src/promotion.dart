@@ -283,8 +283,6 @@ class UpComingState extends State<Upcoming> {
       print(
           'Failed to delete Discount: ${response.statusCode}\t ${response.body}');
     }
-    // ignore: unused_element
-
     return response;
   }
 

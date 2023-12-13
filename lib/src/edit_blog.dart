@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:coffee/src/models/blog.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -81,195 +82,226 @@ class _Edit_BlogState extends State<Edit_Blog> {
               icon: const Icon(Icons.chevron_left, color: Colors.black)),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                  child: SizedBox(
-                child: _im
-                    ? Stack(
-                        children: [
-                          SizedBox(
-                            height: 300,
-                            width: 360,
-                            child: Image.network(
-                              _image.toString(),
-                            ),
-                          ),
-                          Positioned(
-                            top: -12,
-                            right: -12,
-                            child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                   _im = false;
-                                    imgCheck = false;
-                                  });
-                                 
-                                },
-                                icon: const Icon(
-                                  Icons.cancel,
-                                  color: Colors.black,
-                                  size: 17,
-                                )),
-                          )
-                        ],
-                      )
-                    : img == null
-                        ? Container(
-                            height: 70,
-                            width: 70,
-                            color: const Color.fromARGB(255, 242, 242, 242),
-                            child: CupertinoButton(
-                                child: const Icon(
-                                  Icons.add,
-                                  color: Colors.black,
-                                ),
-                                onPressed: () {
-                                  showModalBottomSheet<void>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return SizedBox(
-                                          height: 150,
-                                          child: Column(
-                                            children: [
-                                              CupertinoButton(
-                                                  child: const Row(children: [
-                                                    CircleAvatar(
-                                                      backgroundColor:
-                                                          Color.fromARGB(255,
-                                                              212, 212, 212),
-                                                      radius: 15,
-                                                      child: Icon(
-                                                        Icons.camera_alt,
-                                                        size: 20,
-                                                        color: Color.fromARGB(
-                                                            255, 0, 0, 0),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 15,
-                                                    ),
-                                                    Text(
-                                                      "Take a photo",
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    )
-                                                  ]),
-                                                  onPressed: () {
-                                                    takeImage();
-                                                    Navigator.pop(context);
-                                                  }),
-                                              CupertinoButton(
-                                                  child: const Row(children: [
-                                                    CircleAvatar(
-                                                      backgroundColor:
-                                                          Color.fromARGB(255,
-                                                              212, 212, 212),
-                                                      radius: 15,
-                                                      child: Icon(
-                                                        Icons.image,
-                                                        size: 15,
-                                                        color: Color.fromARGB(
-                                                            255, 0, 0, 0),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 15,
-                                                    ),
-                                                    Text(
-                                                      "Pick a photo",
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    )
-                                                  ]),
-                                                  onPressed: () {
-                                                    chooseImage();
-                                                    Navigator.pop(context);
-                                                  })
-                                            ],
-                                          ),
-                                        );
-                                      });
-                                }),
-                          )
-                        : Stack(children: [
+          child: Form(
+            child: Column(
+              children: [
+                Center(
+                    child: SizedBox(
+                  child: _im
+                      ? Stack(
+                          children: [
                             SizedBox(
                               height: 300,
                               width: 360,
-                              child: Image(image: FileImage(img!)),
+                              child: Image.network(
+                                _image.toString(),
+                              ),
                             ),
                             Positioned(
                               top: -12,
                               right: -12,
                               child: IconButton(
                                   onPressed: () {
-                                    removeImage();
+                                    setState(() {
+                                      _im = false;
+                                      imgCheck = false;
+                                    });
                                   },
                                   icon: const Icon(
                                     Icons.cancel,
                                     color: Colors.black,
-                                    size: 20,
+                                    size: 17,
                                   )),
                             )
-                          ]),
-              )),
-              Container(
-                margin: const EdgeInsets.fromLTRB(7, 5, 7, 0),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Title',
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                      TextField(
-                        decoration:
-                            const InputDecoration(border: InputBorder.none),
-                        controller: _title,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(7, 5, 7, 0),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Content',
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                      TextField(
-                        maxLength: 2000,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        controller: _description,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
+                          ],
+                        )
+                      : img == null
+                          ? Container(
+                              height: 70,
+                              width: 70,
+                              color: const Color.fromARGB(255, 242, 242, 242),
+                              child: CupertinoButton(
+                                  child: const Icon(
+                                    Icons.add,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    showModalBottomSheet<void>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return SizedBox(
+                                            height: 150,
+                                            child: Column(
+                                              children: [
+                                                CupertinoButton(
+                                                    child: const Row(children: [
+                                                      CircleAvatar(
+                                                        backgroundColor:
+                                                            Color.fromARGB(255,
+                                                                212, 212, 212),
+                                                        radius: 15,
+                                                        child: Icon(
+                                                          Icons.camera_alt,
+                                                          size: 20,
+                                                          color: Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 15,
+                                                      ),
+                                                      Text(
+                                                        "Take a photo",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      )
+                                                    ]),
+                                                    onPressed: () {
+                                                      takeImage();
+                                                      Navigator.pop(context);
+                                                    }),
+                                                CupertinoButton(
+                                                    child: const Row(children: [
+                                                      CircleAvatar(
+                                                        backgroundColor:
+                                                            Color.fromARGB(255,
+                                                                212, 212, 212),
+                                                        radius: 15,
+                                                        child: Icon(
+                                                          Icons.image,
+                                                          size: 15,
+                                                          color: Color.fromARGB(
+                                                              255, 0, 0, 0),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 15,
+                                                      ),
+                                                      Text(
+                                                        "Pick a photo",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      )
+                                                    ]),
+                                                    onPressed: () {
+                                                      chooseImage();
+                                                      Navigator.pop(context);
+                                                    })
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  }),
+                            )
+                          : Stack(children: [
+                              SizedBox(
+                                height: 300,
+                                width: 360,
+                                child: Image(image: FileImage(img!)),
+                              ),
+                              Positioned(
+                                top: -12,
+                                right: -12,
+                                child: IconButton(
+                                    onPressed: () {
+                                      removeImage();
+                                    },
+                                    icon: const Icon(
+                                      Icons.cancel,
+                                      color: Colors.black,
+                                      size: 20,
+                                    )),
+                              )
+                            ]),
+                )),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(7, 5, 7, 0),
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Title',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    ],
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter title here';
+                            } else if (value.length > 50) {
+                              return 'The limitation of title is 50';
+                            } else if (value.contains('  ')) {
+                              return 'Check your space between';
+                            }
+                            return null;
+                          },
+                          maxLength: 50,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(50),
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
+                          controller: _title,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  margin: const EdgeInsets.fromLTRB(7, 5, 7, 0),
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Content',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter content here';
+                            } else if (value.length > 2000) {
+                              return 'The limitation of description is 2000';
+                            } else if (value.contains('  ')) {
+                              return 'Check your space between';
+                            }
+                            return null;
+                          },
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
+                          maxLength: 2000,
+                          maxLines: null,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(2000),
+                            FilteringTextInputFormatter.deny(RegExp(r'^ +'))
+                          ],
+                          keyboardType: TextInputType.multiline,
+                          controller: _description,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         persistentFooterButtons: [
@@ -320,7 +352,6 @@ class _Edit_BlogState extends State<Edit_Blog> {
       img = File(compressedImage!.path);
       imgCheck = true;
     });
-    
   }
 
   takeImage() async {
@@ -349,12 +380,12 @@ class _Edit_BlogState extends State<Edit_Blog> {
     });
   }
 
- UploadTask? uploadTask;
+  UploadTask? uploadTask;
   Future<http.Response> updateBlog() async {
     final metadata = SettableMetadata(contentType: "image/jpeg");
     if (img != null) {
       final getImg = FirebaseStorage.instance.refFromURL(_image.toString());
-     await getImg.delete();
+      await getImg.delete();
       final String imagePath = 'images/${DateTime.now()}.jpg';
       final file = File(img!.path);
       final ref =
@@ -419,53 +450,56 @@ class _Edit_BlogState extends State<Edit_Blog> {
       );
     } else {
       showDialog(
-          context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
-      await updateBlog().whenComplete(
-        () {
-          return showDialog<void>(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  'Edit Blog',
-                  style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
-                ),
-                content: const SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('Success'),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text(
-                      'Approve',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      if (widget.blog.isStatus == 0) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => BlogView(ind: 1)));
-                      } else if (widget.blog.isStatus == 1) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => BlogView(ind: 0)));
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
-          );
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(child: CircularProgressIndicator());
         },
       );
+      try {
+        await Future.delayed(const Duration(seconds: 2));
+      } finally {
+        await updateBlog().whenComplete(
+          () {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text(
+                    'Edit Blog',
+                    style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+                  ),
+                  content: const SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Success'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text(
+                        'Approve',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onPressed: () {
+                        if (widget.blog.isStatus == 0) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => BlogView(ind: 1)));
+                        } else if (widget.blog.isStatus == 1) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => BlogView(ind: 0)));
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      }
     }
   }
-
 }
