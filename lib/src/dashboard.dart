@@ -1,3 +1,4 @@
+import 'package:coffee/ip/appcolor.dart';
 import 'package:coffee/src/order.dart';
 import 'package:coffee/src/marketing.dart';
 import 'package:coffee/src/sidebar.dart';
@@ -5,7 +6,6 @@ import 'package:coffee/src/tes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee/bundle.dart';
-
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -18,36 +18,70 @@ class _Dashboard extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       resizeToAvoidBottomInset: false, 
-        backgroundColor: Color.fromARGB(255, 181, 57, 5),
-        drawer: Sidebar(),
-        appBar: AppBar(
-      
-   
-          leading: Builder(
-            builder: (context) => IconButton( icon: Icon(Icons.sort,size: 30,color: Colors.white,),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            ),
+      resizeToAvoidBottomInset: false,
+      drawer: Sidebar(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment(0.8, 1),
+            colors: <Color>[
+              Color.fromARGB(255, 255, 121, 63),
+              Color.fromARGB(255, 181, 57, 5),
+              Color.fromARGB(255, 70, 25, 6),
+              Color.fromARGB(172, 71, 30, 12),
+            ],
+            tileMode: TileMode.mirror,
           ),
-         
-          backgroundColor: Color.fromARGB(255, 181, 57, 5),
         ),
-        body: Column(children: [
-          Container(
-            height: 90,
-            width: 380,
-            child: Center(
-              child: Text(
-                'HIGHLAND',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w500),
+        child: Column(children: [
+          Stack(
+            children: [
+              Container(
+                height: 170,
+                width: 380,
+                child: Center(
+                  child: FutureBuilder(
+                      future:fetchProfileSupplier() ,
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null) {
+                          return Text( maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          snapshot.data!
+                                                                      .title!.length >
+                                                                  20
+                                                              ? snapshot
+                                                                      .data!
+                                                                      .title!
+                                                                      .substring(
+                                                                          0,
+                                                                          20) +
+                                                                  '...'
+                                                              : snapshot
+                                                                  .data!
+                                                                  .title
+                                                                  .toString(),style: TextStyle(color: Colors.white,fontSize: 30,fontWeight: FontWeight.bold),);
+                        } else {
+                          return Container();
+                        }
+                      }),
+                ),
               ),
-            ),
+              Positioned(
+                  top: 20,
+                  child: Builder(
+                      builder: (context) => IconButton(
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                          icon: Icon(
+                            Icons.sort,
+                            size: 30,
+                            color: Colors.white,
+                          ))))
+            ],
           ),
           Container(
-            height:505,
+            height: 505,
             width: 380,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -82,21 +116,26 @@ class _Dashboard extends State<Dashboard> {
                               Text(
                                 'History order',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 181, 57, 5),
+                                    color: AppColor.primary_color,
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold),
                               ),
                               Icon(
                                 Icons.arrow_right,
-                                color: Color.fromARGB(255, 181, 57, 5),
+                                color: AppColor.primary_color,
                               )
                             ],
                           ),
-                          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>Order(initialPage: 0,)));}),
-                    
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Order(
+                                          initialPage: 0,
+                                        )));
+                          }),
                     ],
                   ),
-                
                   Container(
                     child: Column(
                       children: [
@@ -110,8 +149,7 @@ class _Dashboard extends State<Dashboard> {
                                   width: 130,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(7),
-                                      color: const Color.fromARGB(
-                                          255, 181, 57, 5)),
+                                      color: AppColor.primary_color),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -133,8 +171,11 @@ class _Dashboard extends State<Dashboard> {
                                   ),
                                 ),
                                 onPressed: () {
-                                     Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                    return Order(initialPage: 0, );
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return Order(
+                                      initialPage: 0,
+                                    );
                                   }));
                                 }),
                             CupertinoButton(
@@ -143,8 +184,7 @@ class _Dashboard extends State<Dashboard> {
                                   width: 130,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(7),
-                                      color: const Color.fromARGB(
-                                          255, 181, 57, 5)),
+                                      color: AppColor.primary_color),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -166,8 +206,11 @@ class _Dashboard extends State<Dashboard> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                    return Order(initialPage: 2, );
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return Order(
+                                      initialPage: 2,
+                                    );
                                   }));
                                 })
                           ],
@@ -182,8 +225,7 @@ class _Dashboard extends State<Dashboard> {
                                   width: 130,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(7),
-                                      color: const Color.fromARGB(
-                                          255, 181, 57, 5)),
+                                      color: AppColor.primary_color),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -205,8 +247,11 @@ class _Dashboard extends State<Dashboard> {
                                   ),
                                 ),
                                 onPressed: () {
-                                     Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                    return Order(initialPage: 3, );
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return Order(
+                                      initialPage: 3,
+                                    );
                                   }));
                                 }),
                             CupertinoButton(
@@ -215,8 +260,7 @@ class _Dashboard extends State<Dashboard> {
                                   width: 130,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(7),
-                                      color: const Color.fromARGB(
-                                          255, 181, 57, 5)),
+                                      color: AppColor.primary_color),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -238,27 +282,30 @@ class _Dashboard extends State<Dashboard> {
                                   ),
                                 ),
                                 onPressed: () {
-                                   Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                    return Order(initialPage: 4, );
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return Order(
+                                      initialPage: 4,
+                                    );
                                   }));
-                                
                                 })
                           ],
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Container(
                           height: 180,
                           width: 400,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(7),
-                            
                             color: Colors.white,
                             boxShadow: [
                               BoxShadow(
-                                color: Color.fromARGB(255, 249, 230, 230).withOpacity(0.5),
+                                color: Color.fromARGB(255, 249, 230, 230)
+                                    .withOpacity(0.5),
                                 spreadRadius: 4,
                                 blurRadius: 4,
-                              
                               ),
                             ],
                           ),
@@ -266,63 +313,129 @@ class _Dashboard extends State<Dashboard> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                            Row(
-                              children: [
-                                SizedBox(width: 5,),
-                                Text('Store',  style: TextStyle(
-                                color: const Color.fromARGB(255, 69, 68, 68)
-                                    .withOpacity(0.5),
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),),
-                              ],
-                            ),
-                            SizedBox(height: 5,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                              CupertinoButton(child: Column(children: [
-                                Icon(Icons.view_cozy,color: const Color.fromARGB(
-                                          255, 181, 57, 5),size: 30,),
-                                Text('My Product', style: TextStyle(
-                                            color: const Color.fromARGB(255, 0, 0, 0),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),)
-                                
-                              ],), onPressed: (){Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Myproduct(initialPage: 0)));}),
-                              CupertinoButton(child: Column(children: [
-                                Icon(Icons.leaderboard,color: const Color.fromARGB(
-                                          255, 181, 57, 5),size: 30,),
-                                Text('Revenue', style: TextStyle(
-                                            color: const Color.fromARGB(255, 0, 0, 0),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),)
-                                
-                              ],), onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));}),
-                              CupertinoButton(child: Column(children: [
-                                Icon(Icons.api_sharp,color: const Color.fromARGB(
-                                          255, 181, 57, 5),size: 30,),
-                                Text('Maketing', style: TextStyle(
-                                            color: const Color.fromARGB(255, 0, 0, 0),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),)
-                                
-                              ],), onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Marketing(containSelectedBox: [],)));}),
-                             
-                            ],),
-                             Padding(
-                               padding: const EdgeInsets.only(left: 24),
-                               child: CupertinoButton(child: Column(children: [
-                                  Icon(Icons.app_registration,color: const Color.fromARGB(
-                                            255, 181, 57, 5),size: 30,),
-                                  Text('Blogs', style: TextStyle(
-                                              color: const Color.fromARGB(255, 0, 0, 0),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    'Store',
+                                    style: TextStyle(
+                                        color: const Color.fromARGB(
+                                                255, 69, 68, 68)
+                                            .withOpacity(0.5),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  CupertinoButton(
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.view_cozy,
+                                            color: AppColor.primary_color,
+                                            size: 30,
+                                          ),
+                                          Text(
+                                            'My Product',
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 0, 0, 0),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Myproduct(initialPage: 0)));
+                                      }),
+                                  CupertinoButton(
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.leaderboard,
+                                            color: AppColor.primary_color,
+                                            size: 30,
+                                          ),
+                                          Text(
+                                            'Revenue',
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 0, 0, 0),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomeScreen()));
+                                      }),
+                                  CupertinoButton(
+                                      child: Column(
+                                        children: [
+                                          Icon(
+                                            Icons.api_sharp,
+                                            color: AppColor.primary_color,
+                                            size: 30,
+                                          ),
+                                          Text(
+                                            'Maketing',
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 0, 0, 0),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) => Marketing(
+                                                      containSelectedBox: [],
+                                                    )));
+                                      }),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 24),
+                                child: CupertinoButton(
+                                    child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.app_registration,
+                                          color: AppColor.primary_color,
+                                          size: 30,
+                                        ),
+                                        Text(
+                                          'Blogs',
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
                                               fontSize: 12,
-                                              fontWeight: FontWeight.bold),)
-                                  
-                                ],), onPressed: (){}),
-                             )
-                          ],),
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
+                                    onPressed: () {}),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -331,9 +444,9 @@ class _Dashboard extends State<Dashboard> {
               ),
             ),
           ),
-
         ]),
-  bottomNavigationBar: BottomAppBar(
+      ),
+      bottomNavigationBar: BottomAppBar(
         height: 50,
         color: Color.fromARGB(255, 255, 255, 255),
         child: Container(
@@ -350,7 +463,7 @@ class _Dashboard extends State<Dashboard> {
                 },
                 child: Icon(
                   Icons.home,
-                  color: Color.fromARGB(255, 181, 57, 5),
+                  color: AppColor.primary_color,
                   size: 25,
                 ),
               ),
@@ -367,7 +480,10 @@ class _Dashboard extends State<Dashboard> {
               ),
               MaterialButton(
                 minWidth: 40,
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                },
                 child: Icon(
                   Icons.leaderboard,
                   color: Colors.grey,
@@ -377,7 +493,10 @@ class _Dashboard extends State<Dashboard> {
               MaterialButton(
                 minWidth: 40,
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Marketing(containSelectedBox: [],)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Marketing(
+                            containSelectedBox: [],
+                          )));
                 },
                 child: Icon(
                   Icons.api_sharp,
@@ -387,9 +506,7 @@ class _Dashboard extends State<Dashboard> {
               ),
               MaterialButton(
                 minWidth: 40,
-                onPressed: () {
-                 
-                },
+                onPressed: () {},
                 child: Icon(
                   Icons.app_registration,
                   color: Colors.grey,
@@ -400,7 +517,6 @@ class _Dashboard extends State<Dashboard> {
           ),
         ),
       ),
-   
-        );
+    );
   }
 }

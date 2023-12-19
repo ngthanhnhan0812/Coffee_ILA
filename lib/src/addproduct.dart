@@ -1280,7 +1280,7 @@ List <File?> abc = [im,im1,im2,im3];
               HttpHeaders.contentTypeHeader: "application/json",
             },
             body: jsonEncode(dt));
-    print('add product success');
+    print(response.body);
     return response;
   }
   Future<bool> _onWillPop() async {
