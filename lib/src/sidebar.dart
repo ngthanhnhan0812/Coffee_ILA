@@ -207,3 +207,16 @@ Future<Supplier> fetchProfileSupplier() async {
     throw Exception('Unexpected error occured!');
   }
 }
+
+Future<Supplier> fetchTitleSupplier() async {
+  final response =
+      await http.get(Uri.parse('$u/api/Supplier/ProfileSupplier?id=2 '));
+
+  if (response.statusCode == 200) {
+    List jsonResponse = await json.decode(response.body);
+    var title = jsonResponse[0]["title"];
+    return title;
+  } else {
+    throw Exception('Unexpected error occured!');
+  }
+}

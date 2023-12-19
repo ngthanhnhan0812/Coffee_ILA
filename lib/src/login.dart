@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../bundle.dart';
@@ -24,14 +25,24 @@ class _login extends State<login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.topCenter, colors: [
-          Color.fromARGB(255, 209, 72, 13),
-          Color.fromARGB(255, 181, 57, 5),
-          Color.fromARGB(255, 107, 36, 6)
-        ])),
+       decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment(0.8, 1),
+            colors: <Color>[
+            Color.fromARGB(255, 255, 121, 63),
+              Color.fromARGB(255, 181, 57, 5),
+              Color.fromARGB(255, 70, 25, 6),
+              Color.fromARGB(172, 71, 30, 12)
+             
+            ], 
+            tileMode: TileMode.mirror,
+          ),
+        ),
+       
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -44,22 +55,25 @@ class _login extends State<login> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                      child: Text(
-                    "Login",
-                    style: TextStyle(color: Colors.white, fontSize: 40),
-                  )),
-                  SizedBox(
-                    height: 10,
+                  //     child: Text(
+                  //   "Login",
+                  //   style: TextStyle(color: Colors.white, fontSize: 40),
+                  // )
+                  child: SizedBox(
+                    height: 150,
+                    width: 150,
+                    child: Image(image: AssetImage('assets/images/logov.png'),fit: BoxFit.cover,)),
                   ),
+                  
                   Center(
                       child: Text(
-                    "Sup",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    "L O G I N",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
                   ))
                 ],
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
@@ -133,19 +147,22 @@ class _login extends State<login> {
                           child: const Text("Forgot Password?",
                               style: TextStyle(color: Colors.grey))),
                       const SizedBox(height: 20),
-                      Container(
-                        height: 50,
-                        margin: const EdgeInsets.symmetric(horizontal: 50),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: const Color.fromARGB(255, 181, 57, 5),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                      CupertinoButton(
+                        onPressed:(){ Navigator.push(context, MaterialPageRoute(builder: (context)=>Dashboard()));},
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.symmetric(horizontal: 50),
+                          decoration:  BoxDecoration(
+                             borderRadius: BorderRadius.circular(50),
+                             color: Color.fromARGB(255, 181, 57, 5)
+                            ),
+                          child: const Center(
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
