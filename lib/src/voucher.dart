@@ -720,7 +720,10 @@ class _Active_Voucher extends State<Active_Voucher> {
                                       Row(
                                         children: [
                                           Text(
-                                            snapshot.data![index].startDate,
+                                            DateFormat('yyyy/MM/dd').format(
+                                                DateTime.parse(snapshot
+                                                    .data![index].startDate
+                                                    .toString())),
                                             style: GoogleFonts.openSans(
                                               textStyle: const TextStyle(
                                                   fontWeight: FontWeight.bold),
@@ -728,7 +731,10 @@ class _Active_Voucher extends State<Active_Voucher> {
                                           ),
                                           const Text(' - '),
                                           Text(
-                                            snapshot.data![index].endDate,
+                                            DateFormat('yyyy/MM/dd').format(
+                                                DateTime.parse(snapshot
+                                                    .data![index].endDate
+                                                    .toString())),
                                             style: GoogleFonts.openSans(
                                               textStyle: const TextStyle(
                                                   fontWeight: FontWeight.bold),
@@ -933,7 +939,7 @@ class _Ended_Voucher extends State<Ended_Voucher> {
                                             ),
                                             const Text(' - '),
                                             Text(
-                                              snapshot.data![index].startDate,
+                                              snapshot.data![index].endDate,
                                               style: GoogleFonts.openSans(
                                                 textStyle: const TextStyle(
                                                     fontWeight:

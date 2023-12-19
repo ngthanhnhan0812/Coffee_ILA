@@ -6,6 +6,7 @@ class Voucher {
   final String startDate;
   final String endDate;
   final int isActive;
+  // final int used;
 
   const Voucher({
     required this.id,
@@ -15,17 +16,20 @@ class Voucher {
     required this.startDate,
     required this.endDate,
     required this.isActive,
+    // required this.used
   });
 
   factory Voucher.fromJson(Map<String, dynamic> json) {
     return Voucher(
-        id: json['id'],
-        condition: json['condition'],
-        discount: json['discount'],
-        usercreate: json['usercreate'],
-        startDate: json['startDate'],
-        endDate: json['endDate'],
-        isActive: json['isActive']);
+      id: json['id'],
+      condition: json['condition'],
+      discount: json['discount'],
+      usercreate: json['usercreate'],
+      startDate: json['startDate'],
+      endDate: json['endDate'],
+      isActive: json['isActive'],
+      // used: json['used']
+    );
   }
 
   // Map<String, dynamic> toJson() {
