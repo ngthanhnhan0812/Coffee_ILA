@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:coffee/src/comments.dart';
-import 'package:comment_tree/comment_tree.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:readmore/readmore.dart';
@@ -35,7 +34,24 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
     super.dispose();
   }
 
-  final List<Comment> commentLi = [];
+  @override
+  void initState() {
+    super.initState();
+    // getData();
+  }
+
+  // getData() async {
+  //   List<commentBlog> cmtb = await fetchAllCommentFromAPI(widget.cmtB?.id);
+  //   for (int i = 0; i < cmtb.length; i++) {
+  //     var b = {};
+  //     b["idBlog"] = cmtb[i].idBlog;
+  //     b["userName"] = cmtb[i].userName;
+  //     b["userAvatar"] = cmtb[i].userAvatar;
+  //     b["comment"] = cmtb[i].comment;
+  //     itemB.add(b);
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -152,10 +168,10 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                   ),
                   Column(
                     children: <Widget>[
-                      for (int i = 0; i < 3; i++)
-                        Comments(commentList: commentLi),
+                      CommentsBlog(
+                        idBlog: widget.blog.id,
+                      )
                       // Comments(commentList: commentLi),
-                      // NewMessage()
                     ],
                   )
                 ],

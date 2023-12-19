@@ -628,13 +628,6 @@ class _NewVoucher extends State<NewVoucher> {
                   // _validateDateRange();
                   if (_formKey.currentState!.validate()) {
                     insertVoucherDialog();
-                    // showLoadingDialog(context, () {
-                    //   final snackBar = SnackBar(
-                    //       content: const Text('Add voucher successfully!'),
-                    //       action:
-                    //           SnackBarAction(label: 'Undo', onPressed: () {}));
-                    //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    // });
                   }
                 },
                 child: const Text('Confirm', textAlign: TextAlign.center),
@@ -677,6 +670,7 @@ class _NewVoucher extends State<NewVoucher> {
     vo['usercreate'] = 'ADMIN';
     vo['startDate'] = firstDate.text;
     vo['endDate'] = lastDate.text;
+    vo['used'] = 0;
 
     DateTime currentDate = DateTime.now();
     DateTime voucherStartDate = DateTime.parse(firstDate.text);
@@ -707,14 +701,13 @@ class _NewVoucher extends State<NewVoucher> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text(
-              'Insert Voucher',
+              'Failed Insert Voucher',
               style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
             ),
             content: const SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text('Failed'),
-                  Text('Voucher code available'),
+                  Text('Voucher code is duplicated!'),
                 ],
               ),
             ),
@@ -741,43 +734,50 @@ class _NewVoucher extends State<NewVoucher> {
               child: CircularProgressIndicator(),
             );
           });
-      await insertVoucher().whenComplete(
-        () {
-          return showDialog<void>(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  'Insert voucher ',
-                  style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
-                ),
-                content: const SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('Success'),
-                    ],
+      Future.delayed(const Duration(seconds: 2), () async {
+        await insertVoucher().whenComplete(
+          () {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text(
+                    'Insert voucher ',
+                    style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
                   ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text(
-                      'Approve',
-                      style: TextStyle(color: Colors.blue),
+                  content: const SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Success'),
+                      ],
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const UpComing_Voucher()));
-                    },
                   ),
-                ],
-              );
-            },
-          );
-        },
-      );
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text(
+                        'Approve',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Voucher_home(ind: 0)));
+                        setState(() {
+                          final snackBar = SnackBar(
+                              content: const Text('Add voucher successfully!'),
+                              action: SnackBarAction(
+                                  label: 'Undo', onPressed: () {}));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        });
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      });
     }
   }
 }

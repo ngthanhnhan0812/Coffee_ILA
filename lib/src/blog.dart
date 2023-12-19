@@ -286,7 +286,7 @@ class Blog_ApprovedState extends State<Blog_Approved> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           Blog_Approved_detail(
-                                            blog: snapshot.data![index],
+                                            blog: snapshot.data![index]
                                           )),
                                 );
                               },
