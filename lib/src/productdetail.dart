@@ -73,7 +73,7 @@ class _Productdetail extends State<Productdetail> {
         slivers: <Widget>[
           //2
           SliverAppBar(
-leading: IconButton(
+    leading: IconButton(
             onPressed: () {
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => Myproduct(initialPage: 0,)));
@@ -109,7 +109,7 @@ leading: IconButton(
                     i.toString(),
                    errorBuilder: (context, url, error) => Image.network("https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",fit: BoxFit.fitWidth,),
     
-                    fit: BoxFit.fill,
+                    fit: BoxFit.contain,
                   ),
                 ),
                 Positioned(
@@ -589,7 +589,7 @@ leading: IconButton(
                     i.toString(),
                    errorBuilder: (context, url, error) => Image.network("https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",fit: BoxFit.fitWidth,),
     
-                    fit: BoxFit.fill,
+                    fit: BoxFit.contain,
                   ),
                 ),
                 Positioned(

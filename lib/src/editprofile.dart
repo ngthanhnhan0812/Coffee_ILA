@@ -87,11 +87,11 @@ class _Editprofile extends State<Editprofile> {
                             ? Image.network(
                                 _image.toString(),
                                 errorBuilder: (context, url, error) => Image.network("https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",fit: BoxFit.fitWidth,),
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                               )
                             : Image(
                                 image: FileImage(img!),
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                               ),
                       ),
                       Positioned(
@@ -111,7 +111,7 @@ class _Editprofile extends State<Editprofile> {
                                         fit: BoxFit.cover)
                                     : DecorationImage(
                                         image: FileImage(avt!),
-                                        fit: BoxFit.fill)),
+                                        fit: BoxFit.contain)),
                           )),
                       Positioned(
                           bottom: 20,

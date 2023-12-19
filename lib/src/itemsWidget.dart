@@ -230,7 +230,7 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                                             7),
                                                            color:Color.fromARGB(255, 231, 231, 231),
                                                     image: DecorationImage(
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.contain,
                                                       image: NetworkImage(
                                                           snapshot.data![index]
                                                               .image,
@@ -756,7 +756,7 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
                                                             7),
                                                            color:Color.fromARGB(255, 231, 231, 231),
                                                     image: DecorationImage(
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.contain,
                                                       image: NetworkImage(
                                                           snapshot.data![index]
                                                               .image),
@@ -1154,7 +1154,7 @@ class _ItemsWidget2 extends State<ItemsWidget2> {
                                                             7),
                                                           color:Color.fromARGB(255, 231, 231, 231),
                                                     image: DecorationImage(
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.contain,
                                                       image: NetworkImage(
                                                           snapshot.data![index]
                                                               .image),
@@ -1535,7 +1535,7 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
                                                             7),
                                                             color:Color.fromARGB(255, 231, 231, 231),
                                                     image: DecorationImage(
-                                                      fit: BoxFit.fill,
+                                                      fit: BoxFit.contain,
                                                       image: NetworkImage(
                                                           snapshot.data![index]
                                                               .image),
