@@ -5,6 +5,7 @@ class Discount {
   final String dateEnd;
   final int idProduct;
   final int isStatus;
+  final int indC;
 
   const Discount({
     required this.id,
@@ -13,6 +14,7 @@ class Discount {
     required this.dateEnd,
     required this.idProduct,
     required this.isStatus,
+    required this.indC,
   });
 
   factory Discount.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class Discount {
         dateBegin: json['dateBegin'],
         dateEnd: json['dateEnd'],
         idProduct: json['idProduct'],
-        isStatus: json['isStatus']);
+        isStatus: json['isStatus'],
+        indC: json['indC']);
   }
 }

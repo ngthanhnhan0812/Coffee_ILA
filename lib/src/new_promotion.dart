@@ -338,11 +338,21 @@ class _NewPromotion extends State<NewPromotion> {
     });
   }
 
-  Future<http.Response> insertDiscount() async {
+  Future<http.Response> insertSingleDiscount(List<Map<String, dynamic>> listOfDiscounts) async {
+    final response = await http.post(
+      Uri.parse('$u/api/Discount/insertDis'),
+      headers: <String, String>{'Content-Type': 'application/json'},
+      body: jsonEncode(listOfDiscounts)
+    );
+    return response;
+  }
+
+  Future<void> insertDiscount() async {
     DateTime currentDate = DateTime.now();
 
+    List<Map<String, dynamic>> listOfDiscounts = [];
     for (var idP in containSelectedBo) {
-      var dict = {};
+      Map<String, dynamic> dict = {};
 
       dict['dateBegin'] = firstDate.text;
       dict['dateEnd'] = lastDate.text;
@@ -350,26 +360,25 @@ class _NewPromotion extends State<NewPromotion> {
       dict['idProduct'] = idP.id;
 
       DateTime discountStartDate = DateTime.parse(firstDate.text);
-
       if (currentDate.isBefore(discountStartDate)) {
         dict['isStatus'] = 0;
       } else if (currentDate.isAfter(discountStartDate)) {
         dict['isStatus'] = 1;
       }
-
-      final response = await http.post(
-        Uri.parse('$u/api/Discount/InsertDiscount'),
-        headers: <String, String>{'Content-Type': 'application/json'},
-        body: jsonEncode(dict),
-      );
-
-      if (response.statusCode == 200) {
-        // ignore: avoid_print
-        print(
-            'Add Discount successfully from The Rest API of new_promotion.dart');
-      }
+      listOfDiscounts.add(dict);
     }
-    return http.Response('Finished!', 200);
+
+    final response = await insertSingleDiscount(listOfDiscounts);
+    if (response.statusCode == 200) {
+      // ignore: avoid_print
+      print(
+          'Add Discount successfully for all products from the REST API of new_promotion.dart');
+    } else {
+      // ignore: avoid_print
+      print('Failed to add Discount.');
+      // ignore: avoid_print
+      print('Error details: ${response.body}');
+    }
   }
 
   Future<void> insertDiscountDialog() async {
