@@ -79,6 +79,19 @@ Future<http.Response> updateDiscountToEnd(
   return response;
 }
 
+List<Discount> groupDiscountsByIndC(List<Discount> discounts) {
+  Map<int, Discount> groupedMap = {};
+  for (var discount in discounts) {
+    if (!groupedMap.containsKey(discount.indC) ||
+        groupedMap[discount.indC]!.discount < discount.discount) {
+      groupedMap[discount.indC] = discount;
+    }
+  }
+
+  List<Discount> groupedDiscounts = groupedMap.values.toList();
+  return groupedDiscounts;
+}
+
 // ignore: must_be_immutable
 class Promotion extends StatefulWidget {
   int ind;
@@ -366,6 +379,47 @@ class UpComingState extends State<Upcoming> {
     }
   }
 
+  void showProductFromDiscount(List<Discount> products) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(child: Text('Product')),
+          content: SingleChildScrollView(
+            child: ListBody(
+                children: products.map((product) {
+              return ListTile(
+                leading: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(product.image.toString()),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                title: Text('ID: ${product.idProduct}'),
+                subtitle: Text('Discount: ${product.discount}'),
+              );
+            }).toList()),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(
+                'Close',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -375,6 +429,11 @@ class UpComingState extends State<Upcoming> {
             future: fetchUpComingDiscount(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                List<Discount> discounts = snapshot.data!;
+                List<Discount> groupedDiscounts =
+                    groupDiscountsByIndC(discounts);
+                // print(discounts);
+                // print(groupedDiscounts);
                 return Column(
                   children: [
                     const SizedBox(
@@ -383,17 +442,15 @@ class UpComingState extends State<Upcoming> {
                     ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data!.length,
+                        itemCount: groupedDiscounts.length,
                         itemBuilder: (context, int index) {
                           return InkWell(
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => Blog_Approved_detail(
-                              //             blog: snapshot.data![index],
-                              //           )),
-                              // );
+                              List<Discount> products = discounts
+                                  .where((d) =>
+                                      d.indC == groupedDiscounts[index].indC)
+                                  .toList();
+                              showProductFromDiscount(products);
                             },
                             child: Container(
                               color: Colors.white,
@@ -411,7 +468,8 @@ class UpComingState extends State<Upcoming> {
                                             image: const DecorationImage(
                                               fit: BoxFit.fill,
                                               image: NetworkImage(
-                                                  'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w'),
+                                                'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w',
+                                              ),
                                             )),
                                       ),
                                       const SizedBox(
@@ -427,9 +485,10 @@ class UpComingState extends State<Upcoming> {
                                             children: [
                                               Text(
                                                 DateFormat('yyyy/MM/dd').format(
-                                                    DateTime.parse(snapshot
-                                                        .data![index].dateBegin
-                                                        .toString())),
+                                                    DateTime.parse(
+                                                        groupedDiscounts[index]
+                                                            .dateBegin
+                                                            .toString())),
                                                 style: GoogleFonts.openSans(
                                                   textStyle: const TextStyle(
                                                       fontWeight:
@@ -439,9 +498,10 @@ class UpComingState extends State<Upcoming> {
                                               const Text(' - '),
                                               Text(
                                                 DateFormat('yyyy/MM/dd').format(
-                                                    DateTime.parse(snapshot
-                                                        .data![index].dateEnd
-                                                        .toString())),
+                                                    DateTime.parse(
+                                                        groupedDiscounts[index]
+                                                            .dateEnd
+                                                            .toString())),
                                                 style: GoogleFonts.openSans(
                                                   textStyle: const TextStyle(
                                                       fontWeight:
@@ -475,7 +535,7 @@ class UpComingState extends State<Upcoming> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Discount: ${snapshot.data![index].discount}',
+                                                    'Discount: ${groupedDiscounts[index].discount}',
                                                     // '',
                                                     style:
                                                         GoogleFonts.openSans(),

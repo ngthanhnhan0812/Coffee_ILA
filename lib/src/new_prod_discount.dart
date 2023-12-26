@@ -59,8 +59,9 @@ class New_Prod_Product extends StatefulWidget {
 class _New_Prod_Product extends State<New_Prod_Product> {
   FetchProduct productList = FetchProduct();
   // ignore: non_constant_identifier_names
-  List<int> _selected_Prod = [];
-  List<int> _selectAll = [];
+  final List<int> _selected_Prod = [];
+  bool isAllSelected = false;
+  List<Product>? productListData;
   int _counter = 0;
 
   final _formKey = GlobalKey<FormState>();
@@ -117,10 +118,35 @@ class _New_Prod_Product extends State<New_Prod_Product> {
           children: [
             Expanded(
               child: Row(children: [
-                Text('$_counter'),
-                const VerticalDivider(
-                    color: Color.fromARGB(255, 244, 243, 243)),
-                const Text('Selected')
+                Checkbox(
+                  value: isAllSelectedCheck(),
+                  onChanged: (value) {
+                    setState(() {
+                      isAllSelected = value!;
+                      if (isAllSelected) {
+                        _selected_Prod.clear();
+                        containSelectedBox.clear();
+                        for (var product in productListData!) {
+                          _selected_Prod.add(product.id);
+                          containSelectedBox.add(product);
+                        }
+                        _counter = _selected_Prod.length;
+                      } else {
+                        _selected_Prod.clear();
+                        containSelectedBox.clear();
+                        _counter = 0;
+                      }
+                    });
+                  },
+                ),
+                const Text(
+                  "Select All",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ]),
             ),
             const VerticalDivider(
@@ -145,159 +171,159 @@ class _New_Prod_Product extends State<New_Prod_Product> {
   }
 
   getProductSupplier() {
-    return SingleChildScrollView(
-      child: Form(
-        key: _formKey,
-        child: Container(
-            padding: const EdgeInsets.only(left: 8),
-            child: FutureBuilder<List<Product>>(
-                future: productList.fetch_prodProduct(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      children: [
-                        InkWell(
-                          onTap: () => setState(() {
-                            _selectAll.clear();
-                            for (var element in productList.data) {
-                              if (element["isActive"] == 1) {
-                                _selectAll.add(element);
-                                _selectAll = _selected_Prod;
-                                print(_selectAll);
-                              } else {
-                                _selectAll.remove(element);
-                                _selectAll = _selected_Prod;
-                                print(_selectAll);
-                              }
-                            }
-                          }),
-                          child: const Text(
-                            "Select All",
-                            style: TextStyle(
-                              fontSize: 22.0,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, int index) {
-                              return Column(children: [
-                                Row(children: [
-                                  Checkbox(
-                                      value: _selected_Prod
-                                          .contains(snapshot.data![index].id),
-                                      onChanged: (value) {
-                                        if (_selected_Prod.contains(
-                                            snapshot.data![index].id)) {
-                                          setState(() {
-                                            for (int i = 0;
-                                                i < containSelectedBox.length;
-                                                i++) {
-                                              if (containSelectedBox[i].id ==
-                                                  snapshot.data![index].id) {
-                                                containSelectedBox.remove(
-                                                    containSelectedBox[i]);
-                                                descCounter();
-                                              }
-                                            }
-                                            _selected_Prod.remove(
-                                                snapshot.data![index].id);
-                                          });
-                                        } else {
-                                          setState(() {
-                                            _selected_Prod
-                                                .add(snapshot.data![index].id);
-                                            containSelectedBox
-                                                .add(snapshot.data![index]);
-                                            incCounter();
-                                          });
-                                        }
-                                      }),
-                                  const VerticalDivider(width: 5),
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        width: 90,
-                                        height: 90,
-                                        child: Image.network(
-                                            snapshot.data![index].image),
-                                      ),
-                                    ],
-                                  ),
-                                  const VerticalDivider(width: 10),
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            // softWrap: true,
-                                            // maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            snapshot.data![index].title.length >
-                                                    20
-                                                ? '${snapshot.data![index].title.substring(0, 23)}...'
-                                                : snapshot.data![index].title,
-                                            style: GoogleFonts.openSans(
-                                              textStyle: const TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+    return Stack(
+      children: [
+        Positioned(
+            left: 0,
+            top: 10,
+            width: 360,
+            height: 22,
+            child: Center(
+                child: Text(
+              'Selected: $_counter',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ))),
+        Positioned.fill(
+            top: 35,
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Container(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: FutureBuilder<List<Product>>(
+                        future: productList.fetch_prodProduct(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            productListData = snapshot.data;
+                            return Column(
+                              children: [
+                                ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder: (context, int index) {
+                                      return Column(children: [
+                                        Row(children: [
+                                          Checkbox(
+                                              value: _selected_Prod.contains(
+                                                  snapshot.data![index].id),
+                                              onChanged: (value) {
+                                                if (_selected_Prod.contains(
+                                                    snapshot.data![index].id)) {
+                                                  setState(() {
+                                                    for (int i = 0;
+                                                        i <
+                                                            containSelectedBox
+                                                                .length;
+                                                        i++) {
+                                                      if (containSelectedBox[i]
+                                                              .id ==
+                                                          snapshot.data![index]
+                                                              .id) {
+                                                        containSelectedBox.remove(
+                                                            containSelectedBox[
+                                                                i]);
+                                                        descCounter();
+                                                      }
+                                                    }
+                                                    _selected_Prod.remove(
+                                                        snapshot
+                                                            .data![index].id);
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    _selected_Prod.add(snapshot
+                                                        .data![index].id);
+                                                    containSelectedBox.add(
+                                                        snapshot.data![index]);
+                                                    incCounter();
+                                                  });
+                                                }
+                                              }),
+                                          const VerticalDivider(width: 5),
+                                          Column(
+                                            children: [
+                                              SizedBox(
+                                                width: 90,
+                                                height: 90,
+                                                child: Image.network(
+                                                  snapshot.data![index].image,
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/images/default-photo.jpg');
+                                                  },
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      const Row(
-                                        children: [
-                                          Text(
-                                            ' ',
+                                          const VerticalDivider(width: 10),
+                                          Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    // softWrap: true,
+                                                    // maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    snapshot.data![index].title
+                                                                .length >
+                                                            20
+                                                        ? '${snapshot.data![index].title.substring(0, 23)}...'
+                                                        : snapshot
+                                                            .data![index].title,
+                                                    style: GoogleFonts.openSans(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const Row(
+                                                children: [
+                                                  Text(
+                                                    ' ',
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    '\$${snapshot.data![index].price}',
+                                                    style:
+                                                        GoogleFonts.openSans(),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            '\$${snapshot.data![index].price}',
-                                            style: GoogleFonts.openSans(),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                ])
-                              ]);
-                            })
-                      ],
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                })),
-      ),
+                                        ]),
+                                        const SizedBox(
+                                          height: 10,
+                                        )
+                                      ]);
+                                    }),
+                              ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text(snapshot.error.toString());
+                          }
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        })),
+              ),
+            ))
+      ],
     );
   }
 
-  // CheckboxListTile checkboxlisttile(
-  //     AsyncSnapshot<List<Product>> snapshot, int index) {
-  //   return CheckboxListTile(
-  //     controlAffinity: ListTileControlAffinity.leading,
-  //     contentPadding: EdgeInsets.zero,
-  //     dense: true,
-  //     secondary: ConstrainedBox(
-  //       constraints: const BoxConstraints(
-  //         minWidth: 60,
-  //         minHeight: 60,
-  //         maxWidth: 100,
-  //         maxHeight: 100,
-  //       ),
-  //       child: Image.network(snapshot.data![index].image, fit: BoxFit.cover),
-  //     ),
-  //     title: Text(snapshot.data![index].title, maxLines: 2),
-  //     subtitle: Text('\$${snapshot.data![index].price}'),
-  //     value: _selected_Prod.contains(productList.data[index].id),
-  //     onChanged: (bool? _ischecked) {},
-  //   );
-  // }
+  bool isAllSelectedCheck() {
+    if (productListData == null) return false;
+    return _selected_Prod.length == productListData!.length;
+  }
 }

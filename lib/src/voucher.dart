@@ -477,12 +477,12 @@ class _UpComing_Voucher extends State<UpComing_Voucher> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Discount: ${snapshot.data![index].discount}',
+                                                'Discount: \$${snapshot.data![index].discount}',
                                                 // '',
                                                 style: GoogleFonts.openSans(),
                                               ),
                                               Text(
-                                                'Condition: ${snapshot.data![index].condition}',
+                                                'Condition: \$${snapshot.data![index].condition}',
                                                 // '',
                                                 style: GoogleFonts.openSans(),
                                               ),
@@ -773,12 +773,12 @@ class _Active_Voucher extends State<Active_Voucher> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Discount: ${snapshot.data![index].discount}',
+                                                'Discount: \$${snapshot.data![index].discount}',
                                                 // '',
                                                 style: GoogleFonts.openSans(),
                                               ),
                                               Text(
-                                                'Condition: ${snapshot.data![index].condition}',
+                                                'Condition: \$${snapshot.data![index].condition}',
                                                 // '',
                                                 style: GoogleFonts.openSans(),
                                               ),
@@ -915,18 +915,26 @@ class _Ended_Voucher extends State<Ended_Voucher> {
                               children: [
                                 Row(
                                   children: [
-                                    Container(
-                                      width: 80,
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(7),
-                                          image: const DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(
-                                                'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/voucher-black-friday-related-filled-icon-vector-28114495%20(1).jpg?alt=media&token=e4033924-00dd-4ae2-95a0-3b3241913755&_gl=1*nd2x0w*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc4NTkuMzIuMC4w'),
-                                          )),
-                                    ),
+                                    Stack(
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(7),
+                                            image: const DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                  'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/voucher-black-friday-related-filled-icon-vector-28114495%20(1).jpg?alt=media&token=e4033924-00dd-4ae2-95a0-3b3241913755&_gl=1*nd2x0w*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc4NTkuMzIuMC4w'),
+                                            )),
+                                        
+                                      ),
+                                      Positioned(bottom: 0,
+                                        child: SizedBox(
+                                          width: 80,
+                                          child: Center(child: Text('Used: ${snapshot.data![index].used.toString()}',style: const TextStyle(fontWeight: FontWeight.bold)))))
+                                    ],
+                                  ),
                                     const SizedBox(
                                       width: 10,
                                     ),
@@ -939,22 +947,26 @@ class _Ended_Voucher extends State<Ended_Voucher> {
                                         Row(
                                           children: [
                                             Text(
-                                              snapshot.data![index].startDate,
-                                              style: GoogleFonts.openSans(
-                                                textStyle: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
+                                            DateFormat('yyyy/MM/dd').format(
+                                                DateTime.parse(snapshot
+                                                    .data![index].startDate
+                                                    .toString())),
+                                            style: GoogleFonts.openSans(
+                                              textStyle: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
                                             ),
+                                          ),
                                             const Text(' - '),
                                             Text(
-                                              snapshot.data![index].endDate,
-                                              style: GoogleFonts.openSans(
-                                                textStyle: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
+                                            DateFormat('yyyy/MM/dd').format(
+                                                DateTime.parse(snapshot
+                                                    .data![index].endDate
+                                                    .toString())),
+                                            style: GoogleFonts.openSans(
+                                              textStyle: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
                                             ),
+                                          ),
                                             const SizedBox(
                                               width: 20,
                                             ),
@@ -979,12 +991,12 @@ class _Ended_Voucher extends State<Ended_Voucher> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  'Discount: ${snapshot.data![index].discount}',
+                                                  'Discount: \$${snapshot.data![index].discount}',
                                                   // '',
                                                   style: GoogleFonts.openSans(),
                                                 ),
                                                 Text(
-                                                  'Condition: ${snapshot.data![index].condition}',
+                                                  'Condition: \$${snapshot.data![index].condition}',
                                                   // '',
                                                   style: GoogleFonts.openSans(),
                                                 ),
