@@ -515,7 +515,6 @@ class _NewVoucher extends State<NewVoucher> {
                     builder: (BuildContext context) {
                       return Container(
                         height: 200,
-                        // color: Colors.white,
                         margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
                         child: Column(
                           children: [

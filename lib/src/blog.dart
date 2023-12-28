@@ -286,7 +286,7 @@ class Blog_ApprovedState extends State<Blog_Approved> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           Blog_Approved_detail(
-                                            blog: snapshot.data![index]
+                                            blog: snapshot.data![index],
                                           )),
                                 );
                               },
@@ -317,6 +317,11 @@ class Blog_ApprovedState extends State<Blog_Approved> {
                                 ),
                                 child: Image.network(
                                   snapshot.data![index].image,
+                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/images/default-photo.jpg');
+                                                  },
                                   fit: BoxFit.cover,
                                 ),
                               ));
@@ -404,6 +409,11 @@ class BlogWaitingState extends State<Blog_Waiting> {
                                 ),
                                 child: Image.network(
                                   snapshot.data![index].image,
+                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/images/default-photo.jpg');
+                                                  },
                                   fit: BoxFit.cover,
                                 ),
                               ));
@@ -488,6 +498,11 @@ class Blog_Cancelled extends StatelessWidget {
                                 ),
                                 child: Image.network(
                                   snapshot.data![index].image,
+                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/images/default-photo.jpg');
+                                                  },
                                   fit: BoxFit.cover,
                                 ),
                               ));
@@ -567,6 +582,11 @@ class Blog_Hidden extends StatelessWidget {
                               ),
                               child: Image.network(
                                 snapshot.data![index].image,
+                                errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Image.asset(
+                                                        'assets/images/default-photo.jpg');
+                                                  },
                                 fit: BoxFit.cover,
                               ),
                             ));

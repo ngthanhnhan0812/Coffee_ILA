@@ -58,9 +58,10 @@ Future<List<Discount>> fetchHasDoneDiscount() async {
 }
 
 Future<http.Response> updateDiscountToEnd(
-    id, discount, dateBegin, idProduct) async {
+    id, discount, dateBegin, idProduct, indC) async {
   var dsc = {};
   dsc['id'] = id;
+  dsc['indC'] = indC;
   dsc['discount'] = discount;
   dsc['dateBegin'] = dateBegin;
   dsc['idProduct'] = idProduct;
@@ -77,6 +78,61 @@ Future<http.Response> updateDiscountToEnd(
     print('Error when updating data in promotion.dart');
   }
   return response;
+}
+
+bool isDelete = false;
+Future<http.Response> deleteDiscount(int id) async {
+  var discount = {};
+  discount['id'] = id;
+  final response =
+      await http.post(Uri.parse('$u/api/Discount/DeleteDiscountNew?id=$id'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(discount));
+  if (response.statusCode == 200) {
+    // ignore: avoid_print
+    print('Delete discount successfully!');
+  } else {
+    // ignore: avoid_print
+    print(
+        'Failed to delete Discount: ${response.statusCode}\t ${response.body}');
+  }
+  return response;
+}
+
+Future<void> deleteAllDiscounts() async {
+  List<Discount> discounts = await fetchUpComingDiscount();
+  List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
+  for (var groupedDiscount in groupedDiscounts) {
+    List<Discount> discountsToUpdate =
+        discounts.where((d) => d.indC == groupedDiscount.indC).toList();
+
+    for (var discount in discountsToUpdate) {
+      await deleteDiscount(
+        discount.id,
+      );
+    }
+  }
+}
+
+Future<void> updateAllDiscounts() async {
+  List<Discount> discounts = await fetchInProgressDiscount();
+  List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
+  for (var groupedDiscount in groupedDiscounts) {
+    List<Discount> discountsToUpdate =
+        discounts.where((d) => d.indC == groupedDiscount.indC).toList();
+
+    for (var discount in discountsToUpdate) {
+      await updateDiscountToEnd(
+        discount.id,
+        discount.discount,
+        discount.dateBegin,
+        discount.idProduct,
+        discount.indC,
+      );
+    }
+  }
 }
 
 List<Discount> groupDiscountsByIndC(List<Discount> discounts) {
@@ -130,8 +186,6 @@ class _Promotion extends State<Promotion> {
             "PROMOTION",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-
-          // style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)
           bottom: TabBar(
               indicator: const UnderlineTabIndicator(
                 borderSide: BorderSide(
@@ -276,29 +330,6 @@ class Upcoming extends StatefulWidget {
 }
 
 class UpComingState extends State<Upcoming> {
-  bool isDelete = false;
-  Future<http.Response> deleteDiscount(int id) async {
-    setState(() {});
-
-    var discount = {};
-    discount['id'] = id;
-    final response =
-        await http.post(Uri.parse('$u/api/Discount/DeleteDiscountNew?id=$id'),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(discount));
-    if (response.statusCode == 200) {
-      // ignore: avoid_print
-      print('Delete discount successfully!');
-    } else {
-      // ignore: avoid_print
-      print(
-          'Failed to delete Discount: ${response.statusCode}\t ${response.body}');
-    }
-    return response;
-  }
-
   Future<void> deleteDialog(int id) async {
     if (isDelete = false) {
       return showDialog<void>(
@@ -380,41 +411,166 @@ class UpComingState extends State<Upcoming> {
   }
 
   void showProductFromDiscount(List<Discount> products) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Center(child: Text('Product')),
-          content: SingleChildScrollView(
-            child: ListBody(
-                children: products.map((product) {
-              return ListTile(
-                leading: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(product.image.toString()),
-                      fit: BoxFit.cover,
-                    ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(15),
+          child: ListBody(
+              children: products.map((product) {
+            return ListTileTheme(
+              child: Row(
+                children: [
+                  Container(
+                      width: 80,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(product.image.toString())),
+                      )),
+                  const SizedBox(
+                    width: 15,
                   ),
-                ),
-                title: Text('ID: ${product.idProduct}'),
-                subtitle: Text('Discount: ${product.discount}'),
-              );
-            }).toList()),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(
-                'Close',
-                style: TextStyle(color: Colors.black),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            product.title.length > 20
+                                ? '${product.title.substring(0, 28)}...'
+                                : product.title,
+                            style: GoogleFonts.openSans(
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Price: ${product.price}',
+                                style: GoogleFonts.openSans(
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationThickness: 3),
+                              ),
+                              Text(
+                                'Discount: ${product.priceSale}',
+                                style: GoogleFonts.openSans(),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          Container(
+                            height: 40,
+                            width: 1,
+                            color: const Color.fromARGB(255, 167, 167, 167),
+                          ),
+                          const SizedBox(
+                            width: 40,
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await deleteDiscount(product.id);
+                              // deleteDialog(product.id);
+                              setState(() {
+                                products.remove(product);
+                              });
+                              // ignore: use_build_context_synchronously
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                },
+                              );
+                              try {
+                                await Future.delayed(
+                                    const Duration(seconds: 2));
+                              } finally {
+                                setState(() {
+                                  Navigator.pop(context);
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            title: const Text(
+                                              'Delete discount',
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 43, 32, 28)),
+                                            ),
+                                            content:
+                                                const SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                      'Delete discount successfully!'),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text(
+                                                  'Approve',
+                                                  style: TextStyle(
+                                                      color: Colors.blue),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                  showProductFromDiscount(
+                                                      products);
+                                                },
+                                              ),
+                                            ]);
+                                      });
+                                });
+                                setState(() {
+                                  isDelete = true;
+                                });
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 181, 57, 5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+
+                                  // <-- Radius
+                                ),
+                                minimumSize: const Size(70, 30)),
+                            child: const Text(
+                              'Delete',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 255, 255)),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+            );
+          }).toList()),
         );
       },
     );
@@ -561,9 +717,9 @@ class UpComingState extends State<Upcoming> {
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 Edit_Promotion(
-                                                                    discount: snapshot
-                                                                            .data![
-                                                                        index])));
+                                                                    discount:
+                                                                        groupedDiscounts[
+                                                                            index])));
                                                   },
                                                   icon: const Icon(
                                                     Icons.edit_note_outlined,
@@ -575,10 +731,13 @@ class UpComingState extends State<Upcoming> {
                                               ),
                                               ElevatedButton(
                                                 onPressed: () async {
-                                                  await deleteDiscount(
-                                                      snapshot.data![index].id);
+                                                  // await deleteDiscount(
+                                                  //     groupedDiscounts[index]
+                                                  //         .id);
+                                                  deleteAllDiscounts();
                                                   deleteDialog(
-                                                      snapshot.data![index].id);
+                                                      groupedDiscounts[index]
+                                                          .id);
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                     padding:
@@ -647,6 +806,31 @@ class InProgress extends StatefulWidget {
 }
 
 class InProgressState extends State<InProgress> {
+  bool isDelete = false;
+  Future<http.Response> deleteDiscount(int id) async {
+    setState(() {
+      // isDelete = true;
+    });
+
+    var discount = {};
+    discount['id'] = id;
+    final response =
+        await http.post(Uri.parse('$u/api/Discount/DeleteDiscountNew?id=$id'),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(discount));
+    if (response.statusCode == 200) {
+      // ignore: avoid_print
+      print('Delete discount successfully!');
+    } else {
+      // ignore: avoid_print
+      print(
+          'Failed to delete Discount: ${response.statusCode}\t ${response.body}');
+    }
+    return response;
+  }
+
   bool isEnd = false;
   // ignore: non_constant_identifier_names
   Future<void> EndDiscount_Dialog(int id) async {
@@ -729,202 +913,393 @@ class InProgressState extends State<InProgress> {
     }
   }
 
+  void showProductFromDiscount(List<Discount> products) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(15),
+          child: ListBody(
+              children: products.map((product) {
+            return ListTileTheme(
+              child: Row(
+                children: [
+                  Container(
+                      width: 80,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(product.image.toString())),
+                      )),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            product.title.length > 20
+                                ? '${product.title.substring(0, 28)}...'
+                                : product.title,
+                            style: GoogleFonts.openSans(
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Price: ${product.price}',
+                                style: GoogleFonts.openSans(
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationThickness: 3),
+                              ),
+                              Text(
+                                'Discount: ${product.priceSale}',
+                                style: GoogleFonts.openSans(),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          Container(
+                            height: 40,
+                            width: 1,
+                            color: const Color.fromARGB(255, 167, 167, 167),
+                          ),
+                          const SizedBox(
+                            width: 40,
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await deleteDiscount(product.id);
+                              // deleteDialog(product.id);
+                              setState(() {
+                                products.remove(product);
+                              });
+                              // ignore: use_build_context_synchronously
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                },
+                              );
+                              try {
+                                await Future.delayed(
+                                    const Duration(seconds: 2));
+                              } finally {
+                                setState(() {
+                                  Navigator.pop(context);
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            title: const Text(
+                                              'Delete discount',
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 43, 32, 28)),
+                                            ),
+                                            content:
+                                                const SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  Text(
+                                                      'Delete discount successfully!'),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text(
+                                                  'Approve',
+                                                  style: TextStyle(
+                                                      color: Colors.blue),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                  showProductFromDiscount(
+                                                      products);
+                                                },
+                                              ),
+                                            ]);
+                                      });
+                                });
+                                setState(() {
+                                  isDelete = true;
+                                });
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 181, 57, 5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+
+                                  // <-- Radius
+                                ),
+                                minimumSize: const Size(70, 30)),
+                            child: const Text(
+                              'Delete',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 255, 255)),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }).toList()),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(0),
-        child: FutureBuilder<List<Discount>>(
+          padding: const EdgeInsets.all(0),
+          child: FutureBuilder<List<Discount>>(
             future: fetchInProgressDiscount(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, int index) {
-                            return InkWell(
-                              onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) =>
-                                //           Blog_Approved_detail(
-                                //             blog: snapshot.data![index],
-                                //           )),
-                                // );
-                              },
-                              child: Container(
-                                color: Colors.white,
-                                margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 80,
-                                          height: 80,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(7),
-                                              image: const DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: NetworkImage(
-                                                    'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w'),
-                                              )),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  snapshot
-                                                      .data![index].dateBegin,
-                                                  style: GoogleFonts.openSans(
-                                                    textStyle: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                const Text(' - '),
-                                                Text(
-                                                  snapshot.data![index].dateEnd,
-                                                  style: GoogleFonts.openSans(
-                                                    textStyle: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Text('In progress',
-                                                    style: GoogleFonts.openSans(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .green))),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  'Discount: ${snapshot.data![index].discount}',
-                                                  // '',
-                                                  style: GoogleFonts.openSans(),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Container(
-                                                  height: 40,
-                                                  width: 1,
-                                                  color: const Color.fromARGB(
-                                                      255, 167, 167, 167),
-                                                ),
-                                                const SizedBox(
-                                                  width: 80,
-                                                ),
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    updateDiscountToEnd(
-                                                      snapshot.data![index].id,
-                                                      snapshot.data![index]
-                                                          .discount,
-                                                      snapshot.data![index]
-                                                          .dateBegin,
-                                                      snapshot.data![index]
-                                                          .idProduct,
-                                                    );
-                                                    EndDiscount_Dialog(snapshot
-                                                        .data![index].id);
-                                                  },
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(0),
-                                                          backgroundColor:
-                                                              const Color
-                                                                  .fromARGB(255,
-                                                                  181, 57, 5),
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-
-                                                            // <-- Radius
-                                                          ),
-                                                          minimumSize:
-                                                              const Size(
-                                                                  70, 30)),
-                                                  child: const Text(
-                                                    'End soon',
-                                                    style: TextStyle(
-                                                        color: Color.fromARGB(
-                                                            255,
-                                                            255,
-                                                            255,
-                                                            255)),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      height: 1,
-                                      width: 380,
-                                      color: Colors.grey.shade200,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      ],
+                List<Discount> discounts = snapshot.data!;
+                List<Discount> groupedDiscounts =
+                    groupDiscountsByIndC(discounts);
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: groupedDiscounts.length,
+                        itemBuilder: (context, int index) {
+                          return InkWell(
+                            onTap: () {
+                              List<Discount> products = discounts
+                                  .where((d) =>
+                                      d.indC == groupedDiscounts[index].indC)
+                                  .toList();
+                              showProductFromDiscount(products);
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(7),
+                                            image: const DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w',
+                                              ),
+                                            )),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat('yyyy/MM/dd').format(
+                                                    DateTime.parse(
+                                                        groupedDiscounts[index]
+                                                            .dateBegin
+                                                            .toString())),
+                                                style: GoogleFonts.openSans(
+                                                  textStyle: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              const Text(' - '),
+                                              Text(
+                                                DateFormat('yyyy/MM/dd').format(
+                                                    DateTime.parse(
+                                                        groupedDiscounts[index]
+                                                            .dateEnd
+                                                            .toString())),
+                                                style: GoogleFonts.openSans(
+                                                  textStyle: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 13,
+                                              ),
+                                              Text('In progress',
+                                                  style: GoogleFonts.openSans(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Colors
+                                                                  .green))),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Discount: ${groupedDiscounts[index].discount}',
+                                                    // '',
+                                                    style:
+                                                        GoogleFonts.openSans(),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                width: 6,
+                                              ),
+                                              Container(
+                                                height: 40,
+                                                width: 1,
+                                                color: const Color.fromARGB(
+                                                    255, 167, 167, 167),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                Edit_Promotion(
+                                                                    discount: snapshot
+                                                                            .data![
+                                                                        index])));
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.edit_note_outlined,
+                                                    color: Color.fromARGB(
+                                                        255, 148, 148, 148),
+                                                  )),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  updateAllDiscounts();
+
+                                                  // updateDiscountToEnd(
+                                                  //   snapshot.data![index].id,
+                                                  //   snapshot
+                                                  //       .data![index].discount,
+                                                  //   snapshot
+                                                  //       .data![index].dateBegin,
+                                                  //   snapshot
+                                                  //       .data![index].idProduct,
+                                                  //   snapshot.data![index].indC,
+                                                  // );
+                                                  EndDiscount_Dialog(
+                                                      snapshot.data![index].id);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                    padding:
+                                                        const EdgeInsets.all(0),
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 181, 57, 5),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+
+                                                      // <-- Radius
+                                                    ),
+                                                    minimumSize:
+                                                        const Size(70, 30)),
+                                                child: const Text(
+                                                  'End soon',
+                                                  style: TextStyle(
+                                                      color: Color.fromARGB(
+                                                          255, 255, 255, 255)),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    width: 380,
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                  ],
                 );
               } else if (snapshot.hasError) {
-                return const Text('snapshot.error.toString()');
+                return Text(snapshot.error.toString());
               }
               return const Center(child: CircularProgressIndicator());
-            }),
-      ),
+            },
+          )),
     );
   }
 }
@@ -941,236 +1316,232 @@ class Ended extends StatefulWidget {
 }
 
 class EndedState extends State<Ended> {
+  void showProductFromDiscount(List<Discount> products) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(15),
+          child: ListBody(
+              children: products.map((product) {
+            return ListTileTheme(
+              child: Row(
+                children: [
+                  Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(product.image.toString())),
+                      )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            overflow: TextOverflow.ellipsis,
+                            product.title.length > 20
+                                ? '${product.title.substring(0, 28)}...'
+                                : product.title,
+                            style: GoogleFonts.openSans(
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Price: ${product.price}',
+                                style: GoogleFonts.openSans(
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationThickness: 3),
+                              ),
+                              Text(
+                                'Discount: ${product.priceSale}',
+                                style: GoogleFonts.openSans(),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }).toList()),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(0),
-        child: FutureBuilder<List<Discount>>(
+          padding: const EdgeInsets.all(0),
+          child: FutureBuilder<List<Discount>>(
             future: fetchHasDoneDiscount(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Column(
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, int index) {
-                            return InkWell(onTap: () {
-                              //   if (widget.product.id ==
-                              //       snapshot.data![index].idProduct) {
-                              //     showModalBottomSheet(
-                              //         context: context,
-                              //         builder: (BuildContext context) {
-                              //           return Container(
-                              //             height: 200,
-                              //             // color: Colors.white,
-                              //             margin: const EdgeInsets.fromLTRB(
-                              //                 5, 5, 5, 0),
-                              //             child: Column(
-                              //               children: [
-                              //                 const SizedBox(height: 50),
-                              //                 Row(
-                              //                   children: [
-                              //                     Container(
-                              //                       width: 80,
-                              //                       height: 80,
-                              //                       decoration: BoxDecoration(
-                              //                           borderRadius:
-                              //                               BorderRadius
-                              //                                   .circular(7),
-                              //                           image: DecorationImage(
-                              //                             fit: BoxFit.fill,
-                              //                             image: NetworkImage(
-                              //                                 widget.product
-                              //                                     .image),
-                              //                           )),
-                              //                     ),
-                              //                     const SizedBox(
-                              //                       width: 10,
-                              //                     ),
-                              //                     Column(
-                              //                       mainAxisAlignment:
-                              //                           MainAxisAlignment.start,
-                              //                       crossAxisAlignment:
-                              //                           CrossAxisAlignment
-                              //                               .start,
-                              //                       children: [
-                              //                         Row(
-                              //                           children: [
-                              //                             Text(
-                              //                               widget
-                              //                                   .product.title,
-                              //                               style: GoogleFonts
-                              //                                   .openSans(
-                              //                                 textStyle: const TextStyle(
-                              //                                     fontWeight:
-                              //                                         FontWeight
-                              //                                             .bold),
-                              //                               ),
-                              //                             ),
-                              //                             const SizedBox(
-                              //                               width: 19,
-                              //                             ),
-                              //                           ],
-                              //                         ),
-                              //                         const SizedBox(
-                              //                           height: 10,
-                              //                         ),
-                              //                         Row(
-                              //                           children: [
-                              //                             Column(
-                              //                               mainAxisAlignment:
-                              //                                   MainAxisAlignment
-                              //                                       .start,
-                              //                               crossAxisAlignment:
-                              //                                   CrossAxisAlignment
-                              //                                       .start,
-                              //                               children: [
-                              //                                 Text(
-                              //                                   widget.product
-                              //                                       .price
-                              //                                       .toString(),
-                              //                                   // '',
-                              //                                   style: GoogleFonts
-                              //                                       .openSans(),
-                              //                                 ),
-                              //                               ],
-                              //                             ),
-                              //                           ],
-                              //                         )
-                              //                       ],
-                              //                     ),
-                              //                   ],
-                              //                 ),
-                              //                 const SizedBox(
-                              //                   height: 10,
-                              //                 ),
-                              //                 Container(
-                              //                   height: 1,
-                              //                   width: 380,
-                              //                   color: Colors.grey.shade200,
-                              //                 ),
-                              //                 const SizedBox(
-                              //                   height: 10,
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //           );
-                              //         });
-                              //   }
-                              // },
-                              // ignore: unnecessary_null_comparison
-                              Container(
-                                color: Colors.white,
-                                margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 80,
-                                          height: 80,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(7),
-                                              image: const DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: NetworkImage(
-                                                    'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w'),
-                                              )),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  snapshot
-                                                      .data![index].dateBegin,
-                                                  style: GoogleFonts.openSans(
-                                                    textStyle: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                const Text(' - '),
-                                                Text(
-                                                  snapshot.data![index].dateEnd,
-                                                  style: GoogleFonts.openSans(
-                                                    textStyle: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Text('Ended',
-                                                    style: GoogleFonts.openSans(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .grey))),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  'Discount: ${snapshot.data![index].discount}',
-                                                  // '',
-                                                  style: GoogleFonts.openSans(),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      height: 1,
-                                      width: 380,
-                                      color: Colors.grey.shade200,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            });
-                          },
-                        )
-                      ],
+                List<Discount> discounts = snapshot.data!;
+                List<Discount> groupedDiscounts =
+                    groupDiscountsByIndC(discounts);
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: groupedDiscounts.length,
+                        itemBuilder: (context, int index) {
+                          return InkWell(
+                            onTap: () {
+                              List<Discount> products = discounts
+                                  .where((d) =>
+                                      d.indC == groupedDiscounts[index].indC)
+                                  .toList();
+                              showProductFromDiscount(products);
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(7),
+                                            image: const DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w',
+                                              ),
+                                            )),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                DateFormat('yyyy/MM/dd').format(
+                                                    DateTime.parse(
+                                                        groupedDiscounts[index]
+                                                            .dateBegin
+                                                            .toString())),
+                                                style: GoogleFonts.openSans(
+                                                  textStyle: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              const Text(' - '),
+                                              Text(
+                                                DateFormat('yyyy/MM/dd').format(
+                                                    DateTime.parse(
+                                                        groupedDiscounts[index]
+                                                            .dateEnd
+                                                            .toString())),
+                                                style: GoogleFonts.openSans(
+                                                  textStyle: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 13,
+                                              ),
+                                              Text('Ended',
+                                                  style: GoogleFonts.openSans(
+                                                      textStyle:
+                                                          const TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Colors
+                                                                  .grey))),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Discount: ${groupedDiscounts[index].discount}',
+                                                    // '',
+                                                    style:
+                                                        GoogleFonts.openSans(),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    width: 380,
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                  ],
                 );
               } else if (snapshot.hasError) {
-                return const Text('snapshot.error.toString()');
+                return Text(snapshot.error.toString());
               }
               return const Center(child: CircularProgressIndicator());
-            }),
-      ),
+            },
+          )),
     );
   }
 }
