@@ -57,6 +57,19 @@ Future<List<Discount>> fetchHasDoneDiscount() async {
   }
 }
 
+List<Discount> groupDiscountsByIndC(List<Discount> discounts) {
+  Map<int, Discount> groupedMap = {};
+  for (var discount in discounts) {
+    if (!groupedMap.containsKey(discount.indC) ||
+        groupedMap[discount.indC]!.discount < discount.discount) {
+      groupedMap[discount.indC] = discount;
+    }
+  }
+
+  List<Discount> groupedDiscounts = groupedMap.values.toList();
+  return groupedDiscounts;
+}
+
 Future<http.Response> updateDiscountToEnd(
     id, discount, dateBegin, idProduct, indC) async {
   var dsc = {};
@@ -85,7 +98,7 @@ Future<http.Response> deleteDiscount(int id) async {
   var discount = {};
   discount['id'] = id;
   final response =
-      await http.post(Uri.parse('$u/api/Discount/DeleteDiscountNew?id=$id'),
+      await http.post(Uri.parse('$u/api/Discount/DeleteDiscountMobile?id=$id'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -133,19 +146,6 @@ Future<void> updateAllDiscounts() async {
       );
     }
   }
-}
-
-List<Discount> groupDiscountsByIndC(List<Discount> discounts) {
-  Map<int, Discount> groupedMap = {};
-  for (var discount in discounts) {
-    if (!groupedMap.containsKey(discount.indC) ||
-        groupedMap[discount.indC]!.discount < discount.discount) {
-      groupedMap[discount.indC] = discount;
-    }
-  }
-
-  List<Discount> groupedDiscounts = groupedMap.values.toList();
-  return groupedDiscounts;
 }
 
 // ignore: must_be_immutable
@@ -712,14 +712,10 @@ class UpComingState extends State<Upcoming> {
                                               ),
                                               IconButton(
                                                   onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                Edit_Promotion(
-                                                                    discount:
-                                                                        groupedDiscounts[
-                                                                            index])));
+                                                    List<Discount> similarDiscounts = discounts.where((d) => 
+                                                              d.indC == groupedDiscounts[index].indC).toList();
+                                                    Navigator.push(context,MaterialPageRoute(
+                                                              builder: (context) => Edit_Promotion(discount:similarDiscounts)));
                                                   },
                                                   icon: const Icon(
                                                     Icons.edit_note_outlined,
@@ -1213,14 +1209,14 @@ class InProgressState extends State<InProgress> {
                                               ),
                                               IconButton(
                                                   onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                Edit_Promotion(
-                                                                    discount: snapshot
-                                                                            .data![
-                                                                        index])));
+                                                    // Navigator.push(
+                                                    //     context,
+                                                    //     MaterialPageRoute(
+                                                    //         builder: (context) =>
+                                                    //             Edit_Promotion(
+                                                    //                 discount: snapshot
+                                                    //                         .data![
+                                                    //                     index])));
                                                   },
                                                   icon: const Icon(
                                                     Icons.edit_note_outlined,

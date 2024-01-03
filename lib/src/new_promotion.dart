@@ -20,7 +20,8 @@ class _NewPromotion extends State<NewPromotion> {
   TextEditingController firstDate = TextEditingController();
   TextEditingController lastDate = TextEditingController();
   final TextEditingController _discount = TextEditingController();
-  List<Product> containSelectedBo = [];
+  List<Product> containSelectedBox = [];
+  // List<Product> tempoSelectedProduct = [];
   // Future<Discount>? _futureDiscount;
   final _formKey = GlobalKey<FormState>();
   bool isSelectedProduct = false;
@@ -30,7 +31,7 @@ class _NewPromotion extends State<NewPromotion> {
     firstDate.dispose();
     lastDate.dispose();
     _discount.dispose();
-    containSelectedBo;
+    containSelectedBox;
   }
 
   @override
@@ -61,145 +62,167 @@ class _NewPromotion extends State<NewPromotion> {
             children: [
               const Divider(
                   thickness: 5, color: Color.fromARGB(255, 244, 243, 243)),
-              Row(
+              const Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       child: Text('Start time: '),
                     ),
                   ),
-                  const VerticalDivider(),
+                ],
+              ),
+              const VerticalDivider(),
+              Row(
+                children: [
                   Expanded(
                       flex: 1,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select start date';
-                          }
-                          try {
-                            DateTime.parse(value);
-                          } catch (e) {
-                            return 'Invalid date';
-                          }
-                          return null;
-                        },
-                        controller: firstDate,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.calendar_today),
-                        ),
-                        readOnly: true,
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate:
-                                  DateTime.now().add(const Duration(days: 1)),
-                              firstDate:
-                                  DateTime.now().add(const Duration(days: 1)),
-                              lastDate: DateTime(2099));
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Select start date';
+                            }
+                            try {
+                              DateTime.parse(value);
+                            } catch (e) {
+                              return 'Invalid date';
+                            }
+                            return null;
+                          },
+                          controller: firstDate,
+                          decoration: const InputDecoration(
+                            suffixIcon: Icon(Icons.calendar_today),
+                          ),
+                          readOnly: true,
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate:
+                                    DateTime.now().add(const Duration(days: 1)),
+                                firstDate:
+                                    DateTime.now().add(const Duration(days: 1)),
+                                lastDate: DateTime(2099));
 
-                          if (pickedDate != null) {
-                            String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                            setState(() {
-                              firstDate.text = formattedDate;
-                            });
-                          }
-                        },
+                            if (pickedDate != null) {
+                              String formattedDate =
+                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              setState(() {
+                                firstDate.text = formattedDate;
+                              });
+                            }
+                          },
+                        ),
                       )),
                 ],
               ),
               const Divider(
                   thickness: 5, color: Color.fromARGB(255, 244, 243, 243)),
-              Row(
+              const Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       child: Text('End time: '),
                     ),
                   ),
-                  const VerticalDivider(),
+                ],
+              ),
+              const VerticalDivider(),
+              Row(
+                children: [
                   Expanded(
                       flex: 1,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select end date';
-                          }
-                          try {
-                            DateTime.parse(value);
-                          } catch (e) {
-                            return 'Invalid date';
-                          }
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Select end date';
+                            }
+                            try {
+                              DateTime.parse(value);
+                            } catch (e) {
+                              return 'Invalid date';
+                            }
 
-                          DateTime startDate = DateTime.parse(firstDate.text);
-                          DateTime endDate = DateTime.parse(value);
+                            DateTime startDate = DateTime.parse(firstDate.text);
+                            DateTime endDate = DateTime.parse(value);
 
-                          if (endDate.isBefore(startDate) ||
-                              endDate.isAtSameMomentAs(startDate)) {
-                            return 'End date must be after the start date';
-                          }
-                          return null;
-                        },
-                        controller: lastDate,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.calendar_today),
+                            if (endDate.isBefore(startDate) ||
+                                endDate.isAtSameMomentAs(startDate)) {
+                              return 'End date must be after the start date';
+                            }
+                            return null;
+                          },
+                          controller: lastDate,
+                          decoration: const InputDecoration(
+                            suffixIcon: Icon(Icons.calendar_today),
+                          ),
+                          readOnly: true,
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate:
+                                    DateTime.now().add(const Duration(days: 2)),
+                                firstDate:
+                                    DateTime.now().add(const Duration(days: 2)),
+                                lastDate: DateTime(2099));
+
+                            if (pickedDate != null) {
+                              String formattedDate =
+                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              setState(() {
+                                lastDate.text = formattedDate;
+                              });
+                            }
+                          },
                         ),
-                        readOnly: true,
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate:
-                                  DateTime.now().add(const Duration(days: 2)),
-                              firstDate:
-                                  DateTime.now().add(const Duration(days: 2)),
-                              lastDate: DateTime(2099));
-
-                          if (pickedDate != null) {
-                            String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                            setState(() {
-                              lastDate.text = formattedDate;
-                            });
-                          }
-                        },
-                      ))
+                      )),
                 ],
               ),
               const Divider(thickness: 4, color: Colors.black),
-              Row(
+              const Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                       child: Padding(
                     padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                     child: Text('Discount: '),
                   )),
-                  const VerticalDivider(),
+                ],
+              ),
+              const VerticalDivider(),
+              Row(
+                children: [
                   Expanded(
                       flex: 1,
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter discount';
-                          } else if (value.length > 5) {
-                            return 'The limitation of discount is 99999';
-                          }
-                          return null;
-                        },
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(5),
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          FilteringTextInputFormatter.deny(RegExp('^0+'))
-                        ],
-                        maxLines: 1,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                            border: OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.attach_money, size: 16)),
-                        controller: _discount,
-                        keyboardType: TextInputType.number,
-                      ))
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter discount';
+                            } else if (value.length > 5) {
+                              return 'The limitation of discount is 99999';
+                            }
+                            return null;
+                          },
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(5),
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            FilteringTextInputFormatter.deny(RegExp('^0+'))
+                          ],
+                          maxLines: 1,
+                          decoration: const InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(10, 10, 10, 0),
+                              border: OutlineInputBorder(),
+                              suffixIcon: Icon(Icons.attach_money, size: 16)),
+                          controller: _discount,
+                          keyboardType: TextInputType.number,
+                        ),
+                      )),
                 ],
               ),
               const Divider(thickness: 4, color: Colors.black),
@@ -232,7 +255,7 @@ class _NewPromotion extends State<NewPromotion> {
               Expanded(
                   child: GridView.count(
                 crossAxisCount: 3,
-                children: List.generate(containSelectedBo.length, (index) {
+                children: List.generate(containSelectedBox.length, (index) {
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                     child: Column(
@@ -245,13 +268,13 @@ class _NewPromotion extends State<NewPromotion> {
                                   const BorderRadius.all(Radius.circular(10)),
                               image: DecorationImage(
                                   image: NetworkImage(
-                                      containSelectedBo[index].image),
+                                      containSelectedBox[index].image),
                                   fit: BoxFit.cover)),
                         ),
                         const SizedBox(
                           height: 5,
                         ),
-                        Text(containSelectedBo[index].title,
+                        Text(containSelectedBox[index].title,
                             // maxLines: 5,
                             // softWrap: true,
                             style: const TextStyle(
@@ -261,7 +284,7 @@ class _NewPromotion extends State<NewPromotion> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Text('\$${containSelectedBo[index].price.toString()}',
+                        Text('\$${containSelectedBox[index].price.toString()}',
                             style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -285,7 +308,7 @@ class _NewPromotion extends State<NewPromotion> {
             if (_formKey.currentState!.validate()) {
               // ignore: unnecessary_null_comparison
               isSelectedProduct =
-                  containSelectedBo.any((element) => element != null);
+                  containSelectedBox.any((element) => element != null);
               if (!isSelectedProduct) {
                 final snackBar = SnackBar(
                   content: const Text('Please select product'),
@@ -295,7 +318,7 @@ class _NewPromotion extends State<NewPromotion> {
                   ),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              } else if (containSelectedBo
+              } else if (containSelectedBox
                   .any((element) => element.price < discountValueInput!)) {
                 final snackBar = SnackBar(
                   content: const Text(
@@ -329,21 +352,32 @@ class _NewPromotion extends State<NewPromotion> {
   }
 
   _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const New_Prod_Product()),
-    );
+    final result = await Navigator.push(context, 
+      MaterialPageRoute(builder: (context) => const New_Prod_Product()));
     setState(() {
-      containSelectedBo = result;
+      if (result != null && result is List<Product>) {
+        // print('before: $containSelectedBox');
+        updateSelectedProducts(result);
+        // print('after: $containSelectedBox');
+      }
     });
   }
 
-  Future<http.Response> insertSingleDiscount(List<Map<String, dynamic>> listOfDiscounts) async {
-    final response = await http.post(
-      Uri.parse('$u/api/Discount/insertDis'),
-      headers: <String, String>{'Content-Type': 'application/json'},
-      body: jsonEncode(listOfDiscounts)
-    );
+  void updateSelectedProducts(List<Product> newProducts) {
+    List<Product> holdList = containSelectedBox
+        .where((product) =>
+            !newProducts.any((newProduct) => newProduct.id == product.id))
+        .toList();
+
+    holdList.addAll(newProducts);
+    containSelectedBox = holdList;
+  }
+
+  Future<http.Response> insertSingleDiscount(
+      List<Map<String, dynamic>> listOfDiscounts) async {
+    final response = await http.post(Uri.parse('$u/api/Discount/insertDis'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(listOfDiscounts));
     return response;
   }
 
@@ -351,7 +385,7 @@ class _NewPromotion extends State<NewPromotion> {
     DateTime currentDate = DateTime.now();
 
     List<Map<String, dynamic>> listOfDiscounts = [];
-    for (var idP in containSelectedBo) {
+    for (var idP in containSelectedBox) {
       Map<String, dynamic> dict = {};
 
       dict['dateBegin'] = firstDate.text;

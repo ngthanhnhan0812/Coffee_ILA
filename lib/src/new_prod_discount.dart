@@ -47,8 +47,10 @@ class FetchProduct {
 
 // ignore: camel_case_types
 class New_Prod_Product extends StatefulWidget {
+  // final List<Product> initialProducts;
   const New_Prod_Product({
     Key? key,
+    // required this.initialProducts,
   }) : super(key: key);
 
   @override
@@ -81,6 +83,12 @@ class _New_Prod_Product extends State<New_Prod_Product> {
 
   void setCounter() {
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // selectedProducts = widget.initialProducts;
   }
 
   @override
@@ -157,7 +165,7 @@ class _New_Prod_Product extends State<New_Prod_Product> {
                   backgroundColor: MaterialStatePropertyAll(Colors.blue)),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  Navigator.pop(context, containSelectedBox);
+                  Navigator.pop(context,  containSelectedBox);
                 }
               },
               child: Text('Submit',

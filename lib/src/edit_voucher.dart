@@ -79,14 +79,18 @@ class _EditVoucher extends State<EditVoucher> {
                   ),
                   const Divider(
                       thickness: 5, color: Color.fromARGB(255, 244, 243, 243)),
-                  Row(
+                  const Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                           child: Padding(
                         padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                         child: Text('Discount: '),
                       )),
-                      const VerticalDivider(),
+                    ],
+                  ),
+                  const VerticalDivider(),
+                  Row(
+                    children: [
                       Expanded(
                           flex: 1,
                           child: TextFormField(
@@ -138,19 +142,23 @@ class _EditVoucher extends State<EditVoucher> {
                             controller: _discount,
                             keyboardType: const TextInputType.numberWithOptions(
                                 decimal: true),
-                          ))
+                          )),
                     ],
                   ),
                   const Divider(
                       thickness: 5, color: Color.fromARGB(255, 244, 243, 243)),
-                  Row(
+                  const Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                           child: Padding(
                         padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                         child: Text('Minimum amount: '),
                       )),
-                      const VerticalDivider(),
+                    ],
+                  ),
+                  const VerticalDivider(),
+                  Row(
+                    children: [
                       Expanded(
                           child: TextFormField(
                         validator: (value) {
@@ -207,7 +215,7 @@ class _EditVoucher extends State<EditVoucher> {
                             suffixIcon: Icon(Icons.attach_money, size: 16)),
                         controller: _condition,
                         keyboardType: TextInputType.number,
-                      ))
+                      )),
                     ],
                   ),
                   const Divider(thickness: 5, color: Colors.black),
@@ -225,107 +233,123 @@ class _EditVoucher extends State<EditVoucher> {
                   ),
                   const Divider(
                       thickness: 5, color: Color.fromARGB(255, 244, 243, 243)),
-                  Row(
+                  const Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                           child: Text('Start time: '),
                         ),
                       ),
-                      const VerticalDivider(),
+                    ],
+                  ),
+                  const VerticalDivider(),
+                  Row(
+                    children: [
                       Expanded(
                           flex: 1,
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select start date';
-                              }
-                              try {
-                                DateTime.parse(value);
-                              } catch (e) {
-                                return 'Invalid date';
-                              }
-                              return null;
-                            },
-                            controller: firstDate,
-                            decoration: const InputDecoration(
-                              icon: Icon(Icons.calendar_today),
-                            ),
-                            readOnly: true,
-                            onTap: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.parse(firstDate.text),
-                                  firstDate: DateTime.now()
-                                      .add(const Duration(days: 1)),
-                                  lastDate: DateTime(2099));
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Select start date';
+                                }
+                                try {
+                                  DateTime.parse(value);
+                                } catch (e) {
+                                  return 'Invalid date';
+                                }
+                                return null;
+                              },
+                              controller: firstDate,
+                              decoration: const InputDecoration(
+                                suffixIcon: Icon(Icons.calendar_today),
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.parse(firstDate.text),
+                                    firstDate: DateTime.now()
+                                        .add(const Duration(days: 1)),
+                                    lastDate: DateTime(2099));
 
-                              if (pickedDate != null) {
-                                String formattedDate =
-                                    DateFormat('yyyy-MM-dd').format(pickedDate);
-                                setState(() {
-                                  firstDate.text = formattedDate;
-                                });
-                              }
-                            },
-                          ))
+                                if (pickedDate != null) {
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                  setState(() {
+                                    firstDate.text = formattedDate;
+                                  });
+                                }
+                              },
+                            ),
+                          )),
                     ],
                   ),
                   const Divider(
                       thickness: 5, color: Color.fromARGB(255, 244, 243, 243)),
-                  Row(
+                  const Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                           child: Text('End time: '),
                         ),
                       ),
-                      const VerticalDivider(),
+                    ],
+                  ),
+                  const VerticalDivider(),
+                  Row(
+                    children: [
                       Expanded(
                           flex: 1,
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select end date';
-                              }
-                              try {
-                                DateTime.parse(value);
-                              } catch (e) {
-                                return 'Invalid date';
-                              }
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Select end date';
+                                }
+                                try {
+                                  DateTime.parse(value);
+                                } catch (e) {
+                                  return 'Invalid date';
+                                }
 
-                              DateTime startDate =
-                                  DateTime.parse(firstDate.text);
-                              DateTime endDate = DateTime.parse(value);
+                                DateTime startDate =
+                                    DateTime.parse(firstDate.text);
+                                DateTime endDate = DateTime.parse(value);
 
-                              if (endDate.isBefore(startDate)) {
-                                return 'End date must be after the start date';
-                              }
-                              return null;
-                            },
-                            controller: lastDate,
-                            decoration: const InputDecoration(
-                              icon: Icon(Icons.calendar_today),
+                                if (endDate.isBefore(startDate)) {
+                                  return 'End date must be after the start date';
+                                }
+                                return null;
+                              },
+                              controller: lastDate,
+                              decoration: const InputDecoration(
+                                suffixIcon: Icon(Icons.calendar_today),
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.parse(lastDate.text),
+                                    firstDate: DateTime.now()
+                                        .add(const Duration(days: 2)),
+                                    lastDate: DateTime(2099));
+                                if (pickedDate != null) {
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                  setState(() {
+                                    lastDate.text = formattedDate;
+                                  });
+                                }
+                              },
                             ),
-                            readOnly: true,
-                            onTap: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.parse(lastDate.text),
-                                  firstDate: DateTime.now()
-                                      .add(const Duration(days: 2)),
-                                  lastDate: DateTime(2099));
-                              if (pickedDate != null) {
-                                String formattedDate =
-                                    DateFormat('yyyy-MM-dd').format(pickedDate);
-                                setState(() {
-                                  lastDate.text = formattedDate;
-                                });
-                              }
-                            },
-                          ))
+                          )),
                     ],
                   ),
                   const Divider(thickness: 5, color: Colors.black),
@@ -410,7 +434,11 @@ class _EditVoucher extends State<EditVoucher> {
   }
 
   Future<void> updateDialog(String id) async {
-    if (isUpdate = false) {
+    if (isUpdate = false ||
+        _discount.text.isEmpty ||
+        _condition.text.isEmpty ||
+        firstDate.text.isEmpty ||
+        lastDate.text.isEmpty) {
       return showDialog<void>(
         context: context,
         barrierDismissible: false,
