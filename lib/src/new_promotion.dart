@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
+import 'package:coffee/src/models/discount.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -252,48 +253,7 @@ class _NewPromotion extends State<NewPromotion> {
                 ),
               ),
               const Divider(color: Colors.white),
-              Expanded(
-                  child: GridView.count(
-                crossAxisCount: 3,
-                children: List.generate(containSelectedBox.length, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 54,
-                          width: 57,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              image: DecorationImage(
-                                  image: NetworkImage(
-                                      containSelectedBox[index].image),
-                                  fit: BoxFit.cover)),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(containSelectedBox[index].title,
-                            // maxLines: 5,
-                            // softWrap: true,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text('\$${containSelectedBox[index].price.toString()}',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ],
-                    ),
-                  );
-                }),
-              ))
+              displayProduct()
             ],
           ),
         ),
@@ -351,9 +311,52 @@ class _NewPromotion extends State<NewPromotion> {
     );
   }
 
+  Expanded displayProduct() {
+    return Expanded(
+        child: GridView.count(
+      crossAxisCount: 3,
+      children: List.generate(containSelectedBox.length, (index) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+          child: Column(
+            children: [
+              Container(
+                height: 54,
+                width: 57,
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    image: DecorationImage(
+                        image: NetworkImage(containSelectedBox[index].image),
+                        fit: BoxFit.cover)),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(containSelectedBox[index].title,
+                  // maxLines: 5,
+                  // softWrap: true,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  )),
+              const SizedBox(
+                height: 5,
+              ),
+              Text('\$${containSelectedBox[index].price.toString()}',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  )),
+            ],
+          ),
+        );
+      }),
+    ));
+  }
+
   _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.push(context, 
-      MaterialPageRoute(builder: (context) => const New_Prod_Product()));
+    final result = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const New_Prod_Product()));
     setState(() {
       if (result != null && result is List<Product>) {
         // print('before: $containSelectedBox');

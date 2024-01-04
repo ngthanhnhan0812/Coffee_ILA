@@ -257,15 +257,17 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
     );
   }
 
+  List<Discount> currentProducts = [];
   Expanded displayProduct() {
+    List<Discount> allProducts = [...widget.discount, ...currentProducts];
     return Expanded(
       child: SingleChildScrollView(
         child: GridView.count(
             crossAxisCount: 3,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            children: List.generate(widget.discount.length, (index) {
-              final discount = widget.discount[index];
+            children: List.generate(allProducts.length, (index) {
+              final discount = allProducts[index];
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                 child: Column(
@@ -309,14 +311,37 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
   _navigateAndDisplaySelection(BuildContext context) async {
     final result = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => const New_Prod_Product()));
-    if (result != null && result is List<Product>) {
-      updateDisplayedProducts(result.cast<Discount>());
+    print(result);
+    if (result != null && result is List) {
+      bool isListOfProducts = result.every((element) => element is Product);
+
+      if (isListOfProducts) {
+        List<Product> productList = result.cast<Product>();
+        updateDisplayedProducts(productList);
+      }
     }
   }
 
-  void updateDisplayedProducts(List<Discount> newProducts) {
+  void updateDisplayedProducts(List<Product> newProducts) {
+    List<Discount> convertedProducts = newProducts.map((product) {
+      return Discount(
+        id: product.id,
+        discount: 0,
+        dateBegin: firstDate.text,
+        dateEnd: lastDate.text,
+        idProduct: product.id,
+        isStatus: 0,
+        indC: 0,
+        image: product.image,
+        price: product.price,
+        priceSale: 0,
+        timeExpiered: 0,
+        title: product.title,
+      );
+    }).toList();
+
     setState(() {
-      widget.discount.addAll(newProducts);
+      widget.discount.addAll(convertedProducts);
     });
   }
 
