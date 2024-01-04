@@ -185,13 +185,15 @@ void initState(){
                                         ),
                                         onPressed: () {
                                      
-                                   Navigator.push(
+                                        Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       Orderdetail(
                                                           invoice: snapshot
                                                               .data![inde])));
+                                
+                                 
                                         }),
                                     Row(
                                       mainAxisAlignment:
@@ -1695,7 +1697,10 @@ Future<InvoiceSupplier> fetchOrderDetail(idinvoice) async {
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
-      return jsonResponse[0]["totalOrderAmount"];
+    var a= jsonResponse[0]["totalOrderAmount"];
+
+       return a;
+    
     } else {
       throw Exception('Unexpected error occured!');
     }

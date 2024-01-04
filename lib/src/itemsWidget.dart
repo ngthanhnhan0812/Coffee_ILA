@@ -21,13 +21,14 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
   @override
   void initState() {
     group1Value = 0;
-    fetchCategory();
+    fetchCategoryFilter(1);
     fetchProduct(1);
+     fetchCountisActive(1);
     super.initState();
   }
+
   @override
-  void dispose(){
-    
+  void dispose() {
     fetchProduct(1);
     super.dispose();
   }
@@ -48,11 +49,13 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                   fontWeight: FontWeight.bold),
             ),
             FutureBuilder(
-              future:fil? fetchCountisActive(1):quantityProductFilter(1, group1Value),
+              future: fil
+                  ? fetchCountisActive(1)
+                  : quantityProductFilter(1, group1Value),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(
-              snapshot.data.toString(),
+                    snapshot.data.toString(),
                     style: TextStyle(
                         color: Color.fromARGB(255, 181, 57, 5),
                         fontSize: 15,
@@ -121,7 +124,7 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                       Container(
                                         height: 390,
                                         child: FutureBuilder(
-                                            future: fetchCategory(),
+                                            future: fetchCategoryFilter(1),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
                                                 return ListView.builder(
@@ -225,21 +228,18 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                               child: Container(
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            7),
-                                                           color:Color.fromARGB(255, 231, 231, 231),
-                                                    image: DecorationImage(
-                                                      fit: BoxFit.contain,
-                                                      image: NetworkImage(
-                                                          snapshot.data![index]
-                                                              .image,
-                                                              
-                                                              ),
-                                                              
+                                                  borderRadius:
+                                                      BorderRadius.circular(7),
+                                                  color: Color.fromARGB(
+                                                      255, 231, 231, 231),
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.contain,
+                                                    image: NetworkImage(
+                                                      snapshot
+                                                          .data![index].image,
                                                     ),
-                                                    
-                                                    ),
+                                                  ),
+                                                ),
                                                 width: 100,
                                                 height: 100,
                                               ),
@@ -313,7 +313,7 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                                           size: 16,
                                                           color: Colors.black,
                                                         ),
-                                                       FutureBuilder(
+                                                        FutureBuilder(
                                                             future:
                                                                 fetchCountWatchList(
                                                                     snapshot
@@ -322,8 +322,15 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                                                         .id),
                                                             builder: (context,
                                                                 snapshot) {
-                                                             if(snapshot.data != null){
-                                                return Text(snapshot.data.toString());}else{return Container();}
+                                                              if (snapshot
+                                                                      .data !=
+                                                                  null) {
+                                                                return Text(snapshot
+                                                                    .data
+                                                                    .toString());
+                                                              } else {
+                                                                return Container();
+                                                              }
                                                             }),
                                                         SizedBox(
                                                           width: 20,
@@ -341,8 +348,15 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                                                         .id),
                                                             builder: (context,
                                                                 snapshot) {
-                                                             if(snapshot.data != null){
-                                                return Text(snapshot.data.toString());}else{return Container();}
+                                                              if (snapshot
+                                                                      .data !=
+                                                                  null) {
+                                                                return Text(snapshot
+                                                                    .data
+                                                                    .toString());
+                                                              } else {
+                                                                return Container();
+                                                              }
                                                             })
                                                       ],
                                                     ),
@@ -422,19 +436,18 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                                             icon: Icon(
                                                               Icons.hide_source,
                                                               size: 25,
-                                                              color:
-                                                                 Color.fromARGB(
-                                                                  255,
-                                                                  181,
-                                                                  57,
-                                                                  5),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      181,
+                                                                      57,
+                                                                      5),
                                                             ),
                                                             onPressed: () {
                                                               hiddenp(snapshot
                                                                   .data![index]
                                                                   .id);
                                                             }),
-                                                       
                                                       ],
                                                     ),
                                                   ],
@@ -549,15 +562,18 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
   @override
   void initState() {
     group1Value = 0;
+    fetchCategoryFilter(0);
+     fetchCountisActive(0);
     fetchProduct(0);
     super.initState();
   }
-@override
-  void dispose(){
-   
+
+  @override
+  void dispose() {
     fetchProduct(0);
     super.dispose();
   }
+
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -574,7 +590,9 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
                   fontWeight: FontWeight.bold),
             ),
             FutureBuilder(
-              future:fil? fetchCountisActive(0):quantityProductFilter(0, group1Value),
+              future: fil
+                  ? fetchCountisActive(0)
+                  : quantityProductFilter(0, group1Value),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(
@@ -647,7 +665,7 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
                                       Container(
                                         height: 390,
                                         child: FutureBuilder(
-                                            future: fetchCategory(),
+                                            future: fetchCategoryFilter(0),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
                                                 return ListView.builder(
@@ -754,7 +772,8 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             7),
-                                                           color:Color.fromARGB(255, 231, 231, 231),
+                                                    color: Color.fromARGB(
+                                                        255, 231, 231, 231),
                                                     image: DecorationImage(
                                                       fit: BoxFit.contain,
                                                       image: NetworkImage(
@@ -817,12 +836,12 @@ class _ItemsWidget0 extends State<ItemsWidget0> {
                                                         IconButton(
                                                             icon: Icon(
                                                               Icons.edit_note,
-                                                              color:
-                                                                  Color.fromARGB(
-                                                                  255,
-                                                                  181,
-                                                                  57,
-                                                                  5),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      181,
+                                                                      57,
+                                                                      5),
                                                               size: 25,
                                                             ),
                                                             onPressed: () {
@@ -948,14 +967,17 @@ class _ItemsWidget2 extends State<ItemsWidget2> {
   void initState() {
     group1Value = 0;
     fetchProduct(2);
+    fetchCategoryFilter(2);
+     fetchCountisActive(2);
     super.initState();
   }
-@override
-  void dispose(){
- 
+
+  @override
+  void dispose() {
     fetchProduct(2);
     super.dispose();
   }
+
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -972,7 +994,9 @@ class _ItemsWidget2 extends State<ItemsWidget2> {
                   fontWeight: FontWeight.bold),
             ),
             FutureBuilder(
-              future:fil? fetchCountisActive(2):quantityProductFilter(2, group1Value),
+              future: fil
+                  ? fetchCountisActive(2)
+                  : quantityProductFilter(2, group1Value),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(
@@ -1045,7 +1069,7 @@ class _ItemsWidget2 extends State<ItemsWidget2> {
                                       Container(
                                         height: 390,
                                         child: FutureBuilder(
-                                            future: fetchCategory(),
+                                            future: fetchCategoryFilter(2),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
                                                 return ListView.builder(
@@ -1152,7 +1176,8 @@ class _ItemsWidget2 extends State<ItemsWidget2> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             7),
-                                                          color:Color.fromARGB(255, 231, 231, 231),
+                                                    color: Color.fromARGB(
+                                                        255, 231, 231, 231),
                                                     image: DecorationImage(
                                                       fit: BoxFit.contain,
                                                       image: NetworkImage(
@@ -1326,17 +1351,20 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
   @override
   void initState() {
     group1Value = 0;
+    fetchCategoryFilter(3);
+     fetchCountisActive(3);
     setState(() {
-       fetchProduct(3);
+      fetchProduct(3);
     });
     super.initState();
   }
-@override
-  void dispose(){
-   
+
+  @override
+  void dispose() {
     fetchProduct(3);
     super.dispose();
   }
+
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -1353,7 +1381,9 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
                   fontWeight: FontWeight.bold),
             ),
             FutureBuilder(
-              future:fil? fetchCountisActive(3):quantityProductFilter(3, group1Value),
+              future: fil
+                  ? fetchCountisActive(3)
+                  : quantityProductFilter(3, group1Value),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Text(
@@ -1426,7 +1456,7 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
                                       Container(
                                         height: 390,
                                         child: FutureBuilder(
-                                            future: fetchCategory(),
+                                            future: fetchCategoryFilter(3),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
                                                 return ListView.builder(
@@ -1533,7 +1563,8 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             7),
-                                                            color:Color.fromARGB(255, 231, 231, 231),
+                                                    color: Color.fromARGB(
+                                                        255, 231, 231, 231),
                                                     image: DecorationImage(
                                                       fit: BoxFit.contain,
                                                       image: NetworkImage(
@@ -1619,8 +1650,15 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
                                                                         .id),
                                                             builder: (context,
                                                                 snapshot) {
-                                                             if(snapshot.data != null){
-                                                return Text(snapshot.data.toString());}else{return Container();}
+                                                              if (snapshot
+                                                                      .data !=
+                                                                  null) {
+                                                                return Text(snapshot
+                                                                    .data
+                                                                    .toString());
+                                                              } else {
+                                                                return Container();
+                                                              }
                                                             }),
                                                         SizedBox(
                                                           width: 20,
@@ -1811,9 +1849,10 @@ fetchCountWatchList(idP) async {
     throw Exception('Unexpected error occured!');
   }
 }
+
 fetchCountSold(idP) async {
-  final response = await http.get(
-      Uri.parse('$u/api/Supplier/Products//Supplier_SoldProd?idSupplier=2&idProduct=$idP '));
+  final response = await http.get(Uri.parse(
+      '$u/api/Supplier/Products//Supplier_SoldProd?idSupplier=2&idProduct=$idP '));
 
   if (response.statusCode == 200) {
     return response.body;
@@ -1821,6 +1860,7 @@ fetchCountSold(idP) async {
     throw Exception('Unexpected error occured!');
   }
 }
+
 fetchCountisActive(active) async {
   final response = await http.get(Uri.parse(
       '$u/api/Supplier/Products/CountFilterActive?idSupplier=2&isActive=$active '));
@@ -1857,15 +1897,46 @@ Future<http.Response> hideProduct(int idprod) async {
   return response;
 }
 
-quantityProductFilter(isActi, idcate)async{
- final response = await http.get(Uri.parse(
+quantityProductFilter(isActi, idcate) async {
+  final response = await http.get(Uri.parse(
       '$u/api/Supplier/Products/FilterCateMobile?idSupplier=2&idcate=$idcate&isActive=$isActi'));
-num a;
+  num a;
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
-    a= jsonResponse.length;
+    a = jsonResponse.length;
     return a;
   } else {
     throw Exception('Unexpected error occured!');
   }
+}
+
+Future<List<Category>> fetchCategoryFilter(isActi) async {
+  List idCate = [];
+  List catefilter = [];
+  List endcate = [];
+  final response = await http.get(Uri.parse(
+      '$u/api/Supplier/Products/FilterActive?isActive=$isActi&idSupplier=2'));
+  if (response.statusCode == 200) {
+    List jsonResponse = await json.decode(response.body);
+
+    for (int i = 0; i < jsonResponse.length; i++) {
+      idCate.add(jsonResponse[i]["idcate"]);
+    }
+  }
+  final responsee = await http.get(Uri.parse('$u/api/Category/cateNew'));
+  if (responsee.statusCode == 200) {
+    List jsonResponsee = await json.decode(responsee.body);
+    for (int j = 0; j < jsonResponsee.length; j++) {
+      catefilter.add(jsonResponsee[j]["id"]);
+    }
+    catefilter.removeWhere((item) => !idCate.contains(item));
+    for (int k = 0; k < catefilter.length; k++) {
+      for (int e = 0; e < jsonResponsee.length; e++) {
+        if (catefilter[k] == jsonResponsee[e]['id']) {
+          endcate.add(jsonResponsee[e]);
+        }
+      }
+    }
+  }
+  return endcate.map((data) => Category.fromJson(data)).toList();
 }

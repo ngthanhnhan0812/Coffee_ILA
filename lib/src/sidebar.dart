@@ -86,7 +86,7 @@ class Sidebar extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Color.fromARGB(255, 181, 57, 5),
                         image: DecorationImage(
-                            fit: BoxFit.contain,
+                            fit: BoxFit.fitWidth,
                             image:
                                 NetworkImage(snapshot.data!.image.toString())),
                       ),

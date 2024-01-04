@@ -17,7 +17,6 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-
 class Editprofile extends StatefulWidget {
   final Supplier profile;
   Editprofile({Key? key, required this.profile}) : super(key: key);
@@ -40,7 +39,7 @@ class _Editprofile extends State<Editprofile> {
   final TextEditingController _username = TextEditingController();
   String? password;
   var idcate;
-
+  String checkTitle = "true";
   final picker = ImagePicker();
   @override
   void initState() {
@@ -86,12 +85,16 @@ class _Editprofile extends State<Editprofile> {
                         child: img == null
                             ? Image.network(
                                 _image.toString(),
-                                errorBuilder: (context, url, error) => Image.network("https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",fit: BoxFit.fitWidth,),
-                                fit: BoxFit.contain,
+                                errorBuilder: (context, url, error) =>
+                                    Image.network(
+                                  "https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",
+                                  fit: BoxFit.fitWidth,
+                                ),
+                                fit: BoxFit.fitWidth,
                               )
                             : Image(
                                 image: FileImage(img!),
-                                fit: BoxFit.contain,
+                                fit: BoxFit.fitWidth,
                               ),
                       ),
                       Positioned(
@@ -106,12 +109,11 @@ class _Editprofile extends State<Editprofile> {
                                 color: Color.fromARGB(255, 181, 57, 5),
                                 image: avt == null
                                     ? DecorationImage(
-                                      
                                         image: NetworkImage(_avatar!),
-                                        fit: BoxFit.cover)
+                                        fit: BoxFit.fitWidth)
                                     : DecorationImage(
                                         image: FileImage(avt!),
-                                        fit: BoxFit.contain)),
+                                        fit: BoxFit.fitWidth)),
                           )),
                       Positioned(
                           bottom: 20,
@@ -318,8 +320,7 @@ class _Editprofile extends State<Editprofile> {
                         ),
                         TextFormField(
                           decoration: InputDecoration(border: InputBorder.none),
-                           inputFormatters: [
-                            
+                          inputFormatters: [
                             FilteringTextInputFormatter.deny(RegExp(r'^ +'))
                           ],
                           controller: _title,
@@ -385,44 +386,6 @@ class _Editprofile extends State<Editprofile> {
                           width: 380,
                           color: Color.fromARGB(255, 236, 235, 235),
                         ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.email_outlined,
-                              size: 13,
-                              color: Color.fromARGB(255, 155, 155, 155),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              'Email',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 155, 155, 155),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(border: InputBorder.none),
-                          controller: _email,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter an email address';
-                            }
-                            if (value.length >= 50) {
-                              return 'Email address is too long';
-                            }
-                            if (!RegExp(
-                                    r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
-                                .hasMatch(value)) {
-                              return 'Enter a valid email address';
-                            }
-
-                            return null; // Return null if the validation is successful
-                          },
-                        ),
                         Container(
                           height: 1,
                           width: 380,
@@ -449,8 +412,7 @@ class _Editprofile extends State<Editprofile> {
                         ),
                         TextFormField(
                           decoration: InputDecoration(border: InputBorder.none),
-                       inputFormatters: [
-                            
+                          inputFormatters: [
                             FilteringTextInputFormatter.deny(RegExp(r'^ +'))
                           ],
                           keyboardType: TextInputType.streetAddress,
@@ -459,7 +421,8 @@ class _Editprofile extends State<Editprofile> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter an address';
                             }
-                            if (!RegExp( r"^[a-zA-Z0-9_.,!-;][a-zA-Z0-9\s_.,!-;]+$")
+                            if (!RegExp(
+                                    r"^[a-zA-Z0-9_.,!-;][a-zA-Z0-9\s_.,!-;]+$")
                                 .hasMatch(value)) {
                               return 'Address is not accepted';
                             }
@@ -474,9 +437,6 @@ class _Editprofile extends State<Editprofile> {
                           width: 380,
                           color: Color.fromARGB(255, 236, 235, 235),
                         ),
-                        
-                       
-                       
                         SizedBox(
                           height: 30,
                         ),
@@ -512,6 +472,21 @@ class _Editprofile extends State<Editprofile> {
         ),
       ),
     );
+  }
+
+  checkTitleSup(
+    String titleSup,
+  ) async {
+    final response = await http.get(
+      Uri.parse('$u/api/Supplier/checkExistsOrganizationName?title=$titleSup'),
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        checkTitle = response.body;
+      });
+    } else {
+      throw Exception('Unable to fetch!');
+    }
   }
 
   chooseAvatar() async {
@@ -588,12 +563,10 @@ class _Editprofile extends State<Editprofile> {
     });
   }
 
+  final regex = RegExp(r'\s+');
   Future<void> _showMyDialog() async {
-    if (_title.text == '' ||
-        _phone.text == '' ||
-        _email == '' ||
-        _address.text == '' ||
-        _username.text == '') {
+    await checkTitleSup(_title.text.trim().replaceAll(regex, ' '));
+    if (checkTitle == "true") {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -607,6 +580,7 @@ class _Editprofile extends State<Editprofile> {
               child: ListBody(
                 children: <Widget>[
                   Text('Failed'),
+                  Text("Title already exists")
                 ],
               ),
             ),
@@ -625,48 +599,85 @@ class _Editprofile extends State<Editprofile> {
         },
       );
     } else {
-      showDialog(
+      if (_title.text == '' ||
+          _phone.text == '' ||
+          _email == '' ||
+          _address.text == '' ||
+          _username.text == '') {
+        return showDialog<void>(
           context: context,
-          builder: (context) {
-            return Center(
-              child: CircularProgressIndicator(),
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(
+                'Edit Profile',
+                style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+              ),
+              content: const SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Failed'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             );
-          });
-      await getImageUrl().whenComplete(
-        () {
-          return showDialog<void>(
+          },
+        );
+      } else {
+        showDialog(
             context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  'Edit Profile',
-                  style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
-                ),
-                content: const SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('Success'),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text(
-                      'Approve',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => Dashboard()));
-                    },
-                  ),
-                ],
+            builder: (context) {
+              return Center(
+                child: CircularProgressIndicator(),
               );
-            },
-          );
-        },
-      );
+            });
+        await getImageUrl().whenComplete(
+          () {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text(
+                    'Edit Profile',
+                    style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+                  ),
+                  content: const SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Success'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text(
+                        'Approve',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Dashboard()));
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        );
+      }
     }
   }
 
@@ -677,9 +688,9 @@ class _Editprofile extends State<Editprofile> {
 
     if (img != null) {
       final r = FirebaseStorage.instance.refFromURL(_image.toString());
-       r.delete();
+      r.delete();
       final imag = File(img!.path);
-       final String imagePath = 'images/${DateTime.now()}.jpg';
+      final String imagePath = 'images/${DateTime.now()}.jpg';
       final ref =
           FirebaseStorage.instance.ref().child(path.basename(imagePath));
       uploadTask = ref.putFile(imag, metadata);
@@ -693,7 +704,7 @@ class _Editprofile extends State<Editprofile> {
       final ra = FirebaseStorage.instance.refFromURL(_avatar.toString());
       ra.delete();
       final avtar = File(avt!.path);
-       final String imagePath = 'images/${DateTime.now()}.jpg';
+      final String imagePath = 'images/${DateTime.now()}.jpg';
       final ref =
           FirebaseStorage.instance.ref().child(path.basename(imagePath));
       uploadTask = ref.putFile(avtar, metadata);
@@ -703,7 +714,7 @@ class _Editprofile extends State<Editprofile> {
         _avatar = urldownload;
       });
     }
-     final regex = RegExp(r'\s+');
+
     print('get imageurl success');
     var dt = new Map();
     dt['id'] = widget.profile.id;
