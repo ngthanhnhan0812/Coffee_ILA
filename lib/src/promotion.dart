@@ -114,19 +114,25 @@ Future<http.Response> deleteDiscount(int id) async {
   return response;
 }
 
-Future<void> deleteAllDiscounts() async {
+Future<void> deleteAllDiscounts(int indC) async {
   List<Discount> discounts = await fetchUpComingDiscount();
-  List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
-  for (var groupedDiscount in groupedDiscounts) {
-    List<Discount> discountsToUpdate =
-        discounts.where((d) => d.indC == groupedDiscount.indC).toList();
-
-    for (var discount in discountsToUpdate) {
-      await deleteDiscount(
-        discount.id,
-      );
-    }
+  // List<int> idDelete = discounts.where((d) => d.indC == indC).map((d) => d.id).toList();
+  List<int> idDelete =
+      discounts.where((d) => d.indC == indC).map((d) => d.id).toList();
+  for (var id in idDelete) {
+    await deleteDiscount(id);
   }
+  // List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
+  // for (var groupedDiscount in groupedDiscounts) {
+  //   List<Discount> discountsToUpdate =
+  //       discounts.where((d) => d.indC == groupedDiscount.indC).toList();
+
+  //   for (var discount in discountsToUpdate) {
+  //     await deleteDiscount(
+  //       discount.id,
+  //     );
+  //   }
+  // }
 }
 
 Future<void> updateAllDiscounts() async {
@@ -425,6 +431,7 @@ class UpComingState extends State<Upcoming> {
                       width: 80,
                       height: 90,
                       decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(7),
                         image: DecorationImage(
                             fit: BoxFit.fill,
@@ -712,10 +719,22 @@ class UpComingState extends State<Upcoming> {
                                               ),
                                               IconButton(
                                                   onPressed: () {
-                                                    List<Discount> similarDiscounts = discounts.where((d) => 
-                                                              d.indC == groupedDiscounts[index].indC).toList();
-                                                    Navigator.push(context,MaterialPageRoute(
-                                                              builder: (context) => Edit_Promotion(discount:similarDiscounts)));
+                                                    List<Discount>
+                                                        similarDiscounts =
+                                                        discounts
+                                                            .where((d) =>
+                                                                d.indC ==
+                                                                groupedDiscounts[
+                                                                        index]
+                                                                    .indC)
+                                                            .toList();
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                Edit_Promotion(
+                                                                    discount:
+                                                                        similarDiscounts)));
                                                   },
                                                   icon: const Icon(
                                                     Icons.edit_note_outlined,
@@ -730,7 +749,10 @@ class UpComingState extends State<Upcoming> {
                                                   // await deleteDiscount(
                                                   //     groupedDiscounts[index]
                                                   //         .id);
-                                                  deleteAllDiscounts();
+                                                  int indC =
+                                                      groupedDiscounts[index]
+                                                          .indC;
+                                                  deleteAllDiscounts(indC);
                                                   deleteDialog(
                                                       groupedDiscounts[index]
                                                           .id);

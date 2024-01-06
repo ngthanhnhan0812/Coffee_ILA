@@ -9,6 +9,13 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:coffee/src/models/discount.dart';
 
+class UpdateData {
+  Discount discount;
+  List<Product> products;
+
+  UpdateData({required this.discount, required this.products});
+}
+
 // ignore: camel_case_types, must_be_immutable
 class Edit_Promotion extends StatefulWidget {
   List<Discount> discount;
@@ -65,6 +72,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
         ),
       ),
       body: Form(
+        key: _formKey,
         child: Container(
           color: Colors.white,
           child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -193,6 +201,12 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 5),
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Discount must be filled with a number lower than price';
+                          }
+                          return null;
+                        },
                         maxLines: 1,
                         decoration: const InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -242,12 +256,34 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
           style: const ButtonStyle(
               backgroundColor: MaterialStatePropertyAll(Colors.blue)),
           onPressed: () {
-            // if (_formKey.currentState!.validate()) {
-            // List<int> indCs =
-            //     widget.discount.map((discount) => discount.indC).toList();
-            updateAllDiscounts(widget.discount);
-            updateDialog();
-            // }
+            double? discountValueInput = double.tryParse(_discount.text);
+            if (_formKey.currentState!.validate()) {
+              if (widget.discount
+                  .any((element) => element.price < discountValueInput!)) {
+                final snackBar = SnackBar(
+                  content: const Text(
+                      'Price of product must be higher than discount'),
+                  action: SnackBarAction(
+                    label: 'Dismiss',
+                    onPressed: () {},
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              } else if (discountValueInput == null) {
+                final snackBar = SnackBar(
+                  content: const Text(
+                      'Discount must be filled with a number lower than price'),
+                  action: SnackBarAction(
+                    label: 'Dismiss',
+                    onPressed: () {},
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              } else {
+                updateAllDiscounts(widget.discount);
+                updateDialog();
+              }
+            }
           },
           child: Text('Save',
               style: GoogleFonts.openSans(color: Colors.white),
@@ -257,17 +293,16 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
     );
   }
 
-  List<Discount> currentProducts = [];
+  // List<Discount> currentProducts = [];
   Expanded displayProduct() {
-    List<Discount> allProducts = [...widget.discount, ...currentProducts];
     return Expanded(
       child: SingleChildScrollView(
         child: GridView.count(
             crossAxisCount: 3,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            children: List.generate(allProducts.length, (index) {
-              final discount = allProducts[index];
+            children: List.generate(widget.discount.length, (index) {
+              final discount = widget.discount[index];
               return Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                 child: Column(
@@ -276,6 +311,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                       height: 54,
                       width: 57,
                       decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
                         image: DecorationImage(
@@ -339,18 +375,31 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
         title: product.title,
       );
     }).toList();
-
+    tempNewProducts.addAll(newProducts);
     setState(() {
       widget.discount.addAll(convertedProducts);
+      displayedProducts = widget.discount.cast<Product>();
+
+      // initializeProductCount();
     });
   }
 
-  Future<http.Response> updateDiscountSingle(Discount discount) async {
+  // void initializeProductCount() {
+  //   initialProductCount = displayedProducts.length;
+  // }
+
+  List<Product> tempNewProducts = [];
+  void addNewProductToTemp(Product newProduct) {
+    tempNewProducts.add(newProduct);
+  }
+
+  Future<http.Response> updateSingleDiscount(UpdateData updateData) async {
     var dis = {};
-    dis['id'] = discount.id;
+    dis['indC'] = updateData.discount.indC;
     dis['dateBegin'] = firstDate.text;
     dis['dateEnd'] = lastDate.text;
     dis['discount'] = _discount.text;
+    dis['isStatus'] = updateData.discount.isStatus;
 
     final response = await http.post(
       Uri.parse('$u/api/Discount/UpdateDiscount'),
@@ -364,7 +413,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
       print(
           'Update Discount successfully from The Rest API of edit_promotion.dart');
     } else {
-      print('Error when updating data in edit_voucher.dart');
+      print('Error when updating data in edit_promotion.dart');
     }
 
     return response;
@@ -372,7 +421,56 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
 
   Future<void> updateAllDiscounts(List<Discount> discounts) async {
     for (var discount in discounts) {
-      await updateDiscountSingle(discount);
+      await updateSingleDiscount(
+          UpdateData(discount: discount, products: tempNewProducts));
+      if (tempNewProducts.isNotEmpty) {
+        int indC = discounts.first.indC;
+        await insertAllDiscount(indC, tempNewProducts);
+        tempNewProducts.clear();
+      }
+    }
+
+    // List<Product> combinedProducts = [...displayedProducts, ...tempNewProducts];
+  }
+
+  Future<http.Response> insertSingleDiscount(
+      List<Map<String, dynamic>> listOfDiscounts) async {
+    final response = await http.post(Uri.parse('$u/api/Discount/insertDis'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(listOfDiscounts));
+    return response;
+  }
+
+  Future<void> insertAllDiscount(int indC, List<Product> newProducts) async {
+    DateTime currentDate = DateTime.now();
+
+    List<Map<String, dynamic>> listOfDiscounts = [];
+    // List<Discount> discountList = displayedProducts.cast<Discount>();
+    for (var abc in newProducts) {
+      print(newProducts.length);
+      Map<String, dynamic> dict = {};
+
+      dict['dateBegin'] = firstDate.text;
+      dict['dateEnd'] = lastDate.text;
+      dict['discount'] = _discount.text;
+      dict['idProduct'] = abc.id;
+      dict['indC'] = indC;
+      DateTime discountStartDate = DateTime.parse(firstDate.text);
+      if (currentDate.isBefore(discountStartDate)) {
+        dict['isStatus'] = 0;
+      } else if (currentDate.isAfter(discountStartDate)) {
+        dict['isStatus'] = 1;
+      }
+      listOfDiscounts.add(dict);
+    }
+
+    final response = await insertSingleDiscount(listOfDiscounts);
+    if (response.statusCode == 200) {
+      print(
+          'Add Discount successfully for all products from the REST API of new_promotion.dart');
+    } else {
+      print('Failed to add Discount.');
+      print('Error details: ${response.body}');
     }
   }
 

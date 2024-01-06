@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
-import 'package:coffee/src/models/discount.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
