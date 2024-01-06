@@ -218,9 +218,10 @@ void initState(){
                                             future:
                                                 totalOrderAmount(snapshot.data![inde].id),
                                             builder: (context, snapshot) {
-                                              return Text(
+                                             if(snapshot.hasData){
+                                               return Text(
                                                 "Total:" +
-                                                    snapshot.data.toString(),
+                                                    snapshot.data!.toString(),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         255, 45, 45, 45),
@@ -228,6 +229,10 @@ void initState(){
                                                     fontWeight:
                                                         FontWeight.bold),
                                               );
+                                             } else if(snapshot.hasError){
+                                              return SizedBox();
+                                             }
+                                             return SizedBox();
                                             }),
                                       ],
                                     ),
@@ -1699,8 +1704,8 @@ Future<InvoiceSupplier> fetchOrderDetail(idinvoice) async {
       List jsonResponse = await json.decode(response.body);
     var a= jsonResponse[0]["totalOrderAmount"];
 
-       return a;
-    
+        
+    return a;
     } else {
       throw Exception('Unexpected error occured!');
     }

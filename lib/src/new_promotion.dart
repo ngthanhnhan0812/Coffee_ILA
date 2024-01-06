@@ -420,15 +420,20 @@ class _NewPromotion extends State<NewPromotion> {
   Future<void> insertDiscountDialog() async {
     {
       showDialog(
+        
           context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
+          builder: (BuildContext context) {
+            return  Container(
+              height: double.infinity,
+              width: double.infinity,
+              color: Colors.white,
+              child:const Center(child: CircularProgressIndicator(),),
             );
           });
       Future.delayed(const Duration(seconds: 2), () async {
         await insertDiscount().whenComplete(
           () {
+            
             return showDialog<void>(
               context: context,
               barrierDismissible: false,

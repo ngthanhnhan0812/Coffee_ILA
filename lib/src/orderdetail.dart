@@ -5,6 +5,7 @@ import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
 import 'package:coffee/src/order.dart';
 import 'package:coffee/src/orderWidget.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
@@ -60,12 +61,11 @@ class _Orderdetail extends State<Orderdetail> {
   bool su = false;
   bool flagRefund = true;
   bool flagSuccess = true;
- 
-  
-  double? priceRefund = 0;
+
   @override
   void initState() {
     super.initState();
+
     waiting();
     getData();
   }
@@ -340,7 +340,7 @@ class _Orderdetail extends State<Orderdetail> {
                                                                     "   Unit price:" +
                                                                         unitprice(
                                                                             snaphot.data![index].price,
-                                                                            snaphot.data![index].amount),
+                                                                            snaphot.data![index].amount).toStringAsFixed(2),
                                                                     style: TextStyle(
                                                                         color: Color.fromARGB(
                                                                             255,
@@ -551,7 +551,7 @@ class _Orderdetail extends State<Orderdetail> {
                                                                     Text(
                                                                         "Unit price: " +
                                                                             unitprice(snaphot.data![index].price, snaphot.data![index].amount)
-                                                                                .toString(),
+                                                                                .toStringAsFixed(2),
                                                                         style: TextStyle(
                                                                             color: Color.fromARGB(
                                                                                 255,
@@ -585,7 +585,7 @@ class _Orderdetail extends State<Orderdetail> {
                                                                                 color: Color.fromARGB(255, 181, 57, 5),
                                                                               ),
                                                                               Text(
-                                                                                snaphot.data![index].price.toString(),
+                                                                                snaphot.data![index].price!.toStringAsFixed(2),
                                                                                 style: TextStyle(color: Color.fromARGB(255, 181, 57, 5), fontWeight: FontWeight.w500),
                                                                               )
                                                                             ],
@@ -632,71 +632,66 @@ class _Orderdetail extends State<Orderdetail> {
                             child: Container(
                               child: Column(
                                 children: [
-                                 Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              20, 0, 20, 0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text("Subtotal"),
-                                              FutureBuilder(
-                                                  future: totalOrderAmount(widget.invoice.id),
-                                                  builder: (
-                                                          context,
-                                                       snapshot) {
-                                                   if (snapshot.data != null) {
-                                                                return Text(snapshot
-                                                                    .data
-                                                                    .toString());
-                                                              } else if(snapshot.hasError) {
-                                                                return SizedBox();
-                                                              }
-                                                     return SizedBox();         
-                                                  })
-                                            ],
-                                          ),
-                                        ),
                                   Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              20, 0, 20, 0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text("Voucher Supplier"),
-                                              FutureBuilder(
-                                                  future: fetchVoucherPrice(
-                                                      widget.invoice.voucherS),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot.data
-                                                            .toString() ==
-                                                        "0") {
-                                                     if (snapshot.data != null) {
-                                                                return Text(snapshot
-                                                                    .data
-                                                                    .toString());
-                                                              } else if(snapshot.hasError) {
-                                                                return SizedBox();
-                                                              }
-                                                    } else {
-                                                       if (snapshot.data != null) {
-                                                               return Text("- " +
-                                                          snapshot.data
-                                                              .toString());
-                                                              } else  {
-                                                                return SizedBox();
-                                                              }
-                                                    }
-                                                    return SizedBox();
-                                                  })
-                                            ],
-                                          ),
-                                        ),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Subtotal"),
+                                        FutureBuilder(
+                                            future: totalOrderAmount(
+                                                widget.invoice.id),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                return Text(
+                                                    snapshot.data!.toString());
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Voucher Supplier"),
+                                        FutureBuilder(
+                                            future: fetchVoucherPrice(
+                                                widget.invoice.voucherS),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data.toString() ==
+                                                  "0") {
+                                                if (snapshot.data != null) {
+                                                  return Text(
+                                                      snapshot.data.toString());
+                                                } else if (snapshot.hasError) {
+                                                  return SizedBox();
+                                                }
+                                              } else {
+                                                if (snapshot.data != null) {
+                                                  return Text("- " +
+                                                      snapshot.data.toString());
+                                                } else {
+                                                  return SizedBox();
+                                                }
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -708,11 +703,8 @@ class _Orderdetail extends State<Orderdetail> {
                                       children: [
                                         Text("Discount for Admin(10%)"),
                                         Text(discountForILA() == 0
-                                            ? discountForILA()
-                                                .toStringAsFixed(2)
-                                            : "- " +
-                                                discountForILA()
-                                                    .toStringAsFixed(2))
+                                            ? discountForILA().toString()
+                                            : "- " + discountForILA().toString())
                                       ],
                                     ),
                                   ),
@@ -750,16 +742,17 @@ class _Orderdetail extends State<Orderdetail> {
                                         FutureBuilder(
                                             future: totalOfSupplier(),
                                             builder: (context, snapshot) {
-                                               if (snapshot.data != null) {
-                                                               return Text(
-                                                snapshot.data.toString(),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              );
-                                                              } else {
-                                                                return SizedBox();
-                                                              }
+                                              if (snapshot.data != null) {
+                                                return Text(
+                                                  snapshot.data.toString(),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return CircularProgressIndicator();
                                             })
                                       ],
                                     ),
@@ -908,7 +901,7 @@ class _Orderdetail extends State<Orderdetail> {
                 ),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Order(initialPage: 1)));
+                      builder: (context) => Order(initialPage: 0)));
                 },
               ),
             ],
@@ -917,6 +910,7 @@ class _Orderdetail extends State<Orderdetail> {
       );
     } else {
       if (flagRefund == true && flagSuccess == true) {
+        if (!context.mounted) return;
         return showDialog<void>(
             context: context,
             barrierDismissible: false, // user must tap button!
@@ -929,7 +923,7 @@ class _Orderdetail extends State<Orderdetail> {
                 content: const SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
-                      Text('If you approve, you have to refund to ILA '),
+                      Text('If you approve, you must  refund to ILA '),
                     ],
                   ),
                 ),
@@ -950,6 +944,7 @@ class _Orderdetail extends State<Orderdetail> {
                     ),
                     onPressed: () {
                       supConfirmRefund();
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderWidget1()));
                     },
                   ),
                 ],
@@ -1035,8 +1030,6 @@ class _Orderdetail extends State<Orderdetail> {
     return sup;
   }
 
-  
-
   Future<String> fetchVoucherPrice(lsvoucher) async {
     final response = await http.get(Uri.parse(
         '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=2&lsVoucherS=$lsvoucher '));
@@ -1076,7 +1069,6 @@ class _Orderdetail extends State<Orderdetail> {
       var a = NewInvoice.fromJson(jsonDecode(response.body));
       flagRefund = a.flagRefund!;
       flagSuccess = a.flagSuccess!;
-      priceRefund = a.priceRefund;
 
       return NewInvoice.fromJson(jsonDecode(response.body));
     } else {
