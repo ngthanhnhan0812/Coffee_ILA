@@ -105,6 +105,7 @@ class _login extends State<login> {
   bool flaglogin = false;
   String verifyPassword = "";
   bool cir = false;
+   late BuildContext dialogContext;
   @override
   void initState() {
     super.initState();
@@ -113,6 +114,7 @@ class _login extends State<login> {
 
   @override
   Widget build(BuildContext context) {
+      dialogContext = context;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -268,12 +270,14 @@ class _login extends State<login> {
       ),
     );
   }
-
+ 
   checkLogin() async {
-  
-    showDialog(
+
+   showDialog(
+    
   context: context,
   builder: (context) {
+    
     return const Center(child:  CircularProgressIndicator());
   }
     );
@@ -307,6 +311,7 @@ class _login extends State<login> {
                     style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
+                    
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Dashboard()));
                   },
@@ -339,11 +344,8 @@ class _login extends State<login> {
                     style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
-                    setState(() {
-                      cir = true;
-                      
-                    });
-                    Navigator.pop(context);
+                   
+                    Navigator.pop(dialogContext);
                   },
                 ),
               ],
@@ -360,7 +362,7 @@ class _login extends State<login> {
     String pass = _password.text;
     SupInf a;
     final response = await http.get(
-        Uri.parse('$u/api/Supplier/SupLogin?userName=$acc&userPassword=$pass'));
+        Uri.parse('$u/api/Supplier/supplierLogin?userName=$acc&userPassword=$pass'));
     if (response.statusCode == 200) {
       a = SupInf.fromJson(jsonDecode(response.body));
       flaglogin = a.flagLogin!;
