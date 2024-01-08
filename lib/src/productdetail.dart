@@ -516,7 +516,6 @@ class _Productdetail extends State<Productdetail> {
     print(response.body);
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
-      print(jsonResponse);
       return jsonResponse.map((data) => Reviews.fromJson(data)).toList();
     } else {
       throw Exception('Unexpected error occured!');

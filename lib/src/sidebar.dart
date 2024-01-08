@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:coffee/bundle.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Supplier {
   int? id;
@@ -196,8 +197,9 @@ class Sidebar extends StatelessWidget {
 }
 
 Future<Supplier> fetchProfileSupplier() async {
+ var ids =await getIdSup();
   final response =
-      await http.get(Uri.parse('$u/api/Supplier/ProfileSupplier?id=2 '));
+      await http.get(Uri.parse('$u/api/Supplier/ProfileSupplier?id=$ids '));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);

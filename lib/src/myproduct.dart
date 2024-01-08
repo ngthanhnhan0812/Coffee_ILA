@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
 import 'package:coffee/src/itemsWidget.dart';
-import 'package:coffee/src/marketing.dart';
-import 'package:flutter/cupertino.dart';
+
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:http/http.dart' as http;
 
 class Product {
@@ -54,7 +54,7 @@ class Product {
 class Myproduct extends StatefulWidget {
   int initialPage; //this sets the innitial page to open when main class opens. ie if a main class is opened from secondpage and innitialPage is set to 1 then it will show the second page as the tabpages start from 0.
 
-  Myproduct({required this.initialPage});
+  Myproduct({super.key, required this.initialPage});
   @override
   State<Myproduct> createState() => _Myproduct();
 }
@@ -66,6 +66,7 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
   bool press1 = true;
   bool press2 = true;
   bool press3 = true;
+  // ignore: prefer_typing_uninitialized_variables
   var isActi;
   List id = [];
   @override
@@ -96,13 +97,13 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
           leading: IconButton(
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => Dashboard()));
+                    .push(MaterialPageRoute(builder: (context) => const Dashboard()));
               },
-              icon: Icon(Icons.arrow_back_ios)),
+              icon: const Icon(Icons.arrow_back_ios)),
           automaticallyImplyLeading: false,
           toolbarHeight: 70,
           centerTitle: true,
-          title: Text(
+          title: const Text(
             "MY PRODUCTS",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),

@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:readmore/readmore.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;    
 
 class NewInvoice {
   int? idInvoice;
@@ -871,6 +871,7 @@ class _Orderdetail extends State<Orderdetail> {
             ],
           );
         });
+ 
   }
 
   Future<void> confirm() async {
@@ -910,7 +911,7 @@ class _Orderdetail extends State<Orderdetail> {
       );
     } else {
       if (flagRefund == true && flagSuccess == true) {
-        if (!context.mounted) return;
+      
         return showDialog<void>(
             context: context,
             barrierDismissible: false, // user must tap button!

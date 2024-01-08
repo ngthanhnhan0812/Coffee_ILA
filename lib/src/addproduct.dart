@@ -1012,6 +1012,7 @@ class _Addproduct extends State<Addproduct> {
           );
         },
       );
+    
     }
   }
 
