@@ -6,7 +6,7 @@ import 'package:coffee/src/itemsWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
+
 import 'package:readmore/readmore.dart';
 
 class Reviews {

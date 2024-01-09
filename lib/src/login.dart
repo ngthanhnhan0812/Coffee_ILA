@@ -105,7 +105,8 @@ class _login extends State<login> {
   bool flaglogin = false;
   String verifyPassword = "";
   bool cir = false;
-   late BuildContext dialogContext;
+  late BuildContext dialogContext;
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -114,181 +115,183 @@ class _login extends State<login> {
 
   @override
   Widget build(BuildContext context) {
-      dialogContext = context;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment(0.8, 1),
-            colors: <Color>[
-              Color.fromARGB(255, 255, 121, 63),
-              Color.fromARGB(255, 181, 57, 5),
-              Color.fromARGB(255, 70, 25, 6),
-              Color.fromARGB(172, 71, 30, 12)
-            ],
-            tileMode: TileMode.mirror,
+      body: Form(
+        key: _formKey,
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment(0.8, 1),
+              colors: <Color>[
+                Color.fromARGB(255, 255, 121, 63),
+                Color.fromARGB(255, 181, 57, 5),
+                Color.fromARGB(255, 70, 25, 6),
+                Color.fromARGB(172, 71, 30, 12)
+              ],
+              tileMode: TileMode.mirror,
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 40,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    //     child: Text(
-                    //   "Login",
-                    //   style: TextStyle(color: Colors.white, fontSize: 40),
-                    // )
-                    child: SizedBox(
-                        height: 150,
-                        width: 150,
-                        child: Image(
-                          image: AssetImage('assets/images/logov.png'),
-                          fit: BoxFit.cover,
-                        )),
-                  ),
-                  Center(
-                      child: Text(
-                    "L O G I N",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ))
-                ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 40,
               ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(60),
-                        topRight: Radius.circular(60))),
-                child: Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            height: 60,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        color: Colors.grey.shade200))),
-                            child: TextFormField(
-                              controller: _account,
-                              decoration: const InputDecoration(
-                                  prefixIcon:
-                                      Icon(Icons.account_circle_outlined),
-                                  hintText: "Enter your sup account",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  border: InputBorder.none),
+              const Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: Image(
+                            image: AssetImage('assets/images/logov.png'),
+                            fit: BoxFit.cover,
+                          )),
+                    ),
+                    Center(
+                        child: Text(
+                      "L O G I N",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ))
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(60),
+                          topRight: Radius.circular(60))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Colors.grey.shade200))),
+                              child: TextFormField(
+                                controller: _account,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'please enter your user name';
+                                  }
+                                  return null;
+                                },
+                                decoration: const InputDecoration(
+                                    prefixIcon:
+                                        Icon(Icons.account_circle_outlined),
+                                    hintText: "Enter your sup account",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none),
+                              ),
                             ),
-                          ),
-                          Container(
-                            height: 60,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        color: Colors.grey.shade200))),
-                            child: TextFormField(
-                              obscureText: !_passwordVisible,
-                              controller: _password,
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.password),
-                                  hintText: "Password",
-                                  hintStyle:
-                                      const TextStyle(color: Colors.grey),
-                                  border: InputBorder.none,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(_passwordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off),
-                                    onPressed: () {
-                                      setState(() {
-                                        _passwordVisible = !_passwordVisible;
-                                      });
-                                    },
-                                  )),
+                            Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Colors.grey.shade200))),
+                              child: TextFormField(
+                                obscureText: !_passwordVisible,
+                                controller: _password,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'please enter your password';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.password),
+                                    hintText: "Password",
+                                    hintStyle:
+                                        const TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      icon: Icon(_passwordVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off),
+                                      onPressed: () {
+                                        setState(() {
+                                          _passwordVisible = !_passwordVisible;
+                                        });
+                                      },
+                                    )),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-                      TextButton(
+                          ],
+                        ),
+                        const SizedBox(height: 40),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgotPassword()));
+                            },
+                            child: const Text("Forgot Password?",
+                                style: TextStyle(color: Colors.grey))),
+                        const SizedBox(height: 20),
+                        CupertinoButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ForgotPassword()));
+                            if (_formKey.currentState?.validate() ?? false) {
+                              checkLogin();
+                            }
                           },
-                          child: const Text("Forgot Password?",
-                              style: TextStyle(color: Colors.grey))),
-                      const SizedBox(height: 20),
-                      CupertinoButton(
-                        onPressed: () {
-                          checkLogin();
-                        },
-                        child: Container(
-                          height: 50,
-                          margin: const EdgeInsets.symmetric(horizontal: 50),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Color.fromARGB(255, 181, 57, 5)),
-                          child: const Center(
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+                          child: Container(
+                            height: 50,
+                            margin: const EdgeInsets.symmetric(horizontal: 50),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Color.fromARGB(255, 181, 57, 5)),
+                            child: const Center(
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
- 
-  checkLogin() async {
 
-   showDialog(
-    
-  context: context,
-  builder: (context) {
-    
-    return const Center(child:  CircularProgressIndicator());
-  }
-    );
-     SupInf acc = await loginSup();
-    await verifyPass().whenComplete(() async {
-       if (flaglogin == true && verifyPassword == "true") {
+  Future<void> checkLogin() async {
+    SupInf acc = await loginSup();
+   await verifyPass();
+
+    if (flaglogin == true && verifyPassword == "true") {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('userName', acc.username!);
       prefs.setInt('idSup', acc.id!);
-      // ignore: use_build_context_synchronously
-   showDialog<void>(
+
+      showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
@@ -311,7 +314,6 @@ class _login extends State<login> {
                     style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
-                    
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Dashboard()));
                   },
@@ -320,11 +322,10 @@ class _login extends State<login> {
             );
           });
     } else {
-      // ignore: use_build_context_synchronously
-     showDialog<void>(
+      showDialog(
           context: context,
           barrierDismissible: false, // user must tap button!
-          builder: ( context) {
+          builder: (context) {
             return AlertDialog(
               title: const Text(
                 'Login Failed',
@@ -344,25 +345,21 @@ class _login extends State<login> {
                     style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
-                   
-                    Navigator.pop(dialogContext);
+                    Navigator.pop(context);
                   },
                 ),
               ],
             );
           });
     }
-    });
-   
-  
   }
 
   loginSup() async {
     String acc = _account.text;
     String pass = _password.text;
     SupInf a;
-    final response = await http.get(
-        Uri.parse('$u/api/Supplier/supplierLogin?userName=$acc&userPassword=$pass'));
+    final response = await http.get(Uri.parse(
+        '$u/api/Supplier/supplierLogin?userName=$acc&userPassword=$pass'));
     if (response.statusCode == 200) {
       a = SupInf.fromJson(jsonDecode(response.body));
       flaglogin = a.flagLogin!;
@@ -372,7 +369,7 @@ class _login extends State<login> {
     }
   }
 
- Future verifyPass() async {
+   verifyPass() async {
     SupInf a = await loginSup();
     int idSup = a.id!;
     String pass = _password.text;

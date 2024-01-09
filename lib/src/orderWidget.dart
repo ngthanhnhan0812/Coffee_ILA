@@ -17,6 +17,7 @@ class OrderWidget1 extends StatefulWidget {
 
 class _OrderWidget1 extends State<OrderWidget1> {
   late int pros;
+  
 @override
 void initState(){
   fetchInvoiceSupplier(0);
@@ -861,10 +862,11 @@ void initState(){
     );
   }
   Future<http.Response> supConfirmReceivedMoney(idInvoice) async {
+     var ids =await getIdSup();
     var invde = new Map();
     invde["userCase"] = 1;
     invde["statusType"] = 2;
-    invde["idSupplier"] = 2;
+    invde["idSupplier"] = ids;
     invde["idInvoice"] = idInvoice;
     invde["idInvoiceDetails"] = 0;
     final response =
@@ -1499,8 +1501,9 @@ void initState(){
 }
 
 Future totalDelivery(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1526,8 +1529,9 @@ num sum = 0;
   }
 }
 Future<InvoiceSupplier> fetchOrderDetailStatus1(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1545,8 +1549,9 @@ Future<InvoiceSupplier> fetchOrderDetailStatus1(idinvoice) async {
   }
 }
 Future<InvoiceSupplier> fetchOrderDetailStatus2(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1564,8 +1569,9 @@ Future<InvoiceSupplier> fetchOrderDetailStatus2(idinvoice) async {
   }
 }
 Future<List<InvoiceSupplier>> fetchInvoiceSupplier(int statu) async {
+   var ids =await getIdSup();
   final response = await http
-      .get(Uri.parse('$u/api/InvoiceSupplier/GetNameAddDate?idSupplier=2'));
+      .get(Uri.parse('$u/api/InvoiceSupplier/GetNameAddDate?idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1582,8 +1588,9 @@ Future<List<InvoiceSupplier>> fetchInvoiceSupplier(int statu) async {
   }
 }
 Future<List<InvoiceSupplier>> fetchInvoiceSupplierCanceled() async {
+   var ids =await getIdSup();
   final response = await http
-      .get(Uri.parse('$u/api/InvoiceSupplier/GetNameAddDate?idSupplier=2'));
+      .get(Uri.parse('$u/api/InvoiceSupplier/GetNameAddDate?idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1600,8 +1607,9 @@ Future<List<InvoiceSupplier>> fetchInvoiceSupplierCanceled() async {
   }
 }
 Future<List<Reviews>> reviewOfOrderSup(idInvoice) async {
+   var ids =await getIdSup();
   final response = await http
-      .get(Uri.parse('$u/api/Supplier/Review/ReviewOrderSupplier?idSupplier=2&idInvoice=$idInvoice'));
+      .get(Uri.parse('$u/api/Supplier/Review/ReviewOrderSupplier?idSupplier=$ids&idInvoice=$idInvoice'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1613,8 +1621,9 @@ Future<List<Reviews>> reviewOfOrderSup(idInvoice) async {
   }
 }
 Future quati(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1626,8 +1635,9 @@ Future quati(idinvoice) async {
   }
 }
 Future quatiDelivery(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1645,8 +1655,9 @@ jss.add(jsonResponse[i]);
   }
 }
 Future<List<InvoiceSupplier>> fetchAllOrderdetail(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1657,8 +1668,9 @@ Future<List<InvoiceSupplier>> fetchAllOrderdetail(idinvoice) async {
   }
 }
 Future<List<InvoiceSupplier>> fetchAllOrderdetailDelivered(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1668,8 +1680,9 @@ Future<List<InvoiceSupplier>> fetchAllOrderdetailDelivered(idinvoice) async {
   }
 }
 Future<List<InvoiceSupplier>> fetchAllOrderdetailCancel(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1685,8 +1698,9 @@ jsonDelivered.add(jsonResponse[i]);
   }
 }
 Future<InvoiceSupplier> fetchOrderDetail(idinvoice) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=2'));
+      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1697,8 +1711,9 @@ Future<InvoiceSupplier> fetchOrderDetail(idinvoice) async {
   }
 }
  totalOrderAmount(idinvoice) async {
+   var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);

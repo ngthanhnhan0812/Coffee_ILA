@@ -178,7 +178,9 @@ class Sidebar extends StatelessWidget {
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 181, 57, 5)),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>login()));
+                        },
                         child: Text(
                           'Logout',
                           style: TextStyle(color: Colors.white),
@@ -211,8 +213,9 @@ Future<Supplier> fetchProfileSupplier() async {
 }
 
 Future<Supplier> fetchTitleSupplier() async {
+   var ids =await getIdSup();
   final response =
-      await http.get(Uri.parse('$u/api/Supplier/ProfileSupplier?id=2 '));
+      await http.get(Uri.parse('$u/api/Supplier/ProfileSupplier?id=$ids '));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);

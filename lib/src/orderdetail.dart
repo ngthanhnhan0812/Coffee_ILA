@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
 import 'package:coffee/src/order.dart';
 import 'package:coffee/src/orderWidget.dart';
@@ -1032,8 +1030,9 @@ class _Orderdetail extends State<Orderdetail> {
   }
 
   Future<String> fetchVoucherPrice(lsvoucher) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=2&lsVoucherS=$lsvoucher '));
+        '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=$ids&lsVoucherS=$lsvoucher '));
 
     if (response.statusCode == 200) {
       print("vouchersup   " + response.body);
@@ -1063,9 +1062,9 @@ class _Orderdetail extends State<Orderdetail> {
         .replaceAll(' ', '')
         .replaceAll('false', '1')
         .replaceAll('true', '0');
-
+ var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/Invoice/supplierPrepareInvoice?idSupplier=2&idInvoice=$a&strLsInvoiceD=$idinvoiced&strLsStatus=$valueinvoiced'));
+        '$u/api/Invoice/supplierPrepareInvoice?idSupplier=$ids&idInvoice=$a&strLsInvoiceD=$idinvoiced&strLsStatus=$valueinvoiced'));
     if (response.statusCode == 200) {
       var a = NewInvoice.fromJson(jsonDecode(response.body));
       flagRefund = a.flagRefund!;
@@ -1078,9 +1077,10 @@ class _Orderdetail extends State<Orderdetail> {
   }
 
   supConfirmRefund() async {
+     var ids =await getIdSup();
     var a = widget.invoice.id;
     final response = await http.get(Uri.parse(
-        '$u/api/Invoice/supplierConfirmRefund?idInvoice=$a&idSupplier=2'));
+        '$u/api/Invoice/supplierConfirmRefund?idInvoice=$a&idSupplier=$ids'));
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -1498,8 +1498,9 @@ class _OrderDetail1 extends State<OrderDetail1> {
   }
 
   totalAmountOfProduct(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -1510,8 +1511,9 @@ class _OrderDetail1 extends State<OrderDetail1> {
   }
 
   totalOrderAmount(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -1531,8 +1533,9 @@ class _OrderDetail1 extends State<OrderDetail1> {
   }
 
   refundtoCustomer(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -1947,8 +1950,9 @@ class _OrderDetail2 extends State<OrderDetail2> {
   }
 
   totalAmountOfProduct(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -1959,8 +1963,9 @@ class _OrderDetail2 extends State<OrderDetail2> {
   }
 
   totalOrderAmount(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -1971,8 +1976,9 @@ class _OrderDetail2 extends State<OrderDetail2> {
   }
 
   refundtoCustomer(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -2322,8 +2328,9 @@ class _OrderDetail4 extends State<OrderDetail4> {
   }
 
   totalAmountOfProduct(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -2334,8 +2341,9 @@ class _OrderDetail4 extends State<OrderDetail4> {
   }
 
   totalOrderAmount(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -2346,8 +2354,9 @@ class _OrderDetail4 extends State<OrderDetail4> {
   }
 
   refundtoCustomer(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -2710,8 +2719,9 @@ class _OrderDetail5 extends State<OrderDetail5> {
   }
 
   totalAmountOfProduct(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -2722,8 +2732,9 @@ class _OrderDetail5 extends State<OrderDetail5> {
   }
 
   totalOrderAmount(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
@@ -2734,8 +2745,9 @@ class _OrderDetail5 extends State<OrderDetail5> {
   }
 
   refundtoCustomer(idinvoice) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=2&idInvoice=$idinvoice'));
+        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);

@@ -1803,8 +1803,9 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
 }
 
 Future<List<Product>> fetchProduct(isActi) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/Supplier/Products/FilterActive?isActive=$isActi&idSupplier=2'));
+      '$u/api/Supplier/Products/FilterActive?isActive=$isActi&idSupplier=$ids'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1816,8 +1817,9 @@ Future<List<Product>> fetchProduct(isActi) async {
 }
 
 Future<List<Product>> filterCateMobile(isActi, idcate) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/Supplier/Products/FilterCateMobile?idSupplier=2&idcate=$idcate&isActive=$isActi'));
+      '$u/api/Supplier/Products/FilterCateMobile?idSupplier=$ids&idcate=$idcate&isActive=$isActi'));
 
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1851,8 +1853,9 @@ fetchCountWatchList(idP) async {
 }
 
 fetchCountSold(idP) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/Supplier/Products//Supplier_SoldProd?idSupplier=2&idProduct=$idP '));
+      '$u/api/Supplier/Products//Supplier_SoldProd?idSupplier=$ids&idProduct=$idP '));
 
   if (response.statusCode == 200) {
     return response.body;
@@ -1862,8 +1865,9 @@ fetchCountSold(idP) async {
 }
 
 fetchCountisActive(active) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/Supplier/Products/CountFilterActive?idSupplier=2&isActive=$active '));
+      '$u/api/Supplier/Products/CountFilterActive?idSupplier=$ids&isActive=$active '));
 
   if (response.statusCode == 200) {
     return response.body;
@@ -1898,8 +1902,9 @@ Future<http.Response> hideProduct(int idprod) async {
 }
 
 quantityProductFilter(isActi, idcate) async {
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/Supplier/Products/FilterCateMobile?idSupplier=2&idcate=$idcate&isActive=$isActi'));
+      '$u/api/Supplier/Products/FilterCateMobile?idSupplier=$ids&idcate=$idcate&isActive=$isActi'));
   num a;
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
@@ -1914,8 +1919,9 @@ Future<List<Category>> fetchCategoryFilter(isActi) async {
   List idCate = [];
   List catefilter = [];
   List endcate = [];
+   var ids =await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/Supplier/Products/FilterActive?isActive=$isActi&idSupplier=2'));
+      '$u/api/Supplier/Products/FilterActive?isActive=$isActi&idSupplier=$ids'));
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
 

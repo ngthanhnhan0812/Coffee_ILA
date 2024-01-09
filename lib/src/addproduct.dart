@@ -1261,6 +1261,7 @@ List <File?> abc = [im,im1,im2,im3];
     }
  final regex = RegExp(r'\s+');
     print('get imageurl success');
+     var ids =await getIdSup();
     var dt = new Map();
 
     dt['title'] = _nameproduct.text.trim().replaceAll(regex, ' ');
@@ -1271,7 +1272,7 @@ List <File?> abc = [im,im1,im2,im3];
     }
     dt['description'] = _description.text.trim().replaceAll(regex, ' ');
     dt['price'] = int.parse(_price.text);
-    dt['idSupplier'] = '2';
+    dt['idSupplier'] = ids;
     dt['isActive'] = '0';
     dt['idcate'] = idcate;
 

@@ -304,8 +304,9 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
   }
 
   fetchCountisActive(active) async {
+     var ids =await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/Supplier/CountFilterActive?idSupplier=2&isActive=$active '));
+        '$u/Supplier/CountFilterActive?idSupplier=$ids&isActive=$active '));
 
     if (response.statusCode == 200) {
       return response.body;
@@ -315,8 +316,9 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
   }
 
   Future<List<Product>> fetchProduct(isActi) async {
+     var ids =await getIdSup();
     final response = await http.get(
-        Uri.parse('$u/Supplier/FilterActive?isActive=$isActi&idSupplier=2'));
+        Uri.parse('$u/Supplier/FilterActive?isActive=$isActi&idSupplier=$ids'));
 
     if (response.statusCode == 200) {
       List jsonResponse = await json.decode(response.body);
