@@ -411,11 +411,12 @@ class _EditVoucher extends State<EditVoucher> {
   // }
 
   Future<http.Response> updateVoucher() async {
+    var id = await getIdSup();
     var vo = {};
     vo['id'] = widget.voucher.id;
     vo['condition'] = int.parse(_condition.text);
     vo['discount'] = int.parse(_discount.text);
-    vo['usercreate'] = 'ADMIN';
+    vo['usercreate'] = id;
     vo['startDate'] = firstDate.text;
     vo['endDate'] = lastDate.text;
     vo['isActive'] = widget.voucher.isActive;

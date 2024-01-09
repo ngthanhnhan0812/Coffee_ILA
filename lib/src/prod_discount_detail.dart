@@ -59,10 +59,10 @@ class _prod_discount_detail extends State<prod_discount_detail> {
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.white)),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) => New_Prod_Product())));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: ((context) => New_Prod_Product())));
               },
               child: Text('Add Product',
                   style: GoogleFonts.openSans(color: Colors.black),

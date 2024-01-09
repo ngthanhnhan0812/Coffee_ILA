@@ -19,9 +19,10 @@ class FetchProduct {
   var data = [];
   List<Product> results = [];
 // ignore: non_constant_identifier_names
-  Future<List<Product>> fetch_prodProduct({String? query, idSup}) async {
+  Future<List<Product>> fetch_prodProduct({String? query}) async {
+    var id = await getIdSup();
     final response = await http.get(Uri.parse(
-        '$u/api/Supplier/Products/GetAllProdNotHaveDiscount?idSupplier=1'));
+        '$u/api/Supplier/Products/GetAllProdNotHaveDiscount?idSupplier=$id'));
     // ignore: avoid_print
     // print(response.body);
     try {

@@ -699,11 +699,12 @@ class _NewVoucher extends State<NewVoucher> {
   }
 
   Future<http.Response> insertVoucher() async {
+    var id = await getIdSup();
     var vo = {};
     vo['id'] = _id.text;
     vo['condition'] = int.parse(_condition.text);
     vo['discount'] = int.parse(_discount.text);
-    vo['usercreate'] = 'ADMIN';
+    vo['usercreate'] = id;
     vo['startDate'] = firstDate.text;
     vo['endDate'] = lastDate.text;
     vo['used'] = 0;

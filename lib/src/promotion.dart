@@ -19,8 +19,9 @@ List<Discount> parseDiscount(String responseBody) {
 }
 
 Future<List<Discount>> fetchUpComingDiscount() async {
+  var id = await getIdSup();
   final response =
-      await http.get(Uri.parse('$u/api/Discount/FilterDiscount1?idSupplier=1'));
+      await http.get(Uri.parse('$u/api/Discount/FilterDiscount1?idSupplier=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -32,8 +33,9 @@ Future<List<Discount>> fetchUpComingDiscount() async {
 }
 
 Future<List<Discount>> fetchInProgressDiscount() async {
+  var id = await getIdSup();
   final response =
-      await http.get(Uri.parse('$u/api/Discount/FilterDiscount2?idSupplier=1'));
+      await http.get(Uri.parse('$u/api/Discount/FilterDiscount2?idSupplier=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -45,8 +47,9 @@ Future<List<Discount>> fetchInProgressDiscount() async {
 }
 
 Future<List<Discount>> fetchHasDoneDiscount() async {
+  var id = await getIdSup();
   final response =
-      await http.get(Uri.parse('$u/api/Discount/FilterDiscount3?idSupplier=1'));
+      await http.get(Uri.parse('$u/api/Discount/FilterDiscount3?idSupplier=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -116,7 +119,6 @@ Future<http.Response> deleteDiscount(int id) async {
 
 Future<void> deleteAllDiscounts(int indC) async {
   List<Discount> discounts = await fetchUpComingDiscount();
-  // List<int> idDelete = discounts.where((d) => d.indC == indC).map((d) => d.id).toList();
   List<int> idDelete =
       discounts.where((d) => d.indC == indC).map((d) => d.id).toList();
   for (var id in idDelete) {

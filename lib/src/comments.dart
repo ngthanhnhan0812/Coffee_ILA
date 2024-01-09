@@ -26,23 +26,25 @@ Future<List<commentBlog>> fetchAllCommentFromAPI(int idBlog) async {
   }
 }
 
-Future<List<commentBlog>> fetchMainCommentFromAPI() async {
-  final response =
-      await http.get(Uri.parse('$u/api/Comment/userGetCommentBlogM?idBlog=1'));
+Future<List<commentBlog>> fetchMainCommentFromAPI(int idBlog) async {
+  final response = await http
+      .get(Uri.parse('$u/api/Comment/userGetCommentBlogM?idBlog=$idBlog'));
   // ignore: avoid_print
   print(response.body);
 
   if (response.statusCode == 200) {
-    return parseCommentBlog(response.body);
+    // return parseCommentBlog(response.body);
+    List jsonResponse = await json.decode(response.body);
+    return jsonResponse.map((data) => commentBlog.fromJson(data)).toList();
   } else {
     throw Exception(
         'Unable to fetch Comment from the REST API of comments.dart!');
   }
 }
 
-Future<List<commentBlog>> fetchSubCommentFromAPI() async {
+Future<List<commentBlog>> fetchSubCommentFromAPI(int idBlog) async {
   final response = await http
-      .get(Uri.parse('$u/api/Comment/userGetSubCommentBlog?idBlog=1'));
+      .get(Uri.parse('$u/api/Comment/userGetSubCommentBlog?idBlog=$idBlog'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -81,25 +83,18 @@ class CommentsBlog extends StatefulWidget {
 class _CommentsState extends State<CommentsBlog> {
   bool reply = false;
   late List<commentBlog> comments;
+  List<Widget> commentWidgets = [];
 
   @override
   void initState() {
     super.initState();
-    fetchAllCommentFromAPI(widget.idBlog).then((commentList) {
-      setState(() {
-        comments = commentList;
-      });
-    });
+    fetchAllCommentFromAPI(widget.idBlog);
+    // fetchAllCommentFromAPI(widget.idBlog).then((commentList) {
+    //   setState(() {
+    //     comments = commentList;
+    //   });
+    // });
   }
-
-  external bool identical(commentBlog A, Comment B);
-
-  // final List<commentBlog> gcmtBlog = [
-  //   for(var item in ){
-  //     item['userName'] = widget.cmtBlog.userName;
-  //     item['userAvatar'] = widget.cmtBlog.userAvatar;
-  //   }
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -108,21 +103,38 @@ class _CommentsState extends State<CommentsBlog> {
         FutureBuilder(
           future: fetchAllCommentFromAPI(widget.idBlog),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<Comment> comments = snapshot.data!
-                  .map((comment) => Comment(
-                        avatar: comment.userAvatar,
-                        userName: comment.userName,
-                        content: comment.comment,
-                      ))
-                  .toList();
-              List<Comment> remainingComments = comments.sublist(1);
-              return Container(
+            List<Comment> mainComments = [];
+            List<List<Comment>> subComments = [];
+            if (snapshot.data == null) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }else{
+               for (var commentBlog in snapshot.data as List<commentBlog>) {
+              mainComments.add(Comment(
+                avatar: commentBlog.userAvatar,
+                userName: commentBlog.userName,
+                content: commentBlog.comment,
+              ));
+
+              List<Comment> tempSubComments = [];
+              for (var subComment in commentBlog.lsSubComment!) {
+                tempSubComments.add(Comment(
+                  avatar: subComment.userAvatar,
+                  userName: subComment.userName,
+                  content: subComment.comment,
+                ));
+              }
+              subComments.add(tempSubComments);
+            }
+
+            for (int i = 0; i < mainComments.length; i++) {
+              commentWidgets.add(Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: CommentTreeWidget<Comment, Comment>(
-                  comments[0],
-                  remainingComments,
+                  mainComments[i],
+                  subComments[i],
                   treeThemeData: const TreeThemeData(
                       lineColor: Color.fromARGB(255, 233, 229, 229),
                       lineWidth: 2),
@@ -230,7 +242,7 @@ class _CommentsState extends State<CommentsBlog> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${snapshot.userName}',
+                                snapshot.userName.toString(),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
@@ -243,7 +255,7 @@ class _CommentsState extends State<CommentsBlog> {
                                 height: 4,
                               ),
                               Text(
-                                '${snapshot.content}',
+                                snapshot.content.toString(),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
@@ -292,11 +304,19 @@ class _CommentsState extends State<CommentsBlog> {
                     );
                   },
                 ),
+              ));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasData) {
+              return Column(
+                children: commentWidgets,
               );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             }
-            return const Center(child: CircularProgressIndicator());
+            return Container();
+            }
           },
         ),
       ],

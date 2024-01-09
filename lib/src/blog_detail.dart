@@ -27,6 +27,7 @@ class Blog_Approved_detail extends StatefulWidget {
 class _Blog_detailState extends State<Blog_Approved_detail> {
   TextEditingController cmt = TextEditingController();
   final data = [1];
+  bool c = true;
 
   @override
   void dispose() {
@@ -68,6 +69,9 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                 flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
                   widget.blog.image,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset('assets/images/default-photo.jpg');
+                  },
                   fit: BoxFit.cover,
                 ))),
             SliverList(
@@ -168,9 +172,12 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                   ),
                   Column(
                     children: <Widget>[
-                      CommentsBlog(
-                        idBlog: widget.blog.id,
-                      )
+                      c == true
+                          ? CommentsBlog(
+                              key: UniqueKey(),
+                              idBlog: widget.blog.id,
+                            )
+                          : Container()
                       // Comments(commentList: commentLi),
                     ],
                   )
@@ -211,7 +218,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(50.0))),
               onPressed: () {
-                Dialog_Blog();
+                Dialog_HideBlog();
               },
               child: const Icon(
                 Icons.hide_source_rounded,
@@ -255,7 +262,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
   }
 
   // ignore: non_constant_identifier_names
-  Future<void> Dialog_Blog() async {
+  Future<void> Dialog_HideBlog() async {
     // ignore: unrelated_type_equality_checks
     showDialog(
         context: context,
@@ -357,6 +364,9 @@ class _Blog_Waiting_detailState extends State<Blog_Waiting_detail> {
                 flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
                   widget.blog.image,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset('assets/images/default-photo.jpg');
+                  },
                   fit: BoxFit.cover,
                 ))),
             SliverList(
@@ -475,6 +485,9 @@ class _Blog_Cancelled_detailState extends State<Blog_Cancelled_detail> {
                 flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
                   widget.blog.image,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset('assets/images/default-photo.jpg');
+                  },
                   fit: BoxFit.cover,
                 ))),
             SliverList(
@@ -560,7 +573,7 @@ class Blog_Hidden_detail extends StatefulWidget {
 class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
   TextEditingController cmt = TextEditingController();
   final data = [1];
-
+  bool c = false;
   @override
   void dispose() {
     cmt.dispose();
@@ -582,6 +595,9 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
                 flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
                   widget.blog.image,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset('assets/images/default-photo.jpg');
+                  },
                   fit: BoxFit.cover,
                 ))),
             SliverList(
@@ -661,10 +677,73 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
                       ),
                     ],
                   ),
+                  Column(
+                    children: <Widget>[
+                      c == true
+                          ? Container()
+                          : CommentsBlog(idBlog: widget.blog.id)
+                      // Comments(commentList: commentLi),
+                    ],
+                  )
                 ],
               );
             }))
           ]),
         ));
+  }
+
+  Future<http.Response> insertMainCommentBlog() async {
+    DateTime currentDate = DateTime.now();
+    //main
+    //iduser, idblog, content, usertype
+    var cmtB = {};
+
+    cmtB['idAccount'] = 1;
+    cmtB['idBlog'] = widget.blog.id;
+    cmtB['comment'] = cmt.text;
+    cmtB['userType'] = 1;
+    // cmtB['dateCreate'] == currentDate;
+    // cmtB['indC'] = 0;
+    // cmtB['mnC'] = 0;
+    // cmtB['status'] = 1;
+    final response = await http.post(
+        Uri.parse('$u/api/Comment/userAddNewComment'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(cmtB));
+
+    if (response.statusCode == 200) {
+      // ignore: avoid_print
+      print(
+          'Add main comment successfully from The Rest API of blog_detail.dart');
+    }
+    return response;
+  }
+
+  Future<http.Response> insertSubCommentBlog() async {
+    DateTime currentDate = DateTime.now();
+    //sub 
+    //iduser, idblog, content, idreply, usertype, mainc(?)
+    var cmtB = {};
+
+    cmtB['idBlog'] = widget.blog.id;
+    cmtB['idAccount'] = 5;
+    cmtB['comment'] = cmt.text;
+    cmtB['dateCreate'] == currentDate;
+    cmtB['idReply'] = 5;
+    cmtB['indC'] = 0;
+    cmtB['mnC'] = 0;
+    cmtB['status'] = 1;
+    cmtB['userType'] = 1;
+    final response = await http.post(
+        Uri.parse('$u/api/Comment/userAddNewComment'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(cmtB));
+
+    if (response.statusCode == 200) {
+      // ignore: avoid_print
+      print(
+          'Add main comment successfully from The Rest API of blog_detail.dart');
+    }
+    return response;
   }
 }

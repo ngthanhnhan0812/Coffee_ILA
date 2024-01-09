@@ -21,8 +21,9 @@ List<Voucher> parseVoucher(String responseBody) {
 }
 
 Future<List<Voucher>> fetchVoucher() async {
+  var id = await getIdSup();
   final response = await http.get(Uri.parse(
-      '$u/api/Voucher/supplierGetAllVoucher?userCreate=ADMIN&isActive=1'));
+      '$u/api/Voucher/supplierGetAllVoucher?userCreate=$id&isActive=1'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -34,8 +35,9 @@ Future<List<Voucher>> fetchVoucher() async {
 }
 
 Future<List<Voucher>> fetchVoucherIsUpComing() async {
+  var id = await getIdSup();
   final response = await http.get(
-      Uri.parse('$u/api/Voucher/supplierFilterVoucher00?userCreate=ADMIN'));
+      Uri.parse('$u/api/Voucher/supplierFilterVoucher00?userCreate=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -47,8 +49,9 @@ Future<List<Voucher>> fetchVoucherIsUpComing() async {
 }
 
 Future<List<Voucher>> fetchVoucherIsOnline() async {
+  var id = await getIdSup();
   final response = await http.get(
-      Uri.parse('$u/api/Voucher/supplierFilterVoucher01?userCreate=ADMIN'));
+      Uri.parse('$u/api/Voucher/supplierFilterVoucher01?userCreate=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -60,8 +63,9 @@ Future<List<Voucher>> fetchVoucherIsOnline() async {
 }
 
 Future<List<Voucher>> fetchVoucherHasDone() async {
+  var id = await getIdSup();
   final response = await http.get(
-      Uri.parse('$u/api/Voucher/supplierFilterVoucher02?userCreate=ADMIN'));
+      Uri.parse('$u/api/Voucher/supplierFilterVoucher02?userCreate=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -704,18 +708,24 @@ class _Active_Voucher extends State<Active_Voucher> {
                                         width: 80,
                                         height: 80,
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(7),
+                                            borderRadius:
+                                                BorderRadius.circular(7),
                                             image: const DecorationImage(
                                               fit: BoxFit.fill,
                                               image: NetworkImage(
                                                   'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/voucher-black-friday-related-filled-icon-vector-28114495%20(1).jpg?alt=media&token=e4033924-00dd-4ae2-95a0-3b3241913755&_gl=1*nd2x0w*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc4NTkuMzIuMC4w'),
                                             )),
-                                        
                                       ),
-                                      Positioned(bottom: 0,
-                                        child: SizedBox(
-                                          width: 80,
-                                          child: Center(child: Text('Used: ${snapshot.data![index].used.toString()}',style: const TextStyle(fontWeight: FontWeight.bold)))))
+                                      Positioned(
+                                          bottom: 0,
+                                          child: SizedBox(
+                                              width: 80,
+                                              child: Center(
+                                                  child: Text(
+                                                      'Used: ${snapshot.data![index].used.toString()}',
+                                                      style: const TextStyle(
+                                                          fontWeight: FontWeight
+                                                              .bold)))))
                                     ],
                                   ),
                                   const SizedBox(
@@ -916,25 +926,32 @@ class _Ended_Voucher extends State<Ended_Voucher> {
                                 Row(
                                   children: [
                                     Stack(
-                                    children: [
-                                      Container(
-                                        width: 80,
-                                        height: 80,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(7),
-                                            image: const DecorationImage(
-                                              fit: BoxFit.fill,
-                                              image: NetworkImage(
-                                                  'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/voucher-black-friday-related-filled-icon-vector-28114495%20(1).jpg?alt=media&token=e4033924-00dd-4ae2-95a0-3b3241913755&_gl=1*nd2x0w*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc4NTkuMzIuMC4w'),
-                                            )),
-                                        
-                                      ),
-                                      Positioned(bottom: 0,
-                                        child: SizedBox(
+                                      children: [
+                                        Container(
                                           width: 80,
-                                          child: Center(child: Text('Used: ${snapshot.data![index].used.toString()}',style: const TextStyle(fontWeight: FontWeight.bold)))))
-                                    ],
-                                  ),
+                                          height: 80,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(7),
+                                              image: const DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/voucher-black-friday-related-filled-icon-vector-28114495%20(1).jpg?alt=media&token=e4033924-00dd-4ae2-95a0-3b3241913755&_gl=1*nd2x0w*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc4NTkuMzIuMC4w'),
+                                              )),
+                                        ),
+                                        Positioned(
+                                            bottom: 0,
+                                            child: SizedBox(
+                                                width: 80,
+                                                child: Center(
+                                                    child: Text(
+                                                        'Used: ${snapshot.data![index].used.toString()}',
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)))))
+                                      ],
+                                    ),
                                     const SizedBox(
                                       width: 10,
                                     ),
@@ -947,26 +964,28 @@ class _Ended_Voucher extends State<Ended_Voucher> {
                                         Row(
                                           children: [
                                             Text(
-                                            DateFormat('yyyy/MM/dd').format(
-                                                DateTime.parse(snapshot
-                                                    .data![index].startDate
-                                                    .toString())),
-                                            style: GoogleFonts.openSans(
-                                              textStyle: const TextStyle(
-                                                  fontWeight: FontWeight.bold),
+                                              DateFormat('yyyy/MM/dd').format(
+                                                  DateTime.parse(snapshot
+                                                      .data![index].startDate
+                                                      .toString())),
+                                              style: GoogleFonts.openSans(
+                                                textStyle: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             ),
-                                          ),
                                             const Text(' - '),
                                             Text(
-                                            DateFormat('yyyy/MM/dd').format(
-                                                DateTime.parse(snapshot
-                                                    .data![index].endDate
-                                                    .toString())),
-                                            style: GoogleFonts.openSans(
-                                              textStyle: const TextStyle(
-                                                  fontWeight: FontWeight.bold),
+                                              DateFormat('yyyy/MM/dd').format(
+                                                  DateTime.parse(snapshot
+                                                      .data![index].endDate
+                                                      .toString())),
+                                              style: GoogleFonts.openSans(
+                                                textStyle: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             ),
-                                          ),
                                             const SizedBox(
                                               width: 20,
                                             ),
