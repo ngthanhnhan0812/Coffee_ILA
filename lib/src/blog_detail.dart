@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:coffee/src/comments.dart';
+import 'package:coffee/src/models/commentBlog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:readmore/readmore.dart';
@@ -14,9 +15,11 @@ import 'package:coffee/src/models/blog.dart';
 // ignore: camel_case_types
 class Blog_Approved_detail extends StatefulWidget {
   final Blog blog;
+  final List<commentBlog> comments;
   const Blog_Approved_detail({
     Key? key,
     required this.blog,
+    required this.comments,
   }) : super(key: key);
 
   @override
@@ -28,30 +31,63 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
   TextEditingController cmt = TextEditingController();
   final data = [1];
   bool c = true;
-
-  @override
-  void dispose() {
-    cmt.dispose();
-    super.dispose();
-  }
+  CommentsBlog? _commentsBlog;
+  final _formKey = GlobalKey<FormState>();
+  GlobalKey<_Blog_detailState> commentsBlogKey = GlobalKey<_Blog_detailState>();
+  int? selectedCommentId;
 
   @override
   void initState() {
     super.initState();
-    // getData();
+    fetchAllCommentFromAPI(widget.blog.id).then((comments) {
+      setState(() {
+        widget.comments.addAll(comments);
+      });
+    });
   }
 
-  // getData() async {
-  //   List<commentBlog> cmtb = await fetchAllCommentFromAPI(widget.cmtB?.id);
-  //   for (int i = 0; i < cmtb.length; i++) {
-  //     var b = {};
-  //     b["idBlog"] = cmtb[i].idBlog;
-  //     b["userName"] = cmtb[i].userName;
-  //     b["userAvatar"] = cmtb[i].userAvatar;
-  //     b["comment"] = cmtb[i].comment;
-  //     itemB.add(b);
-  //   }
-  // }
+  Future<http.Response> insertMainCommentBlog() async {
+    var id = await getIdSup();
+    var cmtB = {};
+
+    cmtB['idAccount'] = id;
+    cmtB['idBlog'] = widget.blog.id;
+    cmtB['comment'] = cmt.text;
+    cmtB['userType'] = 1;
+    final response = await http.post(
+        Uri.parse('$u/api/Comment/userAddNewComment'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(cmtB));
+
+    if (response.statusCode == 200) {
+      // ignore: avoid_print
+      print(
+          'Add main comment successfully from The Rest API of blog_detail.dart');
+    }
+    return response;
+  }
+
+  Future<http.Response> insertSubCommentBlog() async {
+    var id = await getIdSup();
+    var cmtB = {};
+
+    cmtB['idAccount'] = id;
+    cmtB['idBlog'] = widget.blog.id;
+    cmtB['comment'] = cmt.text;
+    cmtB['userType'] = 1;
+    cmtB['idReply'] = selectedCommentId;
+    final response = await http.post(
+        Uri.parse('$u/api/Comment/userAddNewComment'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(cmtB));
+
+    if (response.statusCode == 200) {
+      // ignore: avoid_print
+      print(
+          'Add main comment successfully from The Rest API of blog_detail.dart');
+    }
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,12 +209,16 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                   Column(
                     children: <Widget>[
                       c == true
-                          ? CommentsBlog(
-                              key: UniqueKey(),
+                          ? _commentsBlog ??= CommentsBlog(
+                              key: commentsBlogKey,
                               idBlog: widget.blog.id,
+                              textEditingController: cmt,
+                              blog: widget.blog,
+                              onReplySelected: (commentId) {
+                                selectedCommentId = commentId;
+                              },
                             )
-                          : Container()
-                      // Comments(commentList: commentLi),
+                          : Container(),
                     ],
                   )
                 ],
@@ -186,27 +226,46 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
             }))
           ]),
           persistentFooterButtons: [
-            Container(
-              height: 50,
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: cmt,
-                      decoration: InputDecoration(
-                        hintText: '',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+            Form(
+              key: _formKey,
+              child: Container(
+                height: 50,
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        controller: cmt,
+                        decoration: InputDecoration(
+                          hintText: '',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () {},
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          if (_commentsBlog!.onReplySelected == null) {
+                            await insertMainCommentBlog();
+                          } else {
+                            await insertSubCommentBlog();
+                          }
+                          cmt.clear();
+                          setState(() {});
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -230,35 +289,6 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
           bottomNavigationBar:
               Padding(padding: EdgeInsets.only(bottom: keyboardHeight))),
     );
-
-    // bottomNavigationBar: AnimatedContainer(
-    //   duration: const Duration(milliseconds: 50),
-    //   padding: EdgeInsets.only(bottom: keyboardHeight),
-    //   child: Container(
-    //     height: 50,
-    //     padding: const EdgeInsets.all(8),
-    //     child: Row(
-    //       children: [
-    //         Expanded(
-    //           child: TextField(
-    //             autofocus: true,
-    //             controller: cmt,
-    //             decoration: InputDecoration(
-    //               hintText: '',
-    //               border: OutlineInputBorder(
-    //                 borderRadius: BorderRadius.circular(15),
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         IconButton(
-    //           icon: const Icon(Icons.send),
-    //           onPressed: () {},
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // ));
   }
 
   // ignore: non_constant_identifier_names
@@ -681,8 +711,10 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
                     children: <Widget>[
                       c == true
                           ? Container()
-                          : CommentsBlog(idBlog: widget.blog.id)
-                      // Comments(commentList: commentLi),
+                          : CommentsBlog(
+                              idBlog: widget.blog.id,
+                              textEditingController: cmt,
+                              blog: widget.blog),
                     ],
                   )
                 ],
@@ -690,60 +722,5 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
             }))
           ]),
         ));
-  }
-
-  Future<http.Response> insertMainCommentBlog() async {
-    DateTime currentDate = DateTime.now();
-    //main
-    //iduser, idblog, content, usertype
-    var cmtB = {};
-
-    cmtB['idAccount'] = 1;
-    cmtB['idBlog'] = widget.blog.id;
-    cmtB['comment'] = cmt.text;
-    cmtB['userType'] = 1;
-    // cmtB['dateCreate'] == currentDate;
-    // cmtB['indC'] = 0;
-    // cmtB['mnC'] = 0;
-    // cmtB['status'] = 1;
-    final response = await http.post(
-        Uri.parse('$u/api/Comment/userAddNewComment'),
-        headers: <String, String>{'Content-Type': 'application/json'},
-        body: jsonEncode(cmtB));
-
-    if (response.statusCode == 200) {
-      // ignore: avoid_print
-      print(
-          'Add main comment successfully from The Rest API of blog_detail.dart');
-    }
-    return response;
-  }
-
-  Future<http.Response> insertSubCommentBlog() async {
-    DateTime currentDate = DateTime.now();
-    //sub 
-    //iduser, idblog, content, idreply, usertype, mainc(?)
-    var cmtB = {};
-
-    cmtB['idBlog'] = widget.blog.id;
-    cmtB['idAccount'] = 5;
-    cmtB['comment'] = cmt.text;
-    cmtB['dateCreate'] == currentDate;
-    cmtB['idReply'] = 5;
-    cmtB['indC'] = 0;
-    cmtB['mnC'] = 0;
-    cmtB['status'] = 1;
-    cmtB['userType'] = 1;
-    final response = await http.post(
-        Uri.parse('$u/api/Comment/userAddNewComment'),
-        headers: <String, String>{'Content-Type': 'application/json'},
-        body: jsonEncode(cmtB));
-
-    if (response.statusCode == 200) {
-      // ignore: avoid_print
-      print(
-          'Add main comment successfully from The Rest API of blog_detail.dart');
-    }
-    return response;
   }
 }

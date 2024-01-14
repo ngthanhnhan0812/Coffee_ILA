@@ -124,17 +124,6 @@ Future<void> deleteAllDiscounts(int indC) async {
   for (var id in idDelete) {
     await deleteDiscount(id);
   }
-  // List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
-  // for (var groupedDiscount in groupedDiscounts) {
-  //   List<Discount> discountsToUpdate =
-  //       discounts.where((d) => d.indC == groupedDiscount.indC).toList();
-
-  //   for (var discount in discountsToUpdate) {
-  //     await deleteDiscount(
-  //       discount.id,
-  //     );
-  //   }
-  // }
 }
 
 Future<void> updateAllDiscounts() async {
@@ -496,7 +485,6 @@ class UpComingState extends State<Upcoming> {
                           ElevatedButton(
                             onPressed: () async {
                               await deleteDiscount(product.id);
-                              // deleteDialog(product.id);
                               setState(() {
                                 products.remove(product);
                               });
@@ -597,8 +585,6 @@ class UpComingState extends State<Upcoming> {
                 List<Discount> discounts = snapshot.data!;
                 List<Discount> groupedDiscounts =
                     groupDiscountsByIndC(discounts);
-                // print(discounts);
-                // print(groupedDiscounts);
                 return Column(
                   children: [
                     const SizedBox(
@@ -748,9 +734,6 @@ class UpComingState extends State<Upcoming> {
                                               ),
                                               ElevatedButton(
                                                 onPressed: () async {
-                                                  // await deleteDiscount(
-                                                  //     groupedDiscounts[index]
-                                                  //         .id);
                                                   int indC =
                                                       groupedDiscounts[index]
                                                           .indC;
@@ -826,31 +809,6 @@ class InProgress extends StatefulWidget {
 }
 
 class InProgressState extends State<InProgress> {
-  bool isDelete = false;
-  Future<http.Response> deleteDiscount(int id) async {
-    setState(() {
-      // isDelete = true;
-    });
-
-    var discount = {};
-    discount['id'] = id;
-    final response =
-        await http.post(Uri.parse('$u/api/Discount/DeleteDiscountNew?id=$id'),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(discount));
-    if (response.statusCode == 200) {
-      // ignore: avoid_print
-      print('Delete discount successfully!');
-    } else {
-      // ignore: avoid_print
-      print(
-          'Failed to delete Discount: ${response.statusCode}\t ${response.body}');
-    }
-    return response;
-  }
-
   bool isEnd = false;
   // ignore: non_constant_identifier_names
   Future<void> EndDiscount_Dialog(int id) async {
@@ -1010,7 +968,6 @@ class InProgressState extends State<InProgress> {
                           ElevatedButton(
                             onPressed: () async {
                               await deleteDiscount(product.id);
-                              // deleteDialog(product.id);
                               setState(() {
                                 products.remove(product);
                               });
@@ -1253,17 +1210,6 @@ class InProgressState extends State<InProgress> {
                                               ElevatedButton(
                                                 onPressed: () {
                                                   updateAllDiscounts();
-
-                                                  // updateDiscountToEnd(
-                                                  //   snapshot.data![index].id,
-                                                  //   snapshot
-                                                  //       .data![index].discount,
-                                                  //   snapshot
-                                                  //       .data![index].dateBegin,
-                                                  //   snapshot
-                                                  //       .data![index].idProduct,
-                                                  //   snapshot.data![index].indC,
-                                                  // );
                                                   EndDiscount_Dialog(
                                                       snapshot.data![index].id);
                                                 },

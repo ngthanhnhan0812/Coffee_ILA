@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:coffee/src/comments.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,8 +18,9 @@ List<Blog> parseBlog(String responseBody) {
 }
 
 Future<List<Blog>> fetchApprovedBlog() async {
+  int id = await getIdSup();
   final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=0&isStatus=1'));
+      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=1'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -29,8 +31,9 @@ Future<List<Blog>> fetchApprovedBlog() async {
 }
 
 Future<List<Blog>> fetchWaitingBlog() async {
+  int id = await getIdSup();
   final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=0&isStatus=0'));
+      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=0'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -41,8 +44,9 @@ Future<List<Blog>> fetchWaitingBlog() async {
 }
 
 Future<List<Blog>> fetchCancelledBlog() async {
+  int id = await getIdSup();
   final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=0&isStatus=2'));
+      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=2'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -53,8 +57,9 @@ Future<List<Blog>> fetchCancelledBlog() async {
 }
 
 Future<List<Blog>> fetchHiddenBlog() async {
+  int id = await getIdSup();
   final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=0&isStatus=3'));
+      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=3'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -280,15 +285,15 @@ class Blog_ApprovedState extends State<Blog_Approved> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, int index) {
                           return InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                var comments = await fetchAllCommentFromAPI(snapshot.data![index].id);
+                                // ignore: use_build_context_synchronously
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Blog_Approved_detail(
-                                            blog: snapshot.data![index],
-                                          )),
-                                );
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Blog_Approved_detail(
+                                                blog: snapshot.data![index], comments: comments)));
                               },
                               child: GridTile(
                                 footer: Container(
@@ -317,11 +322,10 @@ class Blog_ApprovedState extends State<Blog_Approved> {
                                 ),
                                 child: Image.network(
                                   snapshot.data![index].image,
-                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Image.asset(
-                                                        'assets/images/default-photo.jpg');
-                                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                        'assets/images/default-photo.jpg');
+                                  },
                                   fit: BoxFit.cover,
                                 ),
                               ));
@@ -409,11 +413,10 @@ class BlogWaitingState extends State<Blog_Waiting> {
                                 ),
                                 child: Image.network(
                                   snapshot.data![index].image,
-                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Image.asset(
-                                                        'assets/images/default-photo.jpg');
-                                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                        'assets/images/default-photo.jpg');
+                                  },
                                   fit: BoxFit.cover,
                                 ),
                               ));
@@ -489,7 +492,7 @@ class Blog_Cancelled extends StatelessWidget {
                                       ),
                                       Text(
                                         snapshot.data![index].createDate
-                                            .toString(), 
+                                            .toString(),
                                         style: const TextStyle(
                                             color: Colors.white),
                                       )
@@ -498,11 +501,10 @@ class Blog_Cancelled extends StatelessWidget {
                                 ),
                                 child: Image.network(
                                   snapshot.data![index].image,
-                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Image.asset(
-                                                        'assets/images/default-photo.jpg');
-                                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                        'assets/images/default-photo.jpg');
+                                  },
                                   fit: BoxFit.cover,
                                 ),
                               ));
@@ -573,7 +575,7 @@ class Blog_Hidden extends StatelessWidget {
                                     ),
                                     Text(
                                       snapshot.data![index].createDate
-                                          .toString(), 
+                                          .toString(),
                                       style:
                                           const TextStyle(color: Colors.white),
                                     )
@@ -582,11 +584,10 @@ class Blog_Hidden extends StatelessWidget {
                               ),
                               child: Image.network(
                                 snapshot.data![index].image,
-                                errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Image.asset(
-                                                        'assets/images/default-photo.jpg');
-                                                  },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                      'assets/images/default-photo.jpg');
+                                },
                                 fit: BoxFit.cover,
                               ),
                             ));
