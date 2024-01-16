@@ -1,5 +1,8 @@
-import 'package:coffee/bundle.dart';
+import 'dart:convert';
 
+import 'package:coffee/bundle.dart';
+import 'package:coffee/ip/ip.dart';
+import 'package:http/http.dart' as http;
 import 'package:coffee/src/orderWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +117,7 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
   List id = [];
   @override
   void initState() {
+    batchConfirmS();
     _tabController =
         TabController(length: 5, vsync: this, initialIndex: widget.initialPage);
 
@@ -195,5 +199,17 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
             ],
           )),
     );
+  }
+   batchConfirmS() async {
+  var ids =await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/Batch/autoCheckConfirmS?idSupplier=$ids'));
+        if (response.statusCode == 200) { 
+          print("kkk ok nekk");
+          return response.body;
+        }else{
+          throw Exception('Unexpected error occured!');
+        }
+    
   }
 }

@@ -394,7 +394,7 @@ class _Dashboard extends State<Dashboard> {
                                             size: 30,
                                           ),
                                           Text(
-                                            'Maketing',
+                                            'Marketing',
                                             style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 0, 0, 0),
