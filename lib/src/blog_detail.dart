@@ -84,7 +84,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
     if (response.statusCode == 200) {
       // ignore: avoid_print
       print(
-          'Add main comment successfully from The Rest API of blog_detail.dart');
+          'Add sub comment successfully from The Rest API of blog_detail.dart');
     }
     return response;
   }
@@ -241,6 +241,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                           }
                           return null;
                         },
+                        maxLines: null,
                         controller: cmt,
                         decoration: InputDecoration(
                           hintText: '',

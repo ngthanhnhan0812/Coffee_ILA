@@ -281,7 +281,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               } else {
                 updateAllDiscounts(widget.discount);
-                updateDialog();
+                updateDialog(isStatus: widget.discount.first.isStatus);
               }
             }
           },
@@ -475,7 +475,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
   }
 
   bool isUpdate = false;
-  Future<void> updateDialog() async {
+  Future<void> updateDialog({required int isStatus}) async {
     if (isUpdate = false ||
         _discount.text.isEmpty ||
         firstDate.text.isEmpty ||
@@ -545,8 +545,14 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                           style: TextStyle(color: Colors.blue),
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                          if(isStatus == 0){
+                            Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => Promotion(ind: 0)));
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Promotion(ind: 1)));
+                          }
+                          
                           setState(() {
                             final snackBar = SnackBar(
                                 content:

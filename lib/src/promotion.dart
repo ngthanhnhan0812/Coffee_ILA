@@ -20,8 +20,8 @@ List<Discount> parseDiscount(String responseBody) {
 
 Future<List<Discount>> fetchUpComingDiscount() async {
   var id = await getIdSup();
-  final response =
-      await http.get(Uri.parse('$u/api/Discount/FilterDiscount1?idSupplier=$id'));
+  final response = await http
+      .get(Uri.parse('$u/api/Discount/FilterDiscount1?idSupplier=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -34,8 +34,8 @@ Future<List<Discount>> fetchUpComingDiscount() async {
 
 Future<List<Discount>> fetchInProgressDiscount() async {
   var id = await getIdSup();
-  final response =
-      await http.get(Uri.parse('$u/api/Discount/FilterDiscount2?idSupplier=$id'));
+  final response = await http
+      .get(Uri.parse('$u/api/Discount/FilterDiscount2?idSupplier=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -48,8 +48,8 @@ Future<List<Discount>> fetchInProgressDiscount() async {
 
 Future<List<Discount>> fetchHasDoneDiscount() async {
   var id = await getIdSup();
-  final response =
-      await http.get(Uri.parse('$u/api/Discount/FilterDiscount3?idSupplier=$id'));
+  final response = await http
+      .get(Uri.parse('$u/api/Discount/FilterDiscount3?idSupplier=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -126,23 +126,29 @@ Future<void> deleteAllDiscounts(int indC) async {
   }
 }
 
-Future<void> updateAllDiscounts() async {
+Future<void> updateAllDiscounts(
+    id, indC, discount, dateBegin, idProduct) async {
   List<Discount> discounts = await fetchInProgressDiscount();
-  List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
-  for (var groupedDiscount in groupedDiscounts) {
-    List<Discount> discountsToUpdate =
-        discounts.where((d) => d.indC == groupedDiscount.indC).toList();
-
-    for (var discount in discountsToUpdate) {
-      await updateDiscountToEnd(
-        discount.id,
-        discount.discount,
-        discount.dateBegin,
-        discount.idProduct,
-        discount.indC,
-      );
-    }
+  List<int> idEndUpdate =
+      discounts.where((d) => d.indC == indC).map((d) => d.id).toList();
+  for (var id in idEndUpdate) {
+    await updateDiscountToEnd(id, discount, dateBegin, idProduct, indC);
   }
+  // List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
+  // for (var groupedDiscount in groupedDiscounts) {
+  //   List<Discount> discountsToUpdate =
+  //       discounts.where((d) => d.indC == groupedDiscount.indC).toList();
+
+  //   for (var discount in discountsToUpdate) {
+  //     await updateDiscountToEnd(
+  //       discount.id,
+  //       discount.discount,
+  //       discount.dateBegin,
+  //       discount.idProduct,
+  //       discount.indC,
+  //     );
+  //   }
+  // }
 }
 
 // ignore: must_be_immutable
@@ -1190,14 +1196,22 @@ class InProgressState extends State<InProgress> {
                                               ),
                                               IconButton(
                                                   onPressed: () {
-                                                    // Navigator.push(
-                                                    //     context,
-                                                    //     MaterialPageRoute(
-                                                    //         builder: (context) =>
-                                                    //             Edit_Promotion(
-                                                    //                 discount: snapshot
-                                                    //                         .data![
-                                                    //                     index])));
+                                                    List<Discount>
+                                                        similarDiscounts =
+                                                        discounts
+                                                            .where((d) =>
+                                                                d.indC ==
+                                                                groupedDiscounts[
+                                                                        index]
+                                                                    .indC)
+                                                            .toList();
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                Edit_Promotion(
+                                                                    discount:
+                                                                        similarDiscounts)));
                                                   },
                                                   icon: const Icon(
                                                     Icons.edit_note_outlined,
@@ -1209,7 +1223,17 @@ class InProgressState extends State<InProgress> {
                                               ),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  updateAllDiscounts();
+                                                  updateAllDiscounts(
+                                                      groupedDiscounts[index]
+                                                          .id,
+                                                      groupedDiscounts[index]
+                                                          .indC,
+                                                      groupedDiscounts[index]
+                                                          .discount,
+                                                      groupedDiscounts[index]
+                                                          .dateBegin,
+                                                      groupedDiscounts[index]
+                                                          .idProduct);
                                                   EndDiscount_Dialog(
                                                       snapshot.data![index].id);
                                                 },
