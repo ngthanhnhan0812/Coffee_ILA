@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:coffee/ip/ip.dart';
 import 'package:coffee/src/order.dart';
 import 'package:coffee/src/orderWidget.dart';
+import 'package:coffee/src/refund.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:readmore/readmore.dart';
-import 'package:http/http.dart' as http;    
+import 'package:http/http.dart' as http;
 
 class NewInvoice {
   int? idInvoice;
@@ -59,7 +60,7 @@ class _Orderdetail extends State<Orderdetail> {
   bool su = false;
   bool flagRefund = true;
   bool flagSuccess = true;
-
+  num? priceRefund =0;
   @override
   void initState() {
     super.initState();
@@ -77,7 +78,7 @@ class _Orderdetail extends State<Orderdetail> {
           toolbarHeight: 70,
           centerTitle: true,
           title: Text(
-            "Order Detail",
+            "Order Details",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -320,8 +321,8 @@ class _Orderdetail extends State<Orderdetail> {
                                                                         Text(
                                                                           snaphot
                                                                               .data![index]
-                                                                              .price
-                                                                              .toString(),
+                                                                              .price!
+                                                                              .toStringAsFixed(2),
                                                                           style: TextStyle(
                                                                               color: Color.fromARGB(255, 181, 57, 5),
                                                                               fontWeight: FontWeight.w500),
@@ -336,9 +337,9 @@ class _Orderdetail extends State<Orderdetail> {
                                                                   child: Text(
                                                                     // ignore: prefer_interpolation_to_compose_strings
                                                                     "   Unit price:" +
-                                                                        unitprice(
-                                                                            snaphot.data![index].price,
-                                                                            snaphot.data![index].amount).toStringAsFixed(2),
+                                                                        unitprice(snaphot.data![index].price,
+                                                                                snaphot.data![index].amount)
+                                                                            .toStringAsFixed(2),
                                                                     style: TextStyle(
                                                                         color: Color.fromARGB(
                                                                             255,
@@ -548,8 +549,8 @@ class _Orderdetail extends State<Orderdetail> {
                                                                                 FontWeight.w500)),
                                                                     Text(
                                                                         "Unit price: " +
-                                                                            unitprice(snaphot.data![index].price, snaphot.data![index].amount)
-                                                                                .toStringAsFixed(2),
+                                                                            unitprice(snaphot.data![index].price, snaphot.data![index].amount).toStringAsFixed(
+                                                                                2),
                                                                         style: TextStyle(
                                                                             color: Color.fromARGB(
                                                                                 255,
@@ -624,8 +625,7 @@ class _Orderdetail extends State<Orderdetail> {
                             ),
                           ),
                     chk
-                        ? SizedBox()
-                        : Padding(
+                        ? Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               child: Column(
@@ -641,12 +641,13 @@ class _Orderdetail extends State<Orderdetail> {
                                       children: [
                                         Text("Subtotal"),
                                         FutureBuilder(
-                                            future: totalOrderAmount(
-                                                widget.invoice.id),
+                                            future: totalODConfirmed(),
                                             builder: (context, snapshot) {
                                               if (snapshot.data != null) {
-                                                return Text(
+                                                 num a = int.parse(
                                                     snapshot.data!.toString());
+                                                return Text(
+                                                    a.toStringAsFixed(2));
                                               } else if (snapshot.hasError) {
                                                 return SizedBox();
                                               }
@@ -672,15 +673,21 @@ class _Orderdetail extends State<Orderdetail> {
                                               if (snapshot.data.toString() ==
                                                   "0") {
                                                 if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
                                                   return Text(
-                                                      snapshot.data.toString());
+                                                      a.toStringAsFixed(2));
                                                 } else if (snapshot.hasError) {
                                                   return SizedBox();
                                                 }
                                               } else {
                                                 if (snapshot.data != null) {
-                                                  return Text("- " +
-                                                      snapshot.data.toString());
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      "- ${a.toStringAsFixed(2)}");
                                                 } else {
                                                   return SizedBox();
                                                 }
@@ -699,10 +706,169 @@ class _Orderdetail extends State<Orderdetail> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Text("Discount for Admin(10%)"),
+                                        Text("Commission For Admin(10%)"),
+                                        FutureBuilder(
+                                            future: discountForILAConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                if (snapshot.data == "0.00") {
+                                                  return Text(snapshot.data!
+                                                      .toString());
+                                                } else {
+                                                  return Text('-' +
+                                                      snapshot.data!
+                                                          .toString());
+                                                }
+                                              } else {
+                                                return SizedBox();
+                                              }
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Total (",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Icon(
+                                                Icons.attach_money,
+                                                size: 15,
+                                              ),
+                                              Text(
+                                                ") :",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        FutureBuilder(
+                                            future: totalOfSupplierConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                return Text(
+                                                  snapshot.data.toString(),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Subtotal"),
+                                        FutureBuilder(
+                                            future: totalOrderAmount(
+                                                widget.invoice.id),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                num a = int.parse(
+                                                    snapshot.data!.toString());
+                                                return Text(
+                                                    a.toStringAsFixed(2));
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Voucher Supplier"),
+                                        FutureBuilder(
+                                            future: fetchVoucherPrice(
+                                                widget.invoice.voucherS),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data.toString() ==
+                                                  "0") {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      a.toStringAsFixed(2));
+                                                } else if (snapshot.hasError) {
+                                                  return SizedBox();
+                                                }
+                                              } else {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      "- ${a.toStringAsFixed(2)}");
+                                                } else {
+                                                  return SizedBox();
+                                                }
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Commission For Admin(10%)"),
                                         Text(discountForILA() == 0
-                                            ? discountForILA().toString()
-                                            : "- " + discountForILA().toString())
+                                            ? discountForILA()
+                                                .toStringAsFixed(2)
+                                            // ignore: prefer_interpolation_to_compose_strings
+                                            : "- " +
+                                                discountForILA()
+                                                    .toStringAsFixed(2))
                                       ],
                                     ),
                                   ),
@@ -742,7 +908,8 @@ class _Orderdetail extends State<Orderdetail> {
                                             builder: (context, snapshot) {
                                               if (snapshot.data != null) {
                                                 return Text(
-                                                  snapshot.data.toString(),
+                                                  snapshot.data
+                                                      .toString(),
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -750,7 +917,7 @@ class _Orderdetail extends State<Orderdetail> {
                                               } else if (snapshot.hasError) {
                                                 return SizedBox();
                                               }
-                                              return CircularProgressIndicator();
+                                              return SizedBox();
                                             })
                                       ],
                                     ),
@@ -869,7 +1036,6 @@ class _Orderdetail extends State<Orderdetail> {
             ],
           );
         });
- 
   }
 
   Future<void> confirm() async {
@@ -909,47 +1075,9 @@ class _Orderdetail extends State<Orderdetail> {
       );
     } else {
       if (flagRefund == true && flagSuccess == true) {
-      
-        return showDialog<void>(
-            context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  'Confirm Order',
-                  style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
-                ),
-                content: const SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('If you approve, you must  refund to ILA '),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: const Text(
-                      'Approve',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      supConfirmRefund();
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderWidget1()));
-                    },
-                  ),
-                ],
-              );
-            });
-      }
+        // ignore: use_build_context_synchronously
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>Refund(flagRefund:priceRefund ,idinvoice: widget.invoice.id,invoice: widget.invoice,)));
+        }
     }
   }
 
@@ -1012,9 +1140,48 @@ class _Orderdetail extends State<Orderdetail> {
     return sum;
   }
 
+  totalODConfirmed() async {
+    num sum = 0;
+    List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
+    for (int i = 0; i < inv.length; i++) {
+      if (inv[i].isStatus != 2) {
+        num e = inv[i].price!;
+        sum += e;
+      }
+    }
+
+    return sum;
+  }
+
+ discountForILAConfirmed() async {
+    num dis = await totalODConfirmed() * 1 / 10;
+
+    return dis.toStringAsFixed(2);
+  }
+
   discountForILA() {
     num dis = totalAmountOfProduct() * 1 / 10;
     return dis;
+  }
+
+  Future totalOfSupplierConfirmed() async {
+    num prvch ;
+    final b = await fetchVoucherPrice(widget.invoice.voucherS);
+    if(b == "0"){
+      prvch = 0;
+    }else{
+      prvch = num.parse(b.toString());
+    }
+    final d = await discountForILAConfirmed();
+    final e = await totalODConfirmed();
+    num c = num.parse(e.toString()) -num.parse(d.toString()) - prvch ;
+    num up;
+    if (c >= 0) {
+      up = c;
+    } else {
+      up = 0;
+    }
+    return up.toStringAsFixed(2);
   }
 
   Future totalOfSupplier() async {
@@ -1026,11 +1193,11 @@ class _Orderdetail extends State<Orderdetail> {
     } else {
       sup = 0;
     }
-    return sup;
+    return sup.toStringAsFixed(2);
   }
 
   Future<String> fetchVoucherPrice(lsvoucher) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=$ids&lsVoucherS=$lsvoucher '));
 
@@ -1062,31 +1229,24 @@ class _Orderdetail extends State<Orderdetail> {
         .replaceAll(' ', '')
         .replaceAll('false', '1')
         .replaceAll('true', '0');
- var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/Invoice/supplierPrepareInvoice?idSupplier=$ids&idInvoice=$a&strLsInvoiceD=$idinvoiced&strLsStatus=$valueinvoiced'));
     if (response.statusCode == 200) {
       var a = NewInvoice.fromJson(jsonDecode(response.body));
       flagRefund = a.flagRefund!;
       flagSuccess = a.flagSuccess!;
-
+      if(a.priceRefund !=null){
+priceRefund = a.priceRefund!;
+      }
+      
       return NewInvoice.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Unexpected error occured!');
     }
   }
 
-  supConfirmRefund() async {
-     var ids =await getIdSup();
-    var a = widget.invoice.id;
-    final response = await http.get(Uri.parse(
-        '$u/api/Invoice/supplierConfirmRefund?idInvoice=$a&idSupplier=$ids'));
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception('Unexpected error occured!');
-    }
-  }
+  
 }
 
 class OrderDetail1 extends StatefulWidget {
@@ -1100,6 +1260,7 @@ class OrderDetail1 extends StatefulWidget {
 
 class _OrderDetail1 extends State<OrderDetail1> {
   bool su = false;
+ 
   @override
   void initState() {
     super.initState();
@@ -1341,8 +1502,8 @@ class _OrderDetail1 extends State<OrderDetail1> {
                                                                         Text(
                                                                           snaphot
                                                                               .data![index]
-                                                                              .price
-                                                                              .toString(),
+                                                                              .price!
+                                                                              .toStringAsFixed(2),
                                                                           style: TextStyle(
                                                                               color: Color.fromARGB(255, 181, 57, 5),
                                                                               fontWeight: FontWeight.w500),
@@ -1357,7 +1518,7 @@ class _OrderDetail1 extends State<OrderDetail1> {
                                                                 child: Text(
                                                                     "Unit price: " +
                                                                         unitprice(snaphot.data![index].price, snaphot.data![index].amount)
-                                                                            .toString(),
+                                                                            .toStringAsFixed(2),
                                                                     style: TextStyle(
                                                                         color: Color.fromARGB(
                                                                             255,
@@ -1370,9 +1531,9 @@ class _OrderDetail1 extends State<OrderDetail1> {
                                                               SizedBox(
                                                                 height: 5,
                                                               ),
-                                                              snaphot.data![index]
+                                                             ( snaphot.data![index]
                                                                           .isStatus ==
-                                                                      2
+                                                                      1||snaphot.data![index].isStatus==3)
                                                                   ? Text(
                                                                       "Canceled",
                                                                       style: TextStyle(
@@ -1415,57 +1576,161 @@ class _OrderDetail1 extends State<OrderDetail1> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Total (",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                   Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Subtotal"),
+                                        FutureBuilder(
+                                            future: totalODConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                 num a = int.parse(
+                                                    snapshot.data!.toString());
+                                                return Text(
+                                                    a.toStringAsFixed(2));
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
                                     ),
-                                    Icon(
-                                      Icons.attach_money,
-                                      size: 15,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Voucher Supplier"),
+                                        FutureBuilder(
+                                            future: fetchVoucherPrice(
+                                                widget.invoice.voucherS),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data.toString() ==
+                                                  "0") {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      a.toStringAsFixed(2));
+                                                } else if (snapshot.hasError) {
+                                                  return SizedBox();
+                                                }
+                                              } else {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      "- ${a.toStringAsFixed(2)}");
+                                                } else {
+                                                  return SizedBox();
+                                                }
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
                                     ),
-                                    Text(
-                                      ") :",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Commission For Admin(10%)"),
+                                        FutureBuilder(
+                                            future: discountForILAConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                if (snapshot.data == "0.00") {
+                                                  return Text(snapshot.data!
+                                                      .toString());
+                                                } else {
+                                                  return Text('-' +
+                                                      snapshot.data!
+                                                          .toString());
+                                                }
+                                              } else {
+                                                return SizedBox();
+                                              }
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Total (",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Icon(
+                                                Icons.attach_money,
+                                                size: 15,
+                                              ),
+                                              Text(
+                                                ") :",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        FutureBuilder(
+                                            future: totalOfSupplierConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                return Text(
+                                                  snapshot.data.toString(),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              FutureBuilder(
-                                  future:
-                                      totalAmountOfProduct(widget.invoice.id),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Text(
-                                        snapshot.data!.toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Color.fromARGB(
-                                                255, 181, 57, 5)),
-                                      );
-                                    } else {
-                                      return Text("");
-                                    }
-                                  })
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Container(
+                       Container(
                       height: 1,
                       width: 380,
                       color: const Color.fromARGB(255, 243, 243, 243),
@@ -1496,9 +1761,67 @@ class _OrderDetail1 extends State<OrderDetail1> {
                 )),
         ));
   }
+ 
+totalODConfirmed() async {
+    num sum = 0;
+    List<InvoiceSupplier> inv = await fetchAllOrderdetailDelivered(widget.invoice.id);
+    for (int i = 0; i < inv.length; i++) {
+      if (inv[i].isStatus ==1 || inv[i].isStatus ==3) {
+       continue;
+      }else{
+ num e = inv[i].price!;
+        sum += e;
+      }
+    }
+
+    return sum;
+  }
+
+ discountForILAConfirmed() async {
+    num dis = await totalODConfirmed() * 1 / 10;
+
+    return dis.toStringAsFixed(2);
+  }
+
+  
+
+  Future totalOfSupplierConfirmed() async {
+    num prvch ;
+    final b = await fetchVoucherPrice(widget.invoice.voucherS);
+    if(b == "0"){
+      prvch = 0;
+    }else{
+      prvch = num.parse(b.toString());
+    }
+    final d = await discountForILAConfirmed();
+    final e = await totalODConfirmed();
+    num c = num.parse(e.toString()) -num.parse(d.toString()) - prvch ;
+    num up;
+    if (c >= 0) {
+      up = c;
+    } else {
+      up = 0;
+    }
+    return up.toStringAsFixed(2);
+  }
+
+ 
+
+  Future<String> fetchVoucherPrice(lsvoucher) async {
+    var ids = await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=$ids&lsVoucherS=$lsvoucher '));
+
+    if (response.statusCode == 200) {
+      print("vouchersup   " + response.body);
+      return response.body;
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
 
   totalAmountOfProduct(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -1511,7 +1834,7 @@ class _OrderDetail1 extends State<OrderDetail1> {
   }
 
   totalOrderAmount(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -1533,7 +1856,7 @@ class _OrderDetail1 extends State<OrderDetail1> {
   }
 
   refundtoCustomer(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -1761,69 +2084,56 @@ class _OrderDetail2 extends State<OrderDetail2> {
                                                                   fontSize: 12),
                                                             ),
                                                             Container(
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .attach_money,
-                                                                    size: 15,
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            181,
-                                                                            57,
-                                                                            5),
-                                                                  ),
-                                                                  Text(
-                                                                    snaphot
-                                                                        .data![
-                                                                            index]
-                                                                        .price
-                                                                        .toString(),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .attach_money,
+                                                                          size:
+                                                                              15,
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              181,
+                                                                              57,
+                                                                              5),
+                                                                        ),
+                                                                        Text(
+                                                                          snaphot
+                                                                              .data![index]
+                                                                              .price!
+                                                                              .toStringAsFixed(2),
+                                                                          style: TextStyle(
+                                                                              color: Color.fromARGB(255, 181, 57, 5),
+                                                                              fontWeight: FontWeight.w500),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                          ],
+                                                        ),
+                                                         SizedBox(
+                                                                height: 18,
+                                                                child: Text(
+                                                                    "Unit price: " +
+                                                                        unitprice(snaphot.data![index].price, snaphot.data![index].amount)
+                                                                            .toStringAsFixed(2),
                                                                     style: TextStyle(
                                                                         color: Color.fromARGB(
                                                                             255,
-                                                                            181,
-                                                                            57,
-                                                                            5),
-                                                                        fontWeight:
-                                                                            FontWeight.w500),
-                                                                  )
-                                                                ],
+                                                                            125,
+                                                                            125,
+                                                                            125),
+                                                                        fontSize:
+                                                                            12)),
                                                               ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                          height: 18,
-                                                          child: Text(
-                                                              "Unit price: " +
-                                                                  unitprice(
-                                                                          snaphot
-                                                                              .data![
-                                                                                  index]
-                                                                              .price,
-                                                                          snaphot
-                                                                              .data![
-                                                                                  index]
-                                                                              .amount)
-                                                                      .toString(),
-                                                              style: TextStyle(
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          125,
-                                                                          125,
-                                                                          125),
-                                                                  fontSize:
-                                                                      12)),
-                                                        ),
                                                         SizedBox(
                                                           height: 5,
                                                         ),
-                                                        snaphot.data![index]
+                                                       ( snaphot.data![index]
                                                                     .isStatus ==
-                                                                2
+                                                                2||snaphot.data![index]
+                                                                    .isStatus ==
+                                                                9 )
                                                             ? Text(
                                                                 "Canceled",
                                                                 style: TextStyle(
@@ -1871,53 +2181,160 @@ class _OrderDetail2 extends State<OrderDetail2> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          child: Row(
-                            children: [
-                              Text(
-                                "Total (",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Icon(
-                                Icons.attach_money,
-                                size: 15,
-                              ),
-                              Text(
-                                ") :",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                        FutureBuilder(
-                            future: totalAmountOfProduct(widget.invoice.id),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return Text(
-                                  snapshot.data!.toString(),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 181, 57, 5),
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Subtotal"),
+                                        FutureBuilder(
+                                            future: totalODConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                 num a = int.parse(
+                                                    snapshot.data!.toString());
+                                                return Text(
+                                                    a.toStringAsFixed(2));
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
                                   ),
-                                );
-                              } else {
-                                return Text("0");
-                              }
-                            })
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Container(
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Voucher Supplier"),
+                                        FutureBuilder(
+                                            future: fetchVoucherPrice(
+                                                widget.invoice.voucherS),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data.toString() ==
+                                                  "0") {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      a.toStringAsFixed(2));
+                                                } else if (snapshot.hasError) {
+                                                  return SizedBox();
+                                                }
+                                              } else {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      "- ${a.toStringAsFixed(2)}");
+                                                } else {
+                                                  return SizedBox();
+                                                }
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Commission For Admin(10%)"),
+                                        FutureBuilder(
+                                            future: discountForILAConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                if (snapshot.data == "0.00") {
+                                                  return Text(snapshot.data!
+                                                      .toString());
+                                                } else {
+                                                  return Text('-' +
+                                                      snapshot.data!
+                                                          .toString());
+                                                }
+                                              } else {
+                                                return SizedBox();
+                                              }
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Total (",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Icon(
+                                                Icons.attach_money,
+                                                size: 15,
+                                              ),
+                                              Text(
+                                                ") :",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        FutureBuilder(
+                                            future: totalOfSupplierConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                return Text(
+                                                  snapshot.data.toString(),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                         Container(
                 height: 1,
                 width: 380,
                 color: const Color.fromARGB(255, 243, 243, 243),
@@ -1950,7 +2367,7 @@ class _OrderDetail2 extends State<OrderDetail2> {
   }
 
   totalAmountOfProduct(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -1963,7 +2380,7 @@ class _OrderDetail2 extends State<OrderDetail2> {
   }
 
   totalOrderAmount(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -1974,9 +2391,64 @@ class _OrderDetail2 extends State<OrderDetail2> {
       throw Exception('Unexpected error occured!');
     }
   }
+totalODConfirmed() async {
+    num sum = 0;
+    List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
+    for (int i = 0; i < inv.length; i++) {
+      if (inv[i].isStatus != 2) {
+        num e = inv[i].price!;
+        sum += e;
+      }
+    }
+
+    return sum;
+  }
+
+ discountForILAConfirmed() async {
+    num dis = await totalODConfirmed() * 1 / 10;
+
+    return dis.toStringAsFixed(2);
+  }
+
+  
+
+  Future totalOfSupplierConfirmed() async {
+    num prvch ;
+    final b = await fetchVoucherPrice(widget.invoice.voucherS);
+    if(b == "0"){
+      prvch = 0;
+    }else{
+      prvch = num.parse(b.toString());
+    }
+    final d = await discountForILAConfirmed();
+    final e = await totalODConfirmed();
+    num c = num.parse(e.toString()) -num.parse(d.toString()) - prvch ;
+    num up;
+    if (c >= 0) {
+      up = c;
+    } else {
+      up = 0;
+    }
+    return up.toStringAsFixed(2);
+  }
+
+ 
+
+  Future<String> fetchVoucherPrice(lsvoucher) async {
+    var ids = await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=$ids&lsVoucherS=$lsvoucher '));
+
+    if (response.statusCode == 200) {
+      print("vouchersup   " + response.body);
+      return response.body;
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
 
   refundtoCustomer(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -2204,63 +2676,48 @@ class _OrderDetail4 extends State<OrderDetail4> {
                                                                   fontSize: 12),
                                                             ),
                                                             Container(
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .attach_money,
-                                                                    size: 15,
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            181,
-                                                                            57,
-                                                                            5),
-                                                                  ),
-                                                                  Text(
-                                                                    snaphot
-                                                                        .data![
-                                                                            index]
-                                                                        .price
-                                                                        .toString(),
-                                                                    style: TextStyle(
-                                                                        color: Color.fromARGB(
-                                                                            255,
-                                                                            181,
-                                                                            57,
-                                                                            5),
-                                                                        fontWeight:
-                                                                            FontWeight.w500),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .attach_money,
+                                                                          size:
+                                                                              15,
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              181,
+                                                                              57,
+                                                                              5),
+                                                                        ),
+                                                                        Text(
+                                                                          snaphot
+                                                                              .data![index]
+                                                                              .price!
+                                                                              .toStringAsFixed(2),
+                                                                          style: TextStyle(
+                                                                              color: Color.fromARGB(255, 181, 57, 5),
+                                                                              fontWeight: FontWeight.w500),
+                                                                        )
+                                                                      ],
+                                                                    ),
                                                                   )
-                                                                ],
-                                                              ),
-                                                            )
                                                           ],
                                                         ),
                                                         SizedBox(
-                                                          height: 18,
-                                                          child: Text(
-                                                              "Unit price: " +
-                                                                  unitprice(
-                                                                          snaphot
-                                                                              .data![
-                                                                                  index]
-                                                                              .price,
-                                                                          snaphot
-                                                                              .data![
-                                                                                  index]
-                                                                              .amount)
-                                                                      .toString(),
-                                                              style: TextStyle(
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          125,
-                                                                          125,
-                                                                          125),
-                                                                  fontSize:
-                                                                      12)),
-                                                        ),
+                                                                height: 18,
+                                                                child: Text(
+                                                                    "Unit price: " +
+                                                                        unitprice(snaphot.data![index].price, snaphot.data![index].amount)
+                                                                            .toStringAsFixed(2),
+                                                                    style: TextStyle(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            125,
+                                                                            125,
+                                                                            125),
+                                                                        fontSize:
+                                                                            12)),
+                                                              ),
                                                         SizedBox(
                                                           height: 5,
                                                         ),
@@ -2328,7 +2785,7 @@ class _OrderDetail4 extends State<OrderDetail4> {
   }
 
   totalAmountOfProduct(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -2341,7 +2798,7 @@ class _OrderDetail4 extends State<OrderDetail4> {
   }
 
   totalOrderAmount(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -2354,7 +2811,7 @@ class _OrderDetail4 extends State<OrderDetail4> {
   }
 
   refundtoCustomer(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -2582,63 +3039,48 @@ class _OrderDetail5 extends State<OrderDetail5> {
                                                                   fontSize: 12),
                                                             ),
                                                             Container(
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .attach_money,
-                                                                    size: 15,
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            181,
-                                                                            57,
-                                                                            5),
-                                                                  ),
-                                                                  Text(
-                                                                    snaphot
-                                                                        .data![
-                                                                            index]
-                                                                        .price
-                                                                        .toString(),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .attach_money,
+                                                                          size:
+                                                                              15,
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              181,
+                                                                              57,
+                                                                              5),
+                                                                        ),
+                                                                        Text(
+                                                                          snaphot
+                                                                              .data![index]
+                                                                              .price!
+                                                                              .toStringAsFixed(2),
+                                                                          style: TextStyle(
+                                                                              color: Color.fromARGB(255, 181, 57, 5),
+                                                                              fontWeight: FontWeight.w500),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                          ],
+                                                        ),
+                                                       SizedBox(
+                                                                height: 18,
+                                                                child: Text(
+                                                                    "Unit price: " +
+                                                                        unitprice(snaphot.data![index].price, snaphot.data![index].amount)
+                                                                            .toStringAsFixed(2),
                                                                     style: TextStyle(
                                                                         color: Color.fromARGB(
                                                                             255,
-                                                                            181,
-                                                                            57,
-                                                                            5),
-                                                                        fontWeight:
-                                                                            FontWeight.w500),
-                                                                  )
-                                                                ],
+                                                                            125,
+                                                                            125,
+                                                                            125),
+                                                                        fontSize:
+                                                                            12)),
                                                               ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                          height: 18,
-                                                          child: Text(
-                                                              "Unit price: " +
-                                                                  unitprice(
-                                                                          snaphot
-                                                                              .data![
-                                                                                  index]
-                                                                              .price,
-                                                                          snaphot
-                                                                              .data![
-                                                                                  index]
-                                                                              .amount)
-                                                                      .toString(),
-                                                              style: TextStyle(
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          125,
-                                                                          125,
-                                                                          125),
-                                                                  fontSize:
-                                                                      12)),
-                                                        ),
                                                         SizedBox(
                                                           height: 5,
                                                         ),
@@ -2692,6 +3134,161 @@ class _OrderDetail5 extends State<OrderDetail5> {
                 ),
               ),
               Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Subtotal"),
+                                        FutureBuilder(
+                                            future: totalODConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                 num a = int.parse(
+                                                    snapshot.data!.toString());
+                                                return Text(
+                                                    a.toStringAsFixed(2));
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Voucher Supplier"),
+                                        FutureBuilder(
+                                            future: fetchVoucherPrice(
+                                                widget.invoice.voucherS),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data.toString() ==
+                                                  "0") {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      a.toStringAsFixed(2));
+                                                } else if (snapshot.hasError) {
+                                                  return SizedBox();
+                                                }
+                                              } else {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      "- ${a.toStringAsFixed(2)}");
+                                                } else {
+                                                  return SizedBox();
+                                                }
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Commission For Admin(10%)"),
+                                        FutureBuilder(
+                                            future: discountForILAConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                if (snapshot.data == "0.00") {
+                                                  return Text(snapshot.data!
+                                                      .toString());
+                                                } else {
+                                                  return Text('-' +
+                                                      snapshot.data!
+                                                          .toString());
+                                                }
+                                              } else {
+                                                return SizedBox();
+                                              }
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Total (",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Icon(
+                                                Icons.attach_money,
+                                                size: 15,
+                                              ),
+                                              Text(
+                                                ") :",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        FutureBuilder(
+                                            future: totalOfSupplierConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                return Text(
+                                                  snapshot.data.toString(),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+          
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   child: Padding(
@@ -2717,9 +3314,65 @@ class _OrderDetail5 extends State<OrderDetail5> {
           )),
         ));
   }
+totalODConfirmed() async {
+    num sum = 0;
+    List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
+    for (int i = 0; i < inv.length; i++) {
+      if (inv[i].isStatus != 2) {
+        num e = inv[i].price!;
+        sum += e;
+      }
+    }
+
+    return sum;
+  }
+
+ discountForILAConfirmed() async {
+    num dis = await totalODConfirmed() * 1 / 10;
+
+    return dis.toStringAsFixed(2);
+  }
+
+  
+
+  Future totalOfSupplierConfirmed() async {
+    num prvch ;
+    final b = await fetchVoucherPrice(widget.invoice.voucherS);
+    if(b == "0"){
+      prvch = 0;
+    }else{
+      prvch = num.parse(b.toString());
+    }
+    final d = await discountForILAConfirmed();
+    final e = await totalODConfirmed();
+    num c = num.parse(e.toString()) -num.parse(d.toString()) - prvch ;
+    num up;
+    if (c >= 0) {
+      up = c;
+    } else {
+      up = 0;
+    }
+    return up.toStringAsFixed(2);
+  }
+
+ 
+
+  Future<String> fetchVoucherPrice(lsvoucher) async {
+    var ids = await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=$ids&lsVoucherS=$lsvoucher '));
+
+    if (response.statusCode == 200) {
+      print("vouchersup   " + response.body);
+      return response.body;
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+
 
   totalAmountOfProduct(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -2732,7 +3385,7 @@ class _OrderDetail5 extends State<OrderDetail5> {
   }
 
   totalOrderAmount(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
 
@@ -2745,7 +3398,7 @@ class _OrderDetail5 extends State<OrderDetail5> {
   }
 
   refundtoCustomer(idinvoice) async {
-     var ids =await getIdSup();
+    var ids = await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
 

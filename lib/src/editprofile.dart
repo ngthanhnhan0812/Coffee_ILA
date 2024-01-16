@@ -86,8 +86,8 @@ class _Editprofile extends State<Editprofile> {
                             ? Image.network(
                                 _image.toString(),
                                 errorBuilder: (context, url, error) =>
-                                    Image.network(
-                                  "https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",
+                                    Image.asset(
+                                  "assets/images/default-product.jpg",
                                   fit: BoxFit.fitWidth,
                                 ),
                                 fit: BoxFit.fitWidth,
@@ -106,7 +106,7 @@ class _Editprofile extends State<Editprofile> {
                             decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(80)),
-                                color: Color.fromARGB(255, 181, 57, 5),
+                                color: Color.fromARGB(255, 195, 195, 195),
                                 image: avt == null
                                     ? DecorationImage(
                                         image: NetworkImage(_avatar!),
@@ -371,7 +371,7 @@ class _Editprofile extends State<Editprofile> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your phone number';
                               }
-                              if (value.length >= 10) {
+                              if (value.length >= 11) {
                                 return 'Enter a valid phone number';
                               }
                               if (!RegExp(r"^[0-9]+$").hasMatch(value)) {

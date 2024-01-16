@@ -107,7 +107,7 @@ class _Productdetail extends State<Productdetail> {
                   height: 300,
                   child: Image.network(
                     i.toString(),
-                   errorBuilder: (context, url, error) => Image.network("https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",fit: BoxFit.fitWidth,),
+                   errorBuilder: (context, url, error) => Image.network("assets/images/default-product.jpg",fit: BoxFit.fitWidth,),
     
                     fit: BoxFit.contain,
                   ),
@@ -309,7 +309,7 @@ class _Productdetail extends State<Productdetail> {
                Row(
                 children: [
                   SizedBox(width: 60,height: 60,
-                  child: Image(image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/f3ab4ef008ef86bdfb3fcce1403e9fb2.png?alt=media&token=60b13d2b-c47f-48f2-bd11-ff73ad0956e4&_gl=1*uujh7n*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5NjkyNzE1NC42Ni4xLjE2OTY5MjcxNjcuNDcuMC4w'),fit: BoxFit.fill,),
+                  child: Image(image: AssetImage('assets/images/ila.png'),fit: BoxFit.fill,),
                   ),
                   Text('Reviews',style: TextStyle(color:Color.fromARGB(255, 181, 57, 5),fontSize: 20,fontWeight: FontWeight.bold ),),
                   SizedBox(width: 120,),
@@ -586,7 +586,7 @@ leading: IconButton(
                   height: 300,
                   child: Image.network(
                     i.toString(),
-                   errorBuilder: (context, url, error) => Image.network("https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/Untitled%20design.png?alt=media&token=f8691876-f45e-4418-b0c5-f98fb2959265",fit: BoxFit.fitWidth,),
+                   errorBuilder: (context, url, error) => Image.asset("assets/images/default-product.jpg",fit: BoxFit.fitWidth,),
     
                     fit: BoxFit.contain,
                   ),

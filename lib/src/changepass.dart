@@ -23,15 +23,16 @@ class _Changepassword extends State<Changepassword> {
   bool _passwordVisible = false;
   bool _passwordVisible1 = false;
   bool _passwordVisible2 = false;
-  String? opa;
+ 
  final TextEditingController _newpassword = TextEditingController();
 final  TextEditingController _newpasswordconform = TextEditingController();
  final TextEditingController _oldpassword = TextEditingController();
   final picker = ImagePicker();
+  String changePass = "false";
   @override
   void initState() {
     super.initState();
-    opa = widget.profile.password;
+   
     _passwordVisible = false;
   }
 
@@ -214,92 +215,80 @@ final  TextEditingController _newpasswordconform = TextEditingController();
   }
 
   Future<void> _showMyDialog() async {
-    if (_oldpassword.text == opa &&
-        _newpassword.text == _newpasswordconform.text &&
-        _newpassword.text != '') {
-      showDialog(
+   await getImageUrl(widget.profile.id!, _newpassword.text, _oldpassword.text);
+   if(changePass == "true" && _newpassword.text == _newpasswordconform.text){
+    // ignore: use_build_context_synchronously
+    showDialog<void>(
           context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(
+                'Change Password Success',
+                style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+              ),
+              content: const SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Change Password success'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Dashboard()));
+                  },
+                ),
+              ],
             );
           });
-      await getImageUrl(widget.profile.id!,_newpassword.text,_oldpassword.text).whenComplete(
-        () {
-          return showDialog<void>(
-            context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text(
-                  'Change Password',
-                  style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
-                ),
-                content: const SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('Success'),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text(
-                      'Approve',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const Dashboard()));
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    } else {
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text(
-              'Change Password',
-              style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
-            ),
-            content: const SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text('Password change failed'),
-                ],
+   }else{
+    // ignore: use_build_context_synchronously
+    showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(
+                'Change Password Failed',
+                style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
               ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.blue),
+              content: const SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Change Password Failed'),
+                  ],
                 ),
-                onPressed: () {
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onPressed: () {
                   Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
+                  },
+                ),
+              ],
+            );
+          });
+   }
   }
 
   Future<http.Response> getImageUrl(int idSup , String newpass, String oldpass) async {
    
 
     final response =
-        await http.get(Uri.parse('$u/api/Supplier/SupChangePass?idSUp=$idSup&newPassword=$newpass&oldPassword=$oldpass'),
+        await http.get(Uri.parse('$u/api/Supplier/SupChangePass?idSup=$idSup&newPassword=$newpass&oldPassword=$oldpass'),
         );
-           
+        changePass = response.body;   
 
     return response;
   }
