@@ -21,7 +21,7 @@ class InvoiceSupplier {
   int? idInvoiceDetail;
   String? address;
   int? idSupplier;
-  int? phone;
+  String? phone;
   String? titleSup;
   int? status;
   double? refundtoCustomers;

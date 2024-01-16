@@ -135,8 +135,8 @@ void initState(){
                                                     Row(
                                                       children: [
                                                         Text(
-                                                          snapshot.data!.price
-                                                              .toString(),
+                                                          snapshot.data!.price!
+                                                             .toStringAsFixed(2),
                                                           style: TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -219,10 +219,12 @@ void initState(){
                                             future:
                                                 totalOrderAmount(snapshot.data![inde].id),
                                             builder: (context, snapshot) {
-                                             if(snapshot.hasData){
+                                            if(snapshot.data != null){
+                                               if(snapshot.hasData){
+                                              num a = int.parse(snapshot.data!.toString());
                                                return Text(
                                                 "Total:" +
-                                                    snapshot.data!.toString(),
+                                                    a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         255, 45, 45, 45),
@@ -233,6 +235,9 @@ void initState(){
                                              } else if(snapshot.hasError){
                                               return SizedBox();
                                              }
+                                            }else{
+                                              return SizedBox();
+                                            }
                                              return SizedBox();
                                             }),
                                       ],
@@ -378,7 +383,8 @@ void initState(){
                                             snapshot.data![inde].id),
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
-                                            return Row(
+                                           if(snapshot.data !=null){
+                                             return Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               crossAxisAlignment:
@@ -440,8 +446,8 @@ void initState(){
                                                     Row(
                                                       children: [
                                                         Text(
-                                                          snapshot.data!.price
-                                                              .toString(),
+                                                          snapshot.data!.price!
+                                                              .toStringAsFixed(2),
                                                           style: TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -458,9 +464,12 @@ void initState(){
                                                 ),
                                               ],
                                             );
+                                        
+                                           } else{
+                                            return SizedBox();
+                                           }
                                           } else if (snapshot.hasError) {
-                                            return Text(
-                                                snapshot.error.toString());
+                                            return SizedBox();
                                           }
                                           return CircularProgressIndicator();
                                         }),
@@ -506,7 +515,9 @@ void initState(){
                                             future:
                                                 quatiDelivery(snapshot.data![inde].id),
                                             builder: (context, snapshot) {
-                                              return Text(
+                                            if(snapshot.hasData){
+                                              if(snapshot.data !=null){
+                                                  return Text(
                                                 snapshot.data.toString() +
                                                     " Products",
                                                 style: TextStyle(
@@ -516,14 +527,25 @@ void initState(){
                                                     fontWeight:
                                                         FontWeight.bold),
                                               );
+                                              }else{
+                                                return SizedBox();
+                                              }
+                                            }else if(snapshot.hasError){
+                                              return SizedBox();
+                                            }
+                                            return SizedBox();
                                             }),
                                         FutureBuilder(
                                             future:
                                                 totalDelivery(snapshot.data![inde].id),
                                             builder: (context, snapshot) {
-                                              return Text(
+                                             
+                                            if(snapshot.hasData){
+                                              if( snapshot.data != null){
+                                                 num a = int.parse(snapshot.data!.toString());
+                                                  return Text(
                                                 "Total:" +
-                                                    snapshot.data.toString(),
+                                                    a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         255, 45, 45, 45),
@@ -531,6 +553,13 @@ void initState(){
                                                     fontWeight:
                                                         FontWeight.bold),
                                               );
+                                              }else {
+                                                return SizedBox();
+                                              }
+                                            }else if(snapshot.hasError){
+                                              return SizedBox();
+                                            }
+                                           return SizedBox();
                                             }),
                                       ],
                                     ),
@@ -709,11 +738,11 @@ void initState(){
                                                     Text("x" +
                                                         snapshot.data!.amount
                                                             .toString()),
-                                                    Row(
+                                                     Row(
                                                       children: [
                                                         Text(
-                                                          snapshot.data!.price
-                                                              .toString(),
+                                                          snapshot.data!.price!
+                                                              .toStringAsFixed(2),
                                                           style: TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -774,11 +803,13 @@ void initState(){
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        FutureBuilder(
+                                       FutureBuilder(
                                             future:
                                                 quatiDelivery(snapshot.data![inde].id),
                                             builder: (context, snapshot) {
-                                              return Text(
+                                            if(snapshot.hasData){
+                                              if(snapshot.data !=null){
+                                                  return Text(
                                                 snapshot.data.toString() +
                                                     " Products",
                                                 style: TextStyle(
@@ -788,14 +819,25 @@ void initState(){
                                                     fontWeight:
                                                         FontWeight.bold),
                                               );
+                                              }else{
+                                                return SizedBox();
+                                              }
+                                            }else if(snapshot.hasError){
+                                              return SizedBox();
+                                            }
+                                            return SizedBox();
                                             }),
-                                        FutureBuilder(
+                                       FutureBuilder(
                                             future:
                                                 totalDelivery(snapshot.data![inde].id),
                                             builder: (context, snapshot) {
-                                              return Text(
+                                             
+                                            if(snapshot.hasData){
+                                              if( snapshot.data != null){
+                                                 num a = int.parse(snapshot.data!.toString());
+                                                  return Text(
                                                 "Total:" +
-                                                    snapshot.data.toString(),
+                                                    a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         255, 45, 45, 45),
@@ -803,6 +845,13 @@ void initState(){
                                                     fontWeight:
                                                         FontWeight.bold),
                                               );
+                                              }else {
+                                                return SizedBox();
+                                              }
+                                            }else if(snapshot.hasError){
+                                              return SizedBox();
+                                            }
+                                           return SizedBox();
                                             }),
                                       ],
                                     ),
@@ -1023,7 +1072,7 @@ void initState(){
                                       height: 10,
                                     ),
                                     FutureBuilder(
-                                        future: fetchOrderDetailStatus2(
+                                        future: fetchOrderDetail(
                                             snapshot.data![inde].id),
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
@@ -1086,11 +1135,11 @@ void initState(){
                                                     Text("x" +
                                                         snapshot.data!.amount
                                                             .toString()),
-                                                    Row(
+                                                     Row(
                                                       children: [
                                                         Text(
-                                                          snapshot.data!.price
-                                                              .toString(),
+                                                          snapshot.data!.price!
+                                                              .toStringAsFixed(2),
                                                           style: TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -1166,25 +1215,7 @@ void initState(){
                                                         FontWeight.bold),
                                               );
                                             }),
-                                        FutureBuilder(
-                                            future:
-                                                totalOrderAmount(snapshot.data![inde].id),
-                                            builder: (context, snapshot) {
-                                              return Text(
-                                                "Total:" +
-                                                    snapshot.data.toString(),
-                                                style: TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 45, 45, 45),
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              );
-                                            }),
-                                      ],
-                                    ),
-                                   
-                                    Text(
+                                       Text(
                                       'Canceled',
                                       style: TextStyle(
                                           color: const Color.fromARGB(
@@ -1193,6 +1224,10 @@ void initState(){
                                           fontSize: 13,
                                           fontWeight: FontWeight.w500),
                                     ),
+                                      ],
+                                    ),
+                                   
+                                   
                                     SizedBox(
                                       height: 10,
                                     ),
@@ -1345,8 +1380,8 @@ void initState(){
                                                     Row(
                                                       children: [
                                                         Text(
-                                                          snapshot.data!.price
-                                                              .toString(),
+                                                          snapshot.data!.price!
+                                                              .toStringAsFixed(2),
                                                           style: TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -1426,9 +1461,13 @@ void initState(){
                                             future:
                                                 totalDelivery(snapshot.data![inde].id),
                                             builder: (context, snapshot) {
-                                              return Text(
+                                             
+                                            if(snapshot.hasData){
+                                              if( snapshot.data != null){
+                                                 num a = int.parse(snapshot.data!.toString());
+                                                  return Text(
                                                 "Total:" +
-                                                    snapshot.data.toString(),
+                                                    a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         255, 45, 45, 45),
@@ -1436,6 +1475,13 @@ void initState(){
                                                     fontWeight:
                                                         FontWeight.bold),
                                               );
+                                              }else {
+                                                return SizedBox();
+                                              }
+                                            }else if(snapshot.hasError){
+                                              return SizedBox();
+                                            }
+                                           return SizedBox();
                                             }),
                                       ],
                                     ),
@@ -1596,7 +1642,7 @@ Future<List<InvoiceSupplier>> fetchInvoiceSupplierCanceled() async {
     List jsonResponse = await json.decode(response.body);
     List jsonStatus = [];
     for (int i = 0; i < jsonResponse.length; i++) {
-      if (jsonResponse[i]['status'] ==9 ) {
+      if (jsonResponse[i]['status'] == 9 ) {
         jsonStatus.add(jsonResponse[i]);
       }
     }
@@ -1679,24 +1725,7 @@ Future<List<InvoiceSupplier>> fetchAllOrderdetailDelivered(idinvoice) async {
     throw Exception('Unexpected error occured!');
   }
 }
-Future<List<InvoiceSupplier>> fetchAllOrderdetailCancel(idinvoice) async {
-   var ids =await getIdSup();
-  final response = await http.get(Uri.parse(
-      '$u/api/InvoiceSupplier/getDetailOrder?id=$idinvoice&idSupplier=$ids'));
 
-  if (response.statusCode == 200) {
-    List jsonResponse = await json.decode(response.body);
-    List jsonDelivered=[];
-for(int i= 0; i<jsonResponse.length;i++){
-  if(jsonResponse[i]["isStatus"] ==2){
-jsonDelivered.add(jsonResponse[i]);
-  }
-}
-    return jsonDelivered.map((data) => InvoiceSupplier.fromJson(data)).toList();
-  } else {
-    throw Exception('Unexpected error occured!');
-  }
-}
 Future<InvoiceSupplier> fetchOrderDetail(idinvoice) async {
    var ids =await getIdSup();
   final response = await http.get(Uri.parse(
