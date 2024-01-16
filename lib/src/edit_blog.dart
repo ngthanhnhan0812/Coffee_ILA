@@ -320,19 +320,6 @@ class _Edit_BlogState extends State<Edit_Blog> {
     );
   }
 
-  // ignore: non_constant_identifier_names
-  // CheckImageSelected() {
-  //   if (img == null) {
-  //     setState(() {
-  //       imgCheck = false;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       imgCheck = true;
-  //     });
-  //   }
-  // }
-
   chooseImage() async {
     final pickedFile =
         await picker.pickImage(source: ImageSource.gallery, imageQuality: 30);

@@ -292,7 +292,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
     );
   }
 
-  // ignore: non_constant_identifier_names
+// ignore: non_constant_identifier_names
   Future<void> Dialog_HideBlog() async {
     // ignore: unrelated_type_equality_checks
     showDialog(

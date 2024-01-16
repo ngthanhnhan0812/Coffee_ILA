@@ -18,7 +18,7 @@ class FetchProduct {
 
   var data = [];
   List<Product> results = [];
-// ignore: non_constant_identifier_names
+  // ignore: non_constant_identifier_names
   Future<List<Product>> fetch_prodProduct({String? query}) async {
     var id = await getIdSup();
     final response = await http.get(Uri.parse(
@@ -48,11 +48,8 @@ class FetchProduct {
 
 // ignore: camel_case_types
 class New_Prod_Product extends StatefulWidget {
-  // final List<Product> initialProducts;
-  // final Function(List<Discount>) onProductsAdded;
   const New_Prod_Product({
     Key? key,
-    // required this.initialProducts,
   }) : super(key: key);
 
   @override
@@ -90,7 +87,6 @@ class _New_Prod_Product extends State<New_Prod_Product> {
   @override
   void initState() {
     super.initState();
-    // selectedProducts = widget.initialProducts;
   }
 
   @override

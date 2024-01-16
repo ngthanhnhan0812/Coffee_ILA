@@ -32,8 +32,8 @@ class _NewBlogState extends State<NewBlog> {
   File? img;
   bool? imgCheck;
 
-  TextEditingController _title = TextEditingController();
-  TextEditingController _description = TextEditingController();
+  final TextEditingController _title = TextEditingController();
+  final TextEditingController _description = TextEditingController();
 
   final picker = ImagePicker();
 
@@ -249,8 +249,8 @@ class _NewBlogState extends State<NewBlog> {
                               return 'Please enter content here';
                             } else if (value.length > 2000) {
                               return 'The limitation of description is 2000';
-                            } else if (value.contains('  ')){
-                              return 'Check your space between'; 
+                            } else if (value.contains('  ')) {
+                              return 'Check your space between';
                             }
                             return null;
                           },
@@ -292,7 +292,7 @@ class _NewBlogState extends State<NewBlog> {
     );
   }
 
-  // ignore: non_constant_identifier_names
+// ignore: non_constant_identifier_names
   CheckImageSelected() {
     if (img == null) {
       setState(() {

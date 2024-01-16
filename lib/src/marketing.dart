@@ -17,8 +17,8 @@ class _Marketing extends State<Marketing> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => const Dashboard()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const Dashboard()));
             },
             icon: const Icon(Icons.arrow_back_ios)),
         toolbarHeight: 70,
@@ -37,8 +37,7 @@ class _Marketing extends State<Marketing> {
             child: Text(
               'Feature',
               style: TextStyle(
-                  color: const Color.fromARGB(255, 69, 68, 68)
-                                .withOpacity(0.5),
+                  color: const Color.fromARGB(255, 69, 68, 68).withOpacity(0.5),
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
@@ -82,7 +81,10 @@ class _Marketing extends State<Marketing> {
                             )
                           ],
                         ),
-                        onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Voucher_home(ind: 0)));}),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Voucher_home(ind: 0)));
+                        }),
                     CupertinoButton(
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,12 +96,22 @@ class _Marketing extends State<Marketing> {
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Icon(Icons.arrow_right_sharp,color: Colors.black,)
+                            Icon(
+                              Icons.arrow_right_sharp,
+                              color: Colors.black,
+                            )
                           ],
                         ),
-                        onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Voucher_home(ind: 0)));}),
-                        Container(height: 1,width: 300,color: Colors.grey.shade200,),
-                         CupertinoButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Voucher_home(ind: 0)));
+                        }),
+                    Container(
+                      height: 1,
+                      width: 300,
+                      color: Colors.grey.shade200,
+                    ),
+                    CupertinoButton(
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -110,12 +122,22 @@ class _Marketing extends State<Marketing> {
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Icon(Icons.arrow_right_sharp,color: Colors.black,)
+                            Icon(
+                              Icons.arrow_right_sharp,
+                              color: Colors.black,
+                            )
                           ],
                         ),
-                        onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Voucher_home(ind: 1)));}),
-                        Container(height: 1,width: 300,color: Colors.grey.shade200,),
-                         CupertinoButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Voucher_home(ind: 1)));
+                        }),
+                    Container(
+                      height: 1,
+                      width: 300,
+                      color: Colors.grey.shade200,
+                    ),
+                    CupertinoButton(
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -126,17 +148,27 @@ class _Marketing extends State<Marketing> {
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Icon(Icons.arrow_right_sharp,color: Colors.black,)
+                            Icon(
+                              Icons.arrow_right_sharp,
+                              color: Colors.black,
+                            )
                           ],
                         ),
-                        onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Voucher_home(ind: 2)));}),
-                        Container(height: 1,width: 300,color: Colors.grey.shade200,)
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Voucher_home(ind: 2)));
+                        }),
+                    Container(
+                      height: 1,
+                      width: 300,
+                      color: Colors.grey.shade200,
+                    )
                   ],
                 ),
               ),
             ),
-          )
-       , Padding(
+          ),
+          Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
               height: 240,
@@ -175,65 +207,104 @@ class _Marketing extends State<Marketing> {
                             )
                           ],
                         ),
-                        onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Promotion(ind: 0)));}),
-                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                    CupertinoButton(child: Column(children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade100,
-                        radius: 30,
-                        child: const Icon(Icons.access_time,color:Color.fromARGB(255, 181, 57, 5),size: 30 ,),
-                      ),
-                      const SizedBox(height: 3,),
-                       const Text(
-                              'Up Coming',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Promotion(ind: 0)));
+                        }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CupertinoButton(
+                            child: Column(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey.shade100,
+                                  radius: 30,
+                                  child: const Icon(
+                                    Icons.access_time,
+                                    color: Color.fromARGB(255, 181, 57, 5),
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                const Text(
+                                  'Up Coming',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             ),
-                    ],)
-                  , onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Promotion(ind: 0)));}),
-                   CupertinoButton(child: Column(children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade100,
-                        radius: 30,
-                        child: const Icon(Icons.alarm_on_sharp,color:Color.fromARGB(255, 181, 57, 5),size: 30 ,),
-                      ),
-                      const SizedBox(height: 3,),
-                       const Text(
-                              'In progress',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => Promotion(ind: 0)));
+                            }),
+                        CupertinoButton(
+                            child: Column(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey.shade100,
+                                  radius: 30,
+                                  child: const Icon(
+                                    Icons.alarm_on_sharp,
+                                    color: Color.fromARGB(255, 181, 57, 5),
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                const Text(
+                                  'In progress',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             ),
-                    ],)
-                  , onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Promotion(ind: 1)));}),
-                   CupertinoButton(child: Column(children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade100,
-                        radius: 30,
-                        child: const Icon(Icons.alarm_off,color:Color.fromARGB(255, 181, 57, 5),size: 30 ,),
-                      ),
-                      const SizedBox(height: 3,),
-                       const Text(
-                              'Ended',
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => Promotion(ind: 1)));
+                            }),
+                        CupertinoButton(
+                            child: Column(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey.shade100,
+                                  radius: 30,
+                                  child: const Icon(
+                                    Icons.alarm_off,
+                                    color: Color.fromARGB(255, 181, 57, 5),
+                                    size: 30,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                const Text(
+                                  'Ended',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             ),
-                    ],)
-                  , onPressed: (){Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Promotion(ind: 2)));})
-                   ],)
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => Promotion(ind: 2)));
+                            })
+                      ],
+                    )
                   ],
                 ),
               ),
             ),
           )
-        
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -248,8 +319,8 @@ class _Marketing extends State<Marketing> {
               MaterialButton(
                 minWidth: 40,
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Dashboard()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const Dashboard()));
                 },
                 child: const Icon(
                   Icons.home,
@@ -280,8 +351,10 @@ class _Marketing extends State<Marketing> {
               MaterialButton(
                 minWidth: 40,
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Marketing(containSelectedBox: [],)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const Marketing(
+                            containSelectedBox: [],
+                          )));
                 },
                 child: const Icon(
                   Icons.api_sharp,
@@ -292,8 +365,10 @@ class _Marketing extends State<Marketing> {
               MaterialButton(
                 minWidth: 40,
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => BlogView(ind: 0,)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => BlogView(
+                            ind: 0,
+                          )));
                 },
                 child: const Icon(
                   Icons.app_registration,

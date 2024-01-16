@@ -293,7 +293,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
     );
   }
 
-  // List<Discount> currentProducts = [];
+// List<Discount> currentProducts = [];
   Expanded displayProduct() {
     return Expanded(
       child: SingleChildScrollView(
@@ -384,7 +384,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
     });
   }
 
-  // void initializeProductCount() {
+// void initializeProductCount() {
   //   initialProductCount = displayedProducts.length;
   // }
 
@@ -545,14 +545,14 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                           style: TextStyle(color: Colors.blue),
                         ),
                         onPressed: () {
-                          if(isStatus == 0){
+                          if (isStatus == 0) {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Promotion(ind: 0)));
+                                builder: (context) => Promotion(ind: 0)));
                           } else {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Promotion(ind: 1)));
+                                builder: (context) => Promotion(ind: 1)));
                           }
-                          
+
                           setState(() {
                             final snackBar = SnackBar(
                                 content:

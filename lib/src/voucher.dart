@@ -36,8 +36,8 @@ Future<List<Voucher>> fetchVoucher() async {
 
 Future<List<Voucher>> fetchVoucherIsUpComing() async {
   var id = await getIdSup();
-  final response = await http.get(
-      Uri.parse('$u/api/Voucher/supplierFilterVoucher00?userCreate=$id'));
+  final response = await http
+      .get(Uri.parse('$u/api/Voucher/supplierFilterVoucher00?userCreate=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -50,8 +50,8 @@ Future<List<Voucher>> fetchVoucherIsUpComing() async {
 
 Future<List<Voucher>> fetchVoucherIsOnline() async {
   var id = await getIdSup();
-  final response = await http.get(
-      Uri.parse('$u/api/Voucher/supplierFilterVoucher01?userCreate=$id'));
+  final response = await http
+      .get(Uri.parse('$u/api/Voucher/supplierFilterVoucher01?userCreate=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -64,8 +64,8 @@ Future<List<Voucher>> fetchVoucherIsOnline() async {
 
 Future<List<Voucher>> fetchVoucherHasDone() async {
   var id = await getIdSup();
-  final response = await http.get(
-      Uri.parse('$u/api/Voucher/supplierFilterVoucher02?userCreate=$id'));
+  final response = await http
+      .get(Uri.parse('$u/api/Voucher/supplierFilterVoucher02?userCreate=$id'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {

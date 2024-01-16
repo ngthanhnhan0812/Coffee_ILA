@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
 
 import 'package:coffee/bundle.dart';
@@ -265,7 +267,6 @@ class _NewPromotion extends State<NewPromotion> {
           onPressed: () {
             double? discountValueInput = double.tryParse(_discount.text);
             if (_formKey.currentState!.validate()) {
-              // ignore: unnecessary_null_comparison
               isSelectedProduct =
                   containSelectedBox.any((element) => element != null);
               if (!isSelectedProduct) {

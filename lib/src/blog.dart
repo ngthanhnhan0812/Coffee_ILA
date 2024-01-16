@@ -19,8 +19,8 @@ List<Blog> parseBlog(String responseBody) {
 
 Future<List<Blog>> fetchApprovedBlog() async {
   int id = await getIdSup();
-  final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=1'));
+  final response = await http.get(
+      Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=1'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -32,8 +32,8 @@ Future<List<Blog>> fetchApprovedBlog() async {
 
 Future<List<Blog>> fetchWaitingBlog() async {
   int id = await getIdSup();
-  final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=0'));
+  final response = await http.get(
+      Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=0'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -45,8 +45,8 @@ Future<List<Blog>> fetchWaitingBlog() async {
 
 Future<List<Blog>> fetchCancelledBlog() async {
   int id = await getIdSup();
-  final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=2'));
+  final response = await http.get(
+      Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=2'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -58,8 +58,8 @@ Future<List<Blog>> fetchCancelledBlog() async {
 
 Future<List<Blog>> fetchHiddenBlog() async {
   int id = await getIdSup();
-  final response = await http
-      .get(Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=3'));
+  final response = await http.get(
+      Uri.parse('$u/api/Blog/supplierFilterBlog?userCreate=$id&isStatus=3'));
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
@@ -245,7 +245,7 @@ class _BlogState extends State<BlogView> with SingleTickerProviderStateMixin {
     );
   }
 
-  // ignore: unused_element
+// ignore: unused_element
   Future<void> _refresh() {
     return Future.delayed(const Duration(seconds: 1));
   }
@@ -286,14 +286,16 @@ class Blog_ApprovedState extends State<Blog_Approved> {
                         itemBuilder: (context, int index) {
                           return InkWell(
                               onTap: () async {
-                                var comments = await fetchAllCommentFromAPI(snapshot.data![index].id);
+                                var comments = await fetchAllCommentFromAPI(
+                                    snapshot.data![index].id);
                                 // ignore: use_build_context_synchronously
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             Blog_Approved_detail(
-                                                blog: snapshot.data![index], comments: comments)));
+                                                blog: snapshot.data![index],
+                                                comments: comments)));
                               },
                               child: GridTile(
                                 footer: Container(
