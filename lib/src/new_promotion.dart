@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
+List<Product> vietpr=[];
 // ignore: must_be_immutable
 class NewPromotion extends StatefulWidget {
   const NewPromotion({super.key});
@@ -44,6 +44,16 @@ class _NewPromotion extends State<NewPromotion> {
         shadowColor: const Color.fromARGB(255, 203, 203, 203),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         centerTitle: true,
+         leading: IconButton(
+            onPressed: () {
+              vietpr=[];
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.chevron_left,
+              color: Colors.black,
+              size: 25,
+            )),
         title: Text(
           'Add new Promotion',
           textAlign: TextAlign.center,
@@ -300,6 +310,7 @@ class _NewPromotion extends State<NewPromotion> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               } else {
                 insertDiscountDialog();
+                vietpr=[];
               }
             }
           },
@@ -356,7 +367,7 @@ class _NewPromotion extends State<NewPromotion> {
 
   _navigateAndDisplaySelection(BuildContext context) async {
     final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const New_Prod_Product()));
+        MaterialPageRoute(builder: (context) =>  New_Prod_Product()));
     setState(() {
       if (result != null && result is List<Product>) {
         // print('before: $containSelectedBox');
@@ -374,6 +385,7 @@ class _NewPromotion extends State<NewPromotion> {
 
     holdList.addAll(newProducts);
     containSelectedBox = holdList;
+    vietpr = holdList;
   }
 
   Future<http.Response> insertSingleDiscount(

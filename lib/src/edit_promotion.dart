@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:coffee/src/models/discount.dart';
 
+List<Product> vietpro=[];
+
 class UpdateData {
   Discount discount;
   List<Product> products;
@@ -57,6 +59,16 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 244, 243, 243),
       appBar: AppBar(
+         leading: IconButton(
+            onPressed: () {
+              vietpro =[];
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.chevron_left,
+              color: Colors.black,
+              size: 25,
+            )),
         shadowColor: const Color.fromARGB(255, 203, 203, 203),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         centerTitle: true,
@@ -237,7 +249,9 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                     child: IconButton(
                       icon: const Icon(Icons.add, size: 40),
                       onPressed: () async {
-                        await _navigateAndDisplaySelection(context);
+                        await _navigateAndDisplaySelection(
+                          context,
+                        );
                       },
                     ),
                   ),
@@ -282,6 +296,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
               } else {
                 updateAllDiscounts(widget.discount);
                 updateDialog(isStatus: widget.discount.first.isStatus);
+                vietpro =[];
               }
             }
           },
@@ -345,8 +360,12 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
   }
 
   _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const New_Prod_Product()));
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => New_Prod_Product(
+                 
+                )));
     print(result);
     if (result != null && result is List) {
       bool isListOfProducts = result.every((element) => element is Product);
@@ -379,7 +398,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
     setState(() {
       widget.discount.addAll(convertedProducts);
       displayedProducts = widget.discount.cast<Product>();
-
+      vietpro = tempNewProducts;
       // initializeProductCount();
     });
   }
@@ -389,9 +408,6 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
   // }
 
   List<Product> tempNewProducts = [];
-  void addNewProductToTemp(Product newProduct) {
-    tempNewProducts.add(newProduct);
-  }
 
   Future<http.Response> updateSingleDiscount(UpdateData updateData) async {
     var dis = {};
@@ -424,7 +440,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
       await updateSingleDiscount(
           UpdateData(discount: discount, products: tempNewProducts));
       if (tempNewProducts.isNotEmpty) {
-        int indC = discounts.first.indC;
+        int indC = discounts.first.indC - 1;
         await insertAllDiscount(indC, tempNewProducts);
         tempNewProducts.clear();
       }

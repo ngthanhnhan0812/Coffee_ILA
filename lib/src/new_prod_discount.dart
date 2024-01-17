@@ -18,6 +18,7 @@ class FetchProduct {
 
   var data = [];
   List<Product> results = [];
+
   // ignore: non_constant_identifier_names
   Future<List<Product>> fetch_prodProduct({String? query}) async {
     var id = await getIdSup();
@@ -27,6 +28,18 @@ class FetchProduct {
     // print(response.body);
     try {
       if (response.statusCode == 200) {
+        List<Product> vv = [];
+        List<Product> vvv = [];
+        if (vietpr.length != 0) {
+          for (var e in vietpr) {
+            vv.add(e);
+          }
+        }
+        if (vietpro.length != 0) {
+          for (var e in vietpro) {
+            vv.add(e);
+          }
+        }
         data = json.decode(response.body);
         results = data.map((e) => Product.fromJson(e)).toList();
         if (query != null) {
@@ -35,6 +48,16 @@ class FetchProduct {
                   element.title.toLowerCase().startsWith(query.toLowerCase()))
               .toList();
         }
+        if (vv.length != 0) {
+          for (var b in vv) {
+            results.removeWhere((element) => element.id == b.id);
+          }
+        }
+        if (vvv.length != 0) {
+          for (var z in vv) {
+            results.removeWhere((element) => element.id == z.id);
+          }
+        }
       } else {
         throw Exception(
             'Unable to fetch product from the REST API of new_prod_discount.dart!');
@@ -42,13 +65,14 @@ class FetchProduct {
     } on Exception catch (e) {
       print('error at $e');
     }
+
     return results;
   }
 }
 
 // ignore: camel_case_types
 class New_Prod_Product extends StatefulWidget {
-  const New_Prod_Product({
+  New_Prod_Product({
     Key? key,
   }) : super(key: key);
 
