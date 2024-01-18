@@ -3,6 +3,7 @@
 
 import 'dart:convert';
 
+import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
 import 'package:coffee/src/models/blog.dart';
 import 'package:coffee/src/models/commentBlog.dart';
@@ -58,13 +59,13 @@ Future<List<commentBlog>> fetchSubCommentFromAPI(int idBlog) async {
   }
 }
 
-Future<http.Response> deleteComment(int idComment, int idBlog) async {
+Future<http.Response> deleteComment(int id, int idBlog) async {
   var commentB = {};
-  commentB['id'] = idComment;
+  commentB['id'] = id;
   commentB['idBlog'] = idBlog;
   final response = await http.get(
       Uri.parse(
-          '$u/api/Comment/userDeleteCommentBlog?idComment=$idComment&idBlog=$idBlog'),
+          '$u/api/Comment/userDeleteCommentBlog?idComment=$id&idBlog=$idBlog'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       });
@@ -117,6 +118,7 @@ class CommentsBlog extends StatefulWidget {
 
 class _CommentsState extends State<CommentsBlog> {
   List<Widget> commentWidgets = [];
+  List<Widget> widgetsToDisplay = [];
   int? selectedCommentId;
   void onReplySelected(int id) {
     setState(() {
@@ -126,430 +128,403 @@ class _CommentsState extends State<CommentsBlog> {
 
   Map<Comment, int> commentMainId = {};
   Map<Comment, int> commentSubId = {};
+
   @override
   void initState() {
     super.initState();
-    fetchAllCommentFromAPI(widget.idBlog);
+    loadComments();
+  }
+
+  void loadComments() async {
+    try {
+      var comments = await fetchAllCommentFromAPI(widget.idBlog);
+      setState(() {
+        widgetsToDisplay.addAll(buildCommentWidgets(comments));
+      });
+    } catch (e) {
+      e.toString();
+    }
+  }
+
+  List<Widget> buildCommentWidgets(List<commentBlog> comments) {
+    List<Comment> mainComments = [];
+    List<List<Comment>> subComments = [];
+
+    for (var commentBlog in comments) {
+      var newComment = Comment(
+        avatar: commentBlog.userAvatar,
+        userName: commentBlog.userName,
+        content: commentBlog.comment,
+      );
+      mainComments.add(newComment);
+      commentMainId[newComment] = commentBlog.id!;
+
+      List<Comment> tempSubComments = [];
+      for (var subComment in commentBlog.lsSubComment!) {
+        var newSubComment = Comment(
+          avatar: subComment.userAvatar,
+          userName: subComment.userName,
+          content: subComment.comment,
+        );
+        tempSubComments.add(newSubComment);
+        commentSubId[newSubComment] = subComment.id!;
+      }
+      subComments.add(tempSubComments);
+    }
+
+    for (int i = 0; i < mainComments.length; i++) {
+      commentWidgets.add(Container(
+        key: UniqueKey(),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: CommentTreeWidget<Comment, Comment>(
+          mainComments[i],
+          subComments[i],
+          treeThemeData: const TreeThemeData(
+              lineColor: Color.fromARGB(255, 233, 229, 229), lineWidth: 2),
+          avatarRoot: avatarRoot,
+          avatarChild: avatarChild,
+          contentRoot: (context, snapshot) {
+            return InkWell(
+              overlayColor: MaterialStateProperty.all(Colors.white),
+              onLongPress: () {
+                showModalBottomSheet<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SingleChildScrollView(
+                        padding: const EdgeInsets.all(15),
+                        child: ListBody(
+                          children: <Widget>[
+                            ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: const Text('Edit'),
+                              onTap: () {
+                                var currentComment =
+                                    snapshot.content.toString();
+                                widget.textEditingController.text =
+                                    currentComment;
+                                showModalBottomSheet<void>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: SingleChildScrollView(
+                                        padding: const EdgeInsets.all(15),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                avatarRoot(context, snapshot),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                SizedBox(
+                                                  width: 280,
+                                                  child: TextFormField(
+                                                    controller: widget
+                                                        .textEditingController,
+                                                    maxLines: null,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      border:
+                                                          OutlineInputBorder(),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                editComment(
+                                                    widget.textEditingController
+                                                        .text,
+                                                    commentMainId[snapshot]!);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Blog_Approved_detail(
+                                                              comments: const [],
+                                                              blog: widget.blog,
+                                                            )));
+                                              },
+                                              child: const Text('Edit'),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: const Text('Delete'),
+                              onTap: () async {
+                                await deleteComment(
+                                    commentMainId[snapshot]!, widget.idBlog);
+                                setState(() {
+                                  commentWidgets.removeAt(i);
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ));
+                  },
+                );
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                    decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          snapshot.userName.toString(),
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          snapshot.content.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(fontSize: 14, color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DefaultTextStyle(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Colors.grey[700], fontWeight: FontWeight.bold),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text('5d'),
+                          const SizedBox(
+                            width: 24,
+                          ),
+                          SizedBox(
+                            height: 34,
+                            width: 60,
+                            child: TextButton(
+                                onPressed: () {
+                                  var commentId = commentMainId[snapshot];
+                                  widget.onReplySelected?.call(commentId!);
+                                  widget.textEditingController.text =
+                                      '@${snapshot.userName} ';
+                                },
+                                style: ButtonStyle(
+                                    foregroundColor: MaterialStatePropertyAll(
+                                        Colors.grey[700])),
+                                child: const Text('Reply')),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+          contentChild: (context, snapshot) {
+            return InkWell(
+              overlayColor: MaterialStateProperty.all(Colors.white),
+              onLongPress: () {
+                showModalBottomSheet<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SingleChildScrollView(
+                        padding: const EdgeInsets.all(15),
+                        child: ListBody(
+                          children: <Widget>[
+                            ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: const Text('Edit'),
+                              onTap: () {
+                                var currentComment =
+                                    snapshot.content.toString();
+                                widget.textEditingController.text =
+                                    currentComment;
+                                showModalBottomSheet<void>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: SingleChildScrollView(
+                                        padding: const EdgeInsets.all(15),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                avatarChild(context, snapshot),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                SizedBox(
+                                                  width: 280,
+                                                  child: TextFormField(
+                                                    controller: widget
+                                                        .textEditingController,
+                                                    maxLines: null,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      border:
+                                                          OutlineInputBorder(),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                editComment(
+                                                    widget.textEditingController
+                                                        .text,
+                                                    commentSubId[snapshot]!);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Blog_Approved_detail(
+                                                              comments: const [],
+                                                              blog: widget.blog,
+                                                            )));
+                                              },
+                                              child: const Text('Edit'),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: const Text('Delete'),
+                              onTap: () async {
+                                await deleteComment(
+                                    commentSubId[snapshot]!, widget.idBlog);
+                                setState(() {
+                                  commentWidgets.removeAt(i);
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ));
+                  },
+                );
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                    decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          snapshot.userName.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          snapshot.content.toString(),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontSize: 14,
+                                  // fontWeight: FontWeight.w300,
+                                  color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DefaultTextStyle(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Colors.grey[700], fontWeight: FontWeight.bold),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text('5d'),
+                          const SizedBox(
+                            width: 24,
+                          ),
+                          SizedBox(
+                            height: 34,
+                            width: 60,
+                            child: TextButton(
+                                onPressed: () {
+                                  var commentId = commentSubId[snapshot];
+                                  widget.onReplySelected?.call(commentId!);
+                                  widget.textEditingController.text =
+                                      '@${snapshot.userName} ';
+                                },
+                                style: ButtonStyle(
+                                    foregroundColor: MaterialStatePropertyAll(
+                                        Colors.grey[700])),
+                                child: const Text('Reply')),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
+      ));
+    }
+    return commentWidgets;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        FutureBuilder(
-          future: fetchAllCommentFromAPI(widget.idBlog),
-          builder: (context, snapshot) {
-            List<Comment> mainComments = [];
-            List<List<Comment>> subComments = [];
-            if (snapshot.data == null) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              for (var commentBlog in snapshot.data as List<commentBlog>) {
-                var newComment = Comment(
-                  avatar: commentBlog.userAvatar,
-                  userName: commentBlog.userName,
-                  content: commentBlog.comment,
-                );
-                mainComments.add(newComment);
-                commentMainId[newComment] = commentBlog.id!;
-
-                List<Comment> tempSubComments = [];
-                for (var subComment in commentBlog.lsSubComment!) {
-                  var newSubComment = Comment(
-                    avatar: subComment.userAvatar,
-                    userName: subComment.userName,
-                    content: subComment.comment,
-                  );
-                  tempSubComments.add(newSubComment);
-                  commentSubId[newSubComment] = subComment.id!;
-                }
-                subComments.add(tempSubComments);
-                // for (var subComment in commentBlog.lsSubComment!) {
-                //   tempSubComments.add(Comment(
-                //     avatar: subComment.userAvatar,
-                //     userName: subComment.userName,
-                //     content: subComment.comment,
-                //   ));
-                // }
-                // subComments.add(tempSubComments);
-              }
-
-              for (int i = 0; i < mainComments.length; i++) {
-                commentWidgets.add(Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  child: CommentTreeWidget<Comment, Comment>(
-                    mainComments[i],
-                    subComments[i],
-                    treeThemeData: const TreeThemeData(
-                        lineColor: Color.fromARGB(255, 233, 229, 229),
-                        lineWidth: 2),
-                    avatarRoot: avatarRoot,
-                    avatarChild: avatarChild,
-                    contentRoot: (context, snapshot) {
-                      return InkWell(
-                        overlayColor: MaterialStateProperty.all(Colors.white),
-                        onLongPress: () {
-                          showModalBottomSheet<void>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SingleChildScrollView(
-                                  padding: const EdgeInsets.all(15),
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      ListTile(
-                                        leading: const Icon(Icons.edit),
-                                        title: const Text('Edit'),
-                                        onTap: () {
-                                          var currentComment =
-                                              snapshot.content.toString();
-                                          widget.textEditingController.text =
-                                              currentComment;
-                                          showModalBottomSheet<void>(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return SizedBox(
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height,
-                                                child: SingleChildScrollView(
-                                                  padding:
-                                                      const EdgeInsets.all(15),
-                                                  child: Column(
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          avatarRoot(context,
-                                                              snapshot),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 280,
-                                                            child:
-                                                                TextFormField(
-                                                              controller: widget
-                                                                  .textEditingController,
-                                                              maxLines: null,
-                                                              decoration:
-                                                                  const InputDecoration(
-                                                                border:
-                                                                    OutlineInputBorder(),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            editComment(
-                                                                widget
-                                                                    .textEditingController
-                                                                    .text,
-                                                                commentMainId[
-                                                                    snapshot]!),
-                                                        child:
-                                                            const Text('Edit'),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.delete),
-                                        title: const Text('Delete'),
-                                        onTap: () async {
-                                          await deleteComment(
-                                              commentMainId[snapshot]!,
-                                              widget.idBlog);
-                                          setState(() {
-                                            commentWidgets.removeAt(i);
-                                            Navigator.pop(context);
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ));
-                            },
-                          );
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[100],
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    snapshot.userName.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Text(
-                                    snapshot.content.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                            fontSize: 14, color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            DefaultTextStyle(
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                      color: Colors.grey[700],
-                                      fontWeight: FontWeight.bold),
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    const Text('5d'),
-                                    const SizedBox(
-                                      width: 24,
-                                    ),
-                                    SizedBox(
-                                      height: 34,
-                                      width: 60,
-                                      child: TextButton(
-                                          onPressed: () {
-                                            var commentId =
-                                                commentMainId[snapshot];
-                                            widget.onReplySelected
-                                                ?.call(commentId!);
-                                            widget.textEditingController.text =
-                                                '@${snapshot.userName} ';
-                                          },
-                                          style: ButtonStyle(
-                                              foregroundColor:
-                                                  MaterialStatePropertyAll(
-                                                      Colors.grey[700])),
-                                          child: const Text('Reply')),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    contentChild: (context, snapshot) {
-                      return InkWell(
-                        overlayColor: MaterialStateProperty.all(Colors.white),
-                        onLongPress: () {
-                          showModalBottomSheet<void>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SingleChildScrollView(
-                                  padding: const EdgeInsets.all(15),
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      ListTile(
-                                        leading: const Icon(Icons.edit),
-                                        title: const Text('Edit'),
-                                        onTap: () {
-                                          var currentComment =
-                                              snapshot.content.toString();
-                                          widget.textEditingController.text =
-                                              currentComment;
-                                          showModalBottomSheet<void>(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return SizedBox(
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height,
-                                                child: SingleChildScrollView(
-                                                  padding:
-                                                      const EdgeInsets.all(15),
-                                                  child: Column(
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          avatarChild(context,
-                                                              snapshot),
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 280,
-                                                            child:
-                                                                TextFormField(
-                                                              controller: widget
-                                                                  .textEditingController,
-                                                              maxLines: null,
-                                                              decoration:
-                                                                  const InputDecoration(
-                                                                border:
-                                                                    OutlineInputBorder(),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            editComment(
-                                                                widget
-                                                                    .textEditingController
-                                                                    .text,
-                                                                commentSubId[
-                                                                    snapshot]!),
-                                                        child:
-                                                            const Text('Edit'),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.delete),
-                                        title: const Text('Delete'),
-                                        onTap: () async {
-                                          await deleteComment(
-                                              commentSubId[snapshot]!,
-                                              widget.idBlog);
-                                          setState(() {
-                                            commentWidgets.removeAt(i);
-                                            Navigator.pop(context);
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ));
-                            },
-                          );
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              decoration: BoxDecoration(
-                                  color: Colors.grey[100],
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    snapshot.userName.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  Text(
-                                    snapshot.content.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                            fontSize: 14,
-                                            // fontWeight: FontWeight.w300,
-                                            color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            DefaultTextStyle(
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                      color: Colors.grey[700],
-                                      fontWeight: FontWeight.bold),
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    const Text('5d'),
-                                    const SizedBox(
-                                      width: 24,
-                                    ),
-                                    SizedBox(
-                                      height: 34,
-                                      width: 60,
-                                      child: TextButton(
-                                          onPressed: () {
-                                            var commentId =
-                                                commentSubId[snapshot];
-                                            widget.onReplySelected
-                                                ?.call(commentId!);
-                                            widget.textEditingController.text =
-                                                '@${snapshot.userName} ';
-                                          },
-                                          style: ButtonStyle(
-                                              foregroundColor:
-                                                  MaterialStatePropertyAll(
-                                                      Colors.grey[700])),
-                                          child: const Text('Reply')),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ));
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasData) {
-                return Column(
-                  children: commentWidgets,
-                );
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
-              return Container();
-            }
-          },
-        ),
-      ],
+      children: commentWidgets,
     );
   }
 

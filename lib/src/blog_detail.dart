@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'dart:convert';
 
 import 'package:coffee/src/comments.dart';
@@ -46,28 +46,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
     });
   }
 
-  Future<http.Response> insertMainCommentBlog() async {
-    var id = await getIdSup();
-    var cmtB = {};
-
-    cmtB['idAccount'] = id;
-    cmtB['idBlog'] = widget.blog.id;
-    cmtB['comment'] = cmt.text;
-    cmtB['userType'] = 1;
-    final response = await http.post(
-        Uri.parse('$u/api/Comment/userAddNewComment'),
-        headers: <String, String>{'Content-Type': 'application/json'},
-        body: jsonEncode(cmtB));
-
-    if (response.statusCode == 200) {
-      // ignore: avoid_print
-      print(
-          'Add main comment successfully from The Rest API of blog_detail.dart');
-    }
-    return response;
-  }
-
-  Future<http.Response> insertSubCommentBlog() async {
+  Future<http.Response> insertCommentBlog() async {
     var id = await getIdSup();
     var cmtB = {};
 
@@ -210,7 +189,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                     children: <Widget>[
                       c == true
                           ? _commentsBlog ??= CommentsBlog(
-                              key: commentsBlogKey,
+                              // key: commentsBlogKey,
                               idBlog: widget.blog.id,
                               textEditingController: cmt,
                               blog: widget.blog,
@@ -255,13 +234,14 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                       icon: const Icon(Icons.send),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          if (_commentsBlog!.onReplySelected == null) {
-                            await insertMainCommentBlog();
-                          } else {
-                            await insertSubCommentBlog();
-                          }
+                          await insertCommentBlog();
+                          Navigator.pop(context);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Blog_Approved_detail(
+                                    comments: const [],
+                                    blog: widget.blog,
+                                  )));
                           cmt.clear();
-                          setState(() {});
                         }
                       },
                     ),

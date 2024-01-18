@@ -624,8 +624,8 @@ class UpComingState extends State<Upcoming> {
                                                 BorderRadius.circular(7),
                                             image: const DecorationImage(
                                               fit: BoxFit.fill,
-                                              image: NetworkImage(
-                                                'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w',
+                                              image: AssetImage(
+                                                'assets/images/voucher-black-friday-related-filled-icon-vector-28114495 (1).jpg',
                                               ),
                                             )),
                                       ),
@@ -1107,8 +1107,8 @@ class InProgressState extends State<InProgress> {
                                                 BorderRadius.circular(7),
                                             image: const DecorationImage(
                                               fit: BoxFit.fill,
-                                              image: NetworkImage(
-                                                'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w',
+                                              image: AssetImage(
+                                                'assets/images/voucher-black-friday-related-filled-icon-vector-28114495 (1).jpg',
                                               ),
                                             )),
                                       ),
@@ -1427,8 +1427,8 @@ class EndedState extends State<Ended> {
                                                 BorderRadius.circular(7),
                                             image: const DecorationImage(
                                               fit: BoxFit.fill,
-                                              image: NetworkImage(
-                                                'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/pngtree-price-tag-with-the-discount-icon-vector-png-image_6686659.png?alt=media&token=2181c43b-7352-4ed1-8fd9-fc6adc9effc0&_gl=1*1lblhks*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc5MTEuNjAuMC4w',
+                                              image: AssetImage(
+                                                'assets/images/voucher-black-friday-related-filled-icon-vector-28114495 (1).jpg',
                                               ),
                                             )),
                                       ),

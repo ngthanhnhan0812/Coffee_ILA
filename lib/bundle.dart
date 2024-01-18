@@ -18,3 +18,4 @@ export 'src/prod_discount_detail.dart';
 export 'src/edit_promotion.dart';
 export 'src/new_blog.dart';
 export 'src/blog_detail.dart';
+export 'src/revenue.dart';

@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
 import 'package:coffee/src/models/blog.dart';
-import 'package:coffee/src/tes.dart';
 
 List<String> tabName = <String>['Approved', 'Waiting', 'Cancelled', 'Hidden'];
 
@@ -181,7 +180,7 @@ class _BlogState extends State<BlogView> with SingleTickerProviderStateMixin {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
+                            builder: (context) => const Revenue()));
                   },
                   child: const Icon(
                     Icons.leaderboard,
