@@ -17,7 +17,8 @@ class commentBlog {
       this.userAvatar,
       this.userName,
       this.lsSubComment,
-      this.countSubC});
+      this.countSubC,
+      this.timeSpace});
 
   factory commentBlog.fromJson(Map<String, dynamic> json) => commentBlog(
       id: json['id'],
@@ -27,6 +28,7 @@ class commentBlog {
       userAvatar: json['userAvatar'],
       userName: json['userName'],
       countSubC: json['countSubC'],
+      timeSpace: json['timeSpace'],
       lsSubComment: List<SubCommentBlog>.from(
           json["lsSubComment"].map((x) => SubCommentBlog.fromJson(x))));
   Map<String, dynamic> toJson() => {
@@ -37,6 +39,7 @@ class commentBlog {
         "userAvatar": userAvatar,
         "userName": userName,
         "countSubC": countSubC,
+        "timeSpace": timeSpace,
         "lsSubComment":
             List<dynamic>.from(lsSubComment!.map((x) => x.toJson())),
       };
@@ -67,6 +70,7 @@ class SubCommentBlog {
     this.userAvatar,
     this.userName,
     this.userReply,
+    this.timeSpace,
   });
 
   factory SubCommentBlog.fromJson(Map<String, dynamic> json) => SubCommentBlog(
@@ -79,7 +83,8 @@ class SubCommentBlog {
       idReply: json['idReply'],
       userAvatar: json['userAvatar'],
       userName: json['userName'],
-      userReply: json['userReply']);
+      userReply: json['userReply'],
+      timeSpace: json['timeSpace']);
   Map<String, dynamic> toJson() => {
         "id": id,
         "idAccount": idAccount,

@@ -266,8 +266,12 @@ Row(
                 } else if (discount == condition) {
                   return 'Invalid input condition';
                 }
+               if (discount >= 20%condition) {
+                return 'Discount is only equal to 80% condition!!';
+               }
                 return null;
                 },
+             
                 inputFormatters: [
                 LengthLimitingTextInputFormatter(5),
                 FilteringTextInputFormatter.deny(

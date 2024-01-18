@@ -9,7 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-List<Product> vietpr=[];
+
+List<Product> vietpr = [];
+
 // ignore: must_be_immutable
 class NewPromotion extends StatefulWidget {
   const NewPromotion({super.key});
@@ -44,9 +46,9 @@ class _NewPromotion extends State<NewPromotion> {
         shadowColor: const Color.fromARGB(255, 203, 203, 203),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         centerTitle: true,
-         leading: IconButton(
+        leading: IconButton(
             onPressed: () {
-              vietpr=[];
+              vietpr = [];
               Navigator.pop(context);
             },
             icon: const Icon(
@@ -289,10 +291,10 @@ class _NewPromotion extends State<NewPromotion> {
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               } else if (containSelectedBox
-                  .any((element) => element.price < discountValueInput!)) {
+                  .any((element) => element.price*0.1 < discountValueInput!)) {
                 final snackBar = SnackBar(
                   content: const Text(
-                      'Price of product must be higher than discount'),
+                      'Discount must be less than 10% of the product price'),
                   action: SnackBarAction(
                     label: 'Dismiss',
                     onPressed: () {},
@@ -310,7 +312,7 @@ class _NewPromotion extends State<NewPromotion> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               } else {
                 insertDiscountDialog();
-                vietpr=[];
+                vietpr = [];
               }
             }
           },
@@ -366,8 +368,8 @@ class _NewPromotion extends State<NewPromotion> {
   }
 
   _navigateAndDisplaySelection(BuildContext context) async {
-    final result = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) =>  New_Prod_Product()));
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => New_Prod_Product()));
     setState(() {
       if (result != null && result is List<Product>) {
         // print('before: $containSelectedBox');

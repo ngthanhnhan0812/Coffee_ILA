@@ -341,7 +341,10 @@ class _Marketing extends State<Marketing> {
               ),
               MaterialButton(
                 minWidth: 40,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const Revenue()));
+                },
                 child: const Icon(
                   Icons.leaderboard,
                   color: Colors.grey,

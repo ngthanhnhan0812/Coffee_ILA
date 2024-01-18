@@ -1,4 +1,5 @@
 import 'package:coffee/ip/appcolor.dart';
+import 'package:coffee/src/blog.dart';
 import 'package:coffee/src/order.dart';
 import 'package:coffee/src/marketing.dart';
 import 'package:coffee/src/sidebar.dart';
@@ -47,7 +48,9 @@ class _Dashboard extends State<Dashboard> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 50,),
+                          SizedBox(
+                            height: 50,
+                          ),
                           FutureBuilder(
                               future: fetchProfileSupplier(),
                               builder: (context, snapshot) {
@@ -56,16 +59,15 @@ class _Dashboard extends State<Dashboard> {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     snapshot.data!.title!.length > 20
-                                        ? snapshot.data!.title!.substring(0, 20) +
+                                        ? snapshot.data!.title!
+                                                .substring(0, 20) +
                                             '...'
                                         : snapshot.data!.title!.toUpperCase(),
                                     style: TextStyle(
-                                        color: Color.fromARGB(255, 233, 233, 233),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                    
-                                      
-                                        ),
+                                      color: Color.fromARGB(255, 233, 233, 233),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   );
                                 } else {
                                   return Container();
@@ -102,7 +104,6 @@ class _Dashboard extends State<Dashboard> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    
                       Row(
                         children: [
                           Text(
@@ -400,7 +401,7 @@ class _Dashboard extends State<Dashboard> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        HomeScreen()));
+                                                        Revenue()));
                                           }),
                                       CupertinoButton(
                                           child: Column(
@@ -451,7 +452,12 @@ class _Dashboard extends State<Dashboard> {
                                             )
                                           ],
                                         ),
-                                        onPressed: () {}),
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BlogView(ind: 0)));
+                                        }),
                                   )
                                 ],
                               ),
@@ -501,7 +507,7 @@ class _Dashboard extends State<Dashboard> {
                 minWidth: 40,
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                      MaterialPageRoute(builder: (context) => Revenue()));
                 },
                 child: Icon(
                   Icons.leaderboard,
@@ -525,7 +531,10 @@ class _Dashboard extends State<Dashboard> {
               ),
               MaterialButton(
                 minWidth: 40,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => BlogView(ind: 0)));
+                },
                 child: Icon(
                   Icons.app_registration,
                   color: Colors.grey,

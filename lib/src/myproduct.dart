@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
+import 'package:coffee/src/blog.dart';
 import 'package:coffee/src/itemsWidget.dart';
 
 
@@ -197,7 +198,11 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
                 ),
                 MaterialButton(
                   minWidth: 40,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Revenue()));
+                  
+                  },
                   child: Icon(
                     Icons.leaderboard,
                     color: Colors.grey,
@@ -218,7 +223,10 @@ class _Myproduct extends State<Myproduct> with SingleTickerProviderStateMixin {
                 ),
                 MaterialButton(
                   minWidth: 40,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => BlogView(ind: 0)));
+                  },
                   child: Icon(
                     Icons.app_registration,
                     color: Colors.grey,

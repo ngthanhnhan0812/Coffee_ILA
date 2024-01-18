@@ -188,6 +188,9 @@ class _EditVoucher extends State<EditVoucher> {
                           } else if (discount == condition) {
                             return ('Invalid condition input');
                           }
+                          if (discount >= 20 % condition) {
+                            return 'Discount is only equal to 80% condition!!';
+                          }
                           return null;
                         },
                         inputFormatters: [

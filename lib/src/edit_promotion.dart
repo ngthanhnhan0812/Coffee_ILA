@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:coffee/src/models/discount.dart';
 
-List<Product> vietpro=[];
+List<Product> vietpro = [];
 
 class UpdateData {
   Discount discount;
@@ -59,9 +59,9 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 244, 243, 243),
       appBar: AppBar(
-         leading: IconButton(
+        leading: IconButton(
             onPressed: () {
-              vietpro =[];
+              vietpro = [];
               Navigator.pop(context);
             },
             icon: const Icon(
@@ -122,8 +122,10 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
+                              initialDate:
+                                  DateTime.now().add(const Duration(days: 1)),
+                              firstDate:
+                                  DateTime.now().add(const Duration(days: 1)),
                               lastDate: DateTime(2099));
 
                           if (pickedDate != null) {
@@ -179,8 +181,10 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime.now(),
+                              initialDate:
+                                  DateTime.now().add(const Duration(days: 2)),
+                              firstDate:
+                                  DateTime.now().add(const Duration(days: 2)),
                               lastDate: DateTime(2099));
 
                           if (pickedDate != null) {
@@ -273,10 +277,10 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
             double? discountValueInput = double.tryParse(_discount.text);
             if (_formKey.currentState!.validate()) {
               if (widget.discount
-                  .any((element) => element.price < discountValueInput!)) {
+                  .any((element) => element.price * 0.1 < discountValueInput!)) {
                 final snackBar = SnackBar(
                   content: const Text(
-                      'Price of product must be higher than discount'),
+                      'Discount must be filled with a number lower than price'),
                   action: SnackBarAction(
                     label: 'Dismiss',
                     onPressed: () {},
@@ -296,7 +300,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
               } else {
                 updateAllDiscounts(widget.discount);
                 updateDialog(isStatus: widget.discount.first.isStatus);
-                vietpro =[];
+                vietpro = [];
               }
             }
           },
@@ -361,11 +365,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
 
   _navigateAndDisplaySelection(BuildContext context) async {
     final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => New_Prod_Product(
-                 
-                )));
+        context, MaterialPageRoute(builder: (context) => New_Prod_Product()));
     print(result);
     if (result != null && result is List) {
       bool isListOfProducts = result.every((element) => element is Product);

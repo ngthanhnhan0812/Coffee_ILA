@@ -37,7 +37,6 @@ Future<List<commentBlog>> fetchMainCommentFromAPI(int idBlog) async {
   print(response.body);
 
   if (response.statusCode == 200) {
-    // return parseCommentBlog(response.body);
     List jsonResponse = await json.decode(response.body);
     return jsonResponse.map((data) => commentBlog.fromJson(data)).toList();
   } else {
@@ -128,6 +127,34 @@ class _CommentsState extends State<CommentsBlog> {
 
   Map<Comment, int> commentMainId = {};
   Map<Comment, int> commentSubId = {};
+  Map<Comment, String> commentMainTimestamp = {};
+  Map<Comment, String> commentSubTimestamp = {};
+  Map<Comment, int> mainTimeSpace = {};
+  Map<Comment, int> subTimeSpace = {};
+
+  String checkMainTimeSpace(int mainTimeSpace) {
+    if (mainTimeSpace <= 0) {
+      return 'Today';
+    } else if (mainTimeSpace <= 7) {
+      return 'This week';
+    } else if (mainTimeSpace <= 30) {
+      return 'This month';
+    } else {
+      return 'This year';
+    }
+  }
+
+  String checkSubTimeSpace(int subTimeSpace) {
+    if (subTimeSpace <= 0) {
+      return 'Today';
+    } else if (subTimeSpace <= 7) {
+      return 'This week';
+    } else if (subTimeSpace <= 30) {
+      return 'This month';
+    } else {
+      return 'This year';
+    }
+  }
 
   @override
   void initState() {
@@ -158,6 +185,8 @@ class _CommentsState extends State<CommentsBlog> {
       );
       mainComments.add(newComment);
       commentMainId[newComment] = commentBlog.id!;
+      commentMainTimestamp[newComment] = commentBlog.dateCreate.toString();
+      mainTimeSpace[newComment] = commentBlog.timeSpace!;
 
       List<Comment> tempSubComments = [];
       for (var subComment in commentBlog.lsSubComment!) {
@@ -168,11 +197,15 @@ class _CommentsState extends State<CommentsBlog> {
         );
         tempSubComments.add(newSubComment);
         commentSubId[newSubComment] = subComment.id!;
+        commentSubTimestamp[newSubComment] = subComment.dateCreate.toString();
+        subTimeSpace[newSubComment] = subComment.timeSpace!;
       }
       subComments.add(tempSubComments);
     }
 
     for (int i = 0; i < mainComments.length; i++) {
+      String mainTime = checkMainTimeSpace(mainTimeSpace[mainComments[i]] ?? 0);
+      String subTime = checkMainTimeSpace(subTimeSpace[subComments[i]] ?? 0);
       commentWidgets.add(Container(
         key: UniqueKey(),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -321,9 +354,9 @@ class _CommentsState extends State<CommentsBlog> {
                           const SizedBox(
                             width: 8,
                           ),
-                          const Text('5d'),
+                          Text(mainTime),
                           const SizedBox(
-                            width: 24,
+                            width: 25,
                           ),
                           SizedBox(
                             height: 34,
@@ -472,7 +505,6 @@ class _CommentsState extends State<CommentsBlog> {
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                   fontSize: 14,
-                                  // fontWeight: FontWeight.w300,
                                   color: Colors.black),
                         ),
                       ],
@@ -488,7 +520,7 @@ class _CommentsState extends State<CommentsBlog> {
                           const SizedBox(
                             width: 8,
                           ),
-                          const Text('5d'),
+                          Text(subTime),
                           const SizedBox(
                             width: 24,
                           ),

@@ -4,13 +4,16 @@ import 'package:http/http.dart' as http;
 import 'package:coffee/bundle.dart';
 import 'package:coffee/src/blog.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:coffee/ip/ip.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
-List<InvoiceSupplier> parseRevenue(String responseBody) {
-  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-  return parsed
-      .map<InvoiceSupplier>((json) => InvoiceSupplier.fromJson(json))
+List<InvoiceSupplier> parseRevenue(String responseBody, int idSupplier) {
+  final Map<String, dynamic> parsed = json.decode(responseBody);
+  return parsed.entries
+      .map((entry) => InvoiceSupplier(
+          month: int.parse(entry.key),
+          sumRevenue: (entry.value as num).toDouble(),
+          idSupplier: idSupplier))
       .toList();
 }
 
@@ -22,7 +25,7 @@ Future<List<InvoiceSupplier>> fetchRevenueSupplier(int year) async {
   // ignore: avoid_print
   print(response.body);
   if (response.statusCode == 200) {
-    return parseRevenue(response.body);
+    return parseRevenue(response.body, id);
   } else {
     throw Exception(
         'Unable to fetch Revenue of Supplier from the REST API of revenue.dart!');
@@ -34,13 +37,6 @@ class Revenue extends StatefulWidget {
 
   @override
   State<Revenue> createState() => _RevenueState();
-}
-
-class _SalesData {
-  _SalesData(this.year, this.sales);
-
-  final String year;
-  final double sales;
 }
 
 class _RevenueState extends State<Revenue> {
@@ -144,55 +140,72 @@ class _RevenueState extends State<Revenue> {
         ),
         body: Column(children: [
           FutureBuilder(
-            future: fetchRevenueSupplier(2024),
+            future: fetchRevenueSupplier(2023),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 data = snapshot.data as List<InvoiceSupplier>;
-                return SfCartesianChart(
-                    primaryXAxis: const CategoryAxis(),
-                    // Chart title
-                    title: const ChartTitle(text: 'Half yearly sales analysis'),
-                    // Enable legend
-                    legend: const Legend(isVisible: true),
-                    // Enable tooltip
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <CartesianSeries<InvoiceSupplier, String>>[
-                      LineSeries<InvoiceSupplier, String>(
-                          dataSource: data,
-                          xValueMapper: (InvoiceSupplier sales, _) =>
-                              sales.month,
-                          yValueMapper: (InvoiceSupplier sales, _) =>
-                              sales.sumRevenue,
-                          name: 'Sales',
-                          // Enable data label
-                          dataLabelSettings:
-                              const DataLabelSettings(isVisible: true))
-                    ]);
+                return Column(
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            isDismissible: false,
+                            context: context,
+                            builder: (context) => SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.5,
+                              child: const Column(
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Select year:",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text('Revenue in' ':' ' ${data[9].sumRevenue}')),
+                    const SizedBox(height: 50),
+                    SfCartesianChart(
+                        primaryXAxis: const CategoryAxis(),
+                        title:
+                            const ChartTitle(text: 'A yearly sales analysis'),
+                        legend: const Legend(isVisible: true),
+                        tooltipBehavior: TooltipBehavior(enable: true),
+                        series: <CartesianSeries<InvoiceSupplier, int>>[
+                          LineSeries<InvoiceSupplier, int>(
+                              dataSource: data,
+                              xValueMapper: (InvoiceSupplier data, _) =>
+                                  data.month,
+                              yValueMapper: (InvoiceSupplier data, _) =>
+                                  data.sumRevenue,
+                              name: 'Sales',
+                              // Enable data label
+                              dataLabelSettings:
+                                  const DataLabelSettings(isVisible: true))
+                        ]),
+                  ],
+                );
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             },
           ),
-          // Expanded(
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     //Initialize the spark charts widget
-          //     child: SfSparkLineChart.custom(
-          //       //Enable the trackball
-          //       trackball: const SparkChartTrackball(
-          //           activationMode: SparkChartActivationMode.tap),
-          //       //Enable marker
-          //       marker: const SparkChartMarker(
-          //           displayMode: SparkChartMarkerDisplayMode.all),
-          //       //Enable data label
-          //       labelDisplayMode: SparkChartLabelDisplayMode.all,
-          //       xValueMapper: (int index) => data[index].year,
-          //       yValueMapper: (int index) => data[index].sales,
-          //       dataCount: 5,
-          //     ),
-          //   ),
-          // )
         ]));
   }
 }
