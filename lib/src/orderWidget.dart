@@ -223,7 +223,7 @@ void initState(){
                                                if(snapshot.hasData){
                                               num a = int.parse(snapshot.data!.toString());
                                                return Text(
-                                                "Total:" +
+                                                "Subtotal:" +
                                                     a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
@@ -544,7 +544,7 @@ void initState(){
                                               if( snapshot.data != null){
                                                  num a = int.parse(snapshot.data!.toString());
                                                   return Text(
-                                                "Total:" +
+                                                "Subtotal:" +
                                                     a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
@@ -836,7 +836,7 @@ void initState(){
                                               if( snapshot.data != null){
                                                  num a = int.parse(snapshot.data!.toString());
                                                   return Text(
-                                                "Total:" +
+                                                "Subtotal:" +
                                                     a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
@@ -1002,7 +1002,7 @@ void initState(){
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Order(initialPage: 2)));
+                        builder: (context) => Order(initialPage: 3)));
                   },
                 ),
               ],
@@ -1466,7 +1466,7 @@ void initState(){
                                               if( snapshot.data != null){
                                                  num a = int.parse(snapshot.data!.toString());
                                                   return Text(
-                                                "Total:" +
+                                                "Subtotal:" +
                                                     a.toStringAsFixed(2),
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
@@ -1544,6 +1544,301 @@ void initState(){
     );
   }
 
+}
+class OrderWidget6 extends StatefulWidget {
+  @override
+  State<OrderWidget6> createState() => _OrderWidget6();
+}
+
+class _OrderWidget6 extends State<OrderWidget6> {
+  @override
+void initState(){
+  fetchInvoiceSupplier(2);
+  super.initState();
+}
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: FutureBuilder<List<InvoiceSupplier>>(
+          future: fetchInvoiceSupplier(2),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                children: [
+                  ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int inde) {
+                        return Container(
+                          height: 244,
+                          width: 380,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 0, 5, 0),
+                                child: Column(
+                                  children: [
+                                  SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          snapshot.data![inde].nameCus
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0)),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    FutureBuilder(
+                                        future: fetchOrderDetailStatus1(
+                                            snapshot.data![inde].id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                           if(snapshot.data !=null){
+                                             return Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              7),
+                                                              color:Color.fromARGB(255, 231, 231, 231),
+                                                      image: DecorationImage(
+                                                        fit: BoxFit.fill,
+                                                        image: NetworkImage(
+                                                            snapshot.data!.image
+                                                                .toString()),
+                                                      )),
+                                                  width: 70,
+                                                  height: 70,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      height: 20,
+                                                      width: 240,
+                                                      child: Center(
+                                                        child: Text(
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          snapshot
+                                                                      .data!
+                                                                      .nameProduct!
+                                                                      .length >
+                                                                  40
+                                                              ? snapshot.data!
+                                                                      .nameProduct!
+                                                                      .substring(
+                                                                          0,
+                                                                          40) +
+                                                                  '...'
+                                                              : snapshot.data!
+                                                                  .nameProduct
+                                                                  .toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 16),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Text("x" +
+                                                        snapshot.data!.amount
+                                                            .toString()),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          snapshot.data!.price!
+                                                              .toStringAsFixed(2),
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        Icon(
+                                                          Icons.attach_money,
+                                                          size: 15,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                        
+                                           } else{
+                                            return SizedBox();
+                                           }
+                                          } else if (snapshot.hasError) {
+                                            return SizedBox();
+                                          }
+                                          return CircularProgressIndicator();
+                                        }),
+                                    CupertinoButton(
+                                        child: Container(
+                                          height: 30,
+                                          width: 380,
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      width: 1,
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255,
+                                                              233,
+                                                              233,
+                                                              233)))),
+                                          child: Center(
+                                            child: Text(
+                                              "See more product",
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 87, 87, 87),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OrderDetail6(
+                                                          invoice: snapshot
+                                                              .data![inde])));
+                                        }),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        FutureBuilder(
+                                            future:
+                                                quatiDelivery(snapshot.data![inde].id),
+                                            builder: (context, snapshot) {
+                                            if(snapshot.hasData){
+                                              if(snapshot.data !=null){
+                                                  return Text(
+                                                snapshot.data.toString() +
+                                                    " Products",
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 45, 45, 45),
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              );
+                                              }else{
+                                                return SizedBox();
+                                              }
+                                            }else if(snapshot.hasError){
+                                              return SizedBox();
+                                            }
+                                            return SizedBox();
+                                            }),
+                                        FutureBuilder(
+                                            future:
+                                                totalDelivery(snapshot.data![inde].id),
+                                            builder: (context, snapshot) {
+                                             
+                                            if(snapshot.hasData){
+                                              if( snapshot.data != null){
+                                                 num a = int.parse(snapshot.data!.toString());
+                                                  return Text(
+                                                "Subtotal:" +
+                                                    a.toStringAsFixed(2),
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 45, 45, 45),
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              );
+                                              }else {
+                                                return SizedBox();
+                                              }
+                                            }else if(snapshot.hasError){
+                                              return SizedBox();
+                                            }
+                                           return SizedBox();
+                                            }),
+                                      ],
+                                    ),
+                                   
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Delivering',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(255, 43, 144, 43)
+                                                 ,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          'Order is being processed',
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                      255, 69, 68, 68)
+                                                  .withOpacity(0.5),
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: 10,
+                                width: 380,
+                                color: Color.fromARGB(255, 239, 239, 239),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+            // By default show a loading spinner.
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
+    );
+  }
 }
 
 Future totalDelivery(idinvoice) async {

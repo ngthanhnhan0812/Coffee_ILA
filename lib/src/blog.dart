@@ -261,6 +261,13 @@ class Blog_Approved extends StatefulWidget {
 // ignore: camel_case_types
 class Blog_ApprovedState extends State<Blog_Approved> {
   @override
+   @override
+  void initState() {
+    fetchApprovedBlog();
+    super.initState();
+    
+  }
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(0),

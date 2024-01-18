@@ -1533,7 +1533,7 @@ class _OrderDetail1 extends State<OrderDetail1> {
                                                               ),
                                                              ( snaphot.data![index]
                                                                           .isStatus ==
-                                                                      1||snaphot.data![index].isStatus==3)
+                                                                      1||snaphot.data![index].isStatus==3)==false
                                                                   ? Text(
                                                                       "Canceled",
                                                                       style: TextStyle(
@@ -1767,10 +1767,10 @@ totalODConfirmed() async {
     List<InvoiceSupplier> inv = await fetchAllOrderdetailDelivered(widget.invoice.id);
     for (int i = 0; i < inv.length; i++) {
       if (inv[i].isStatus ==1 || inv[i].isStatus ==3) {
-       continue;
-      }else{
- num e = inv[i].price!;
+       num e = inv[i].price!;
         sum += e;
+      }else{
+ continue;
       }
     }
 
@@ -3410,6 +3410,598 @@ totalODConfirmed() async {
     }
   }
 }
+class OrderDetail6 extends StatefulWidget {
+  final InvoiceSupplier invoice;
+
+  OrderDetail6({Key? key, required this.invoice}) : super(key: key);
+
+  @override
+  State<OrderDetail6> createState() => _OrderDetail6();
+}
+
+class _OrderDetail6 extends State<OrderDetail6> {
+  @override
+  Widget build(BuildContext build) {
+    return Scaffold(
+        appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.white,
+          toolbarHeight: 70,
+          centerTitle: true,
+          title: Text(
+            "Cus Has Received",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+              child: Column(
+            children: [
+              Container(
+                height: 150,
+                width: 380,
+                color: Color.fromARGB(255, 244, 244, 244),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.place),
+                          Text(
+                            "Address:",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(23, 0, 0, 0),
+                        child: ReadMoreText(
+                          widget.invoice.address.toString(),
+                          trimLines: 2,
+                          style: TextStyle(
+                              color: const Color.fromARGB(255, 82, 82, 82)),
+                          colorClickableText: Colors.pink,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: 'Show more',
+                          trimExpandedText: 'Show less',
+                          moreStyle: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          lessStyle: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.person),
+                          Text(
+                            "Name Customer: ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            widget.invoice.nameCus!.length > 20
+                                ? widget.invoice.nameCus!.substring(0, 20) +
+                                    '...'
+                                : widget.invoice.nameCus!.toString(),
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 82, 82, 82)),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.phone),
+                          Text(
+                            "Phone: ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            widget.invoice.phone.toString(),
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 82, 82, 82)),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: FutureBuilder(
+                            future:
+                                fetchAllOrderdetailDelivered(widget.invoice.id),
+                            builder: (context, snaphot) {
+                              if (snaphot.hasData) {
+                                return ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: snaphot.data!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        height: 111,
+                                        width: 380,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: 80,
+                                                    height: 80,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        color: Color.fromARGB(
+                                                            255, 231, 231, 231),
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                snaphot
+                                                                    .data![
+                                                                        index]
+                                                                    .image
+                                                                    .toString()),
+                                                            fit: BoxFit.cover)),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Container(
+                                                    width: 240,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          snaphot
+                                                                      .data![
+                                                                          index]
+                                                                      .nameProduct!
+                                                                      .length >
+                                                                  20
+                                                              ? snaphot
+                                                                      .data![
+                                                                          index]
+                                                                      .nameProduct!
+                                                                      .substring(
+                                                                          0,
+                                                                          20) +
+                                                                  '...'
+                                                              : snaphot
+                                                                  .data![index]
+                                                                  .nameProduct
+                                                                  .toString(),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              "Amount: x" +
+                                                                  snaphot
+                                                                      .data![
+                                                                          index]
+                                                                      .amount
+                                                                      .toString(),
+                                                              style: TextStyle(
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          125,
+                                                                          125,
+                                                                          125),
+                                                                  fontSize: 12),
+                                                            ),
+                                                            Container(
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .attach_money,
+                                                                          size:
+                                                                              15,
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              181,
+                                                                              57,
+                                                                              5),
+                                                                        ),
+                                                                        Text(
+                                                                          snaphot
+                                                                              .data![index]
+                                                                              .price!
+                                                                              .toStringAsFixed(2),
+                                                                          style: TextStyle(
+                                                                              color: Color.fromARGB(255, 181, 57, 5),
+                                                                              fontWeight: FontWeight.w500),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                          ],
+                                                        ),
+                                                         SizedBox(
+                                                                height: 18,
+                                                                child: Text(
+                                                                    "Unit price: " +
+                                                                        unitprice(snaphot.data![index].price, snaphot.data![index].amount)
+                                                                            .toStringAsFixed(2),
+                                                                    style: TextStyle(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            125,
+                                                                            125,
+                                                                            125),
+                                                                        fontSize:
+                                                                            12)),
+                                                              ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                       ( snaphot.data![index]
+                                                                    .isStatus ==
+                                                                2||snaphot.data![index]
+                                                                    .isStatus ==
+                                                                9 )
+                                                            ? Text(
+                                                                "Canceled",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red),
+                                                              )
+                                                            : Text(
+                                                                "Delivered",
+                                                                style: TextStyle(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            11,
+                                                                            139,
+                                                                            139)),
+                                                              ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ]),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              height: 1,
+                                              width: 380,
+                                              color: const Color.fromARGB(
+                                                  255, 237, 237, 237),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              } else if (snaphot.hasError) {
+                                return Text(snaphot.error.toString());
+                              }
+                              return CircularProgressIndicator();
+                            }),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Subtotal"),
+                                        FutureBuilder(
+                                            future: totalODConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                 num a = int.parse(
+                                                    snapshot.data!.toString());
+                                                return Text(
+                                                    a.toStringAsFixed(2));
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Voucher Supplier"),
+                                        FutureBuilder(
+                                            future: fetchVoucherPrice(
+                                                widget.invoice.voucherS),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data.toString() ==
+                                                  "0") {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      a.toStringAsFixed(2));
+                                                } else if (snapshot.hasError) {
+                                                  return SizedBox();
+                                                }
+                                              } else {
+                                                if (snapshot.data != null) {
+                                                  num a = int.parse(snapshot
+                                                      .data!
+                                                      .toString());
+                                                  return Text(
+                                                      "- ${a.toStringAsFixed(2)}");
+                                                } else {
+                                                  return SizedBox();
+                                                }
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Commission For Admin(10%)"),
+                                        FutureBuilder(
+                                            future: discountForILAConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                if (snapshot.data == "0.00") {
+                                                  return Text(snapshot.data!
+                                                      .toString());
+                                                } else {
+                                                  return Text('-' +
+                                                      snapshot.data!
+                                                          .toString());
+                                                }
+                                              } else {
+                                                return SizedBox();
+                                              }
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Total (",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Icon(
+                                                Icons.attach_money,
+                                                size: 15,
+                                              ),
+                                              Text(
+                                                ") :",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        FutureBuilder(
+                                            future: totalOfSupplierConfirmed(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data != null) {
+                                                return Text(
+                                                  snapshot.data.toString(),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return SizedBox();
+                                              }
+                                              return SizedBox();
+                                            })
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                         Container(
+                height: 1,
+                width: 380,
+                color: const Color.fromARGB(255, 243, 243, 243),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Create Date: ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          widget.invoice.createDate.toString(),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )),
+        ));
+  }
+
+  totalAmountOfProduct(idinvoice) async {
+    var ids = await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/InvoiceSupplier/GetTotalAmountOfProduct?idSupplier=$ids&idInvoice=$idinvoice'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = await json.decode(response.body);
+      return jsonResponse[0]["totalAmountOfProduct"];
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+
+  totalOrderAmount(idinvoice) async {
+    var ids = await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/InvoiceSupplier/GetTotalOrderAmount?idSupplier=$ids&idInvoice=$idinvoice'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = await json.decode(response.body);
+      return jsonResponse[0]["totalOrderAmount"];
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+totalODConfirmed() async {
+    num sum = 0;
+    List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
+    for (int i = 0; i < inv.length; i++) {
+      if (inv[i].isStatus != 2) {
+        num e = inv[i].price!;
+        sum += e;
+      }
+    }
+
+    return sum;
+  }
+
+ discountForILAConfirmed() async {
+    num dis = await totalODConfirmed() * 1 / 10;
+
+    return dis.toStringAsFixed(2);
+  }
+
+  
+
+  Future totalOfSupplierConfirmed() async {
+    num prvch ;
+    final b = await fetchVoucherPrice(widget.invoice.voucherS);
+    if(b == "0"){
+      prvch = 0;
+    }else{
+      prvch = num.parse(b.toString());
+    }
+    final d = await discountForILAConfirmed();
+    final e = await totalODConfirmed();
+    num c = num.parse(e.toString()) -num.parse(d.toString()) - prvch ;
+    num up;
+    if (c >= 0) {
+      up = c;
+    } else {
+      up = 0;
+    }
+    return up.toStringAsFixed(2);
+  }
+
+ 
+
+  Future<String> fetchVoucherPrice(lsvoucher) async {
+    var ids = await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/Voucher/getPriceVoucherInSupplierInvoice?idSupplier=$ids&lsVoucherS=$lsvoucher '));
+
+    if (response.statusCode == 200) {
+      print("vouchersup   " + response.body);
+      return response.body;
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+
+  refundtoCustomer(idinvoice) async {
+    var ids = await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/InvoiceSupplier/GetRefundtoCustomers?idSupplier=$ids&idInvoice=$idinvoice'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = await json.decode(response.body);
+      return jsonResponse[0]["refundtoCustomers"];
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
+}
+
 
 unitprice(price, amount) {
   num a;

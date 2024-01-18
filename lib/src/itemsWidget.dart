@@ -315,7 +315,7 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                                         ),
                                                         FutureBuilder(
                                                             future:
-                                                                fetchCountWatchList(
+                                                                fetchCountReviews(
                                                                     snapshot
                                                                         .data![
                                                                             index]
@@ -1643,7 +1643,7 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
                                                         ),
                                                         FutureBuilder(
                                                             future:
-                                                                fetchCountWatchList(
+                                                                fetchCountReviews(
                                                                     snapshot
                                                                         .data![
                                                                             index]
@@ -1852,17 +1852,19 @@ fetchCountWatchList(idP) async {
   }
 }
 
-fetchCountSold(idP) async {
-   var ids =await getIdSup();
-  final response = await http.get(Uri.parse(
-      '$u/api/Supplier/Products//Supplier_SoldProd?idSupplier=$ids&idProduct=$idP '));
+// fetchCountSold(idP) async {
+//    var ids =await getIdSup();
+//   final response = await http.get(Uri.parse(
+//       '$u/api/Supplier/Products/Supplier_SoldProd?idSupplier=$ids&idProduct=$idP '));
 
-  if (response.statusCode == 200) {
-    return response.body;
-  } else {
-    throw Exception('Unexpected error occured!');
-  }
-}
+//   if (response.statusCode == 200) {
+//  var a = response.body;
+//     return a[''];
+   
+//   } else {
+//     throw Exception('Unexpected error occured!');
+//   }
+// }
 
 fetchCountisActive(active) async {
    var ids =await getIdSup();

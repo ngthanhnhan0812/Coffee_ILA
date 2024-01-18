@@ -356,6 +356,7 @@ class _NewBlogState extends State<NewBlog> {
 
   UploadTask? uploadTask;
   Future<http.Response> insertBlog() async {
+      int idc = await getIdSup();
     String imgSelected;
     final metadata = SettableMetadata(contentType: "image/jpeg");
     final String imagePath = 'images/${DateTime.now()}.jpg';
@@ -372,7 +373,7 @@ class _NewBlogState extends State<NewBlog> {
     vo['description'] = _description.text;
     vo['createDate'] = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-    vo['userCreate'] = 0;
+    vo['userCreate'] = idc;
     vo['isActive'] = 0;
     final response = await http.post(Uri.parse('$u/api/Blog/addNewBlog'),
         headers: <String, String>{'Content-Type': 'application/json'},

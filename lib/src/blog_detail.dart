@@ -334,7 +334,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => BlogView(ind: 0)));
+                        builder: (context) => BlogView(ind: 3)));
                   },
                 ),
               ],
@@ -348,6 +348,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
 
 Future<http.Response> hideBlog(
     id, title, image, description, createDate) async {
+        int idc = await getIdSup();
   var p = {};
   p['id'] = id;
   p['title'] = title;
@@ -355,6 +356,7 @@ Future<http.Response> hideBlog(
   p['description'] = description;
   p['createDate'] = createDate;
   p['isStatus'] = 3;
+  p['userCreate']=idc;
   final response = await http.post(Uri.parse('$u/api/Blog/updateBlog'),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(p));

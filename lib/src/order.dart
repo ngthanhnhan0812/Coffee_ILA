@@ -119,7 +119,7 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
   void initState() {
     batchConfirmS();
     _tabController =
-        TabController(length: 5, vsync: this, initialIndex: widget.initialPage);
+        TabController(length: 6, vsync: this, initialIndex: widget.initialPage);
 
     super.initState();
   }
@@ -140,7 +140,7 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 6,
       child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -177,6 +177,9 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
                     text: "Delivering",
                   ),
                   Tab(
+                    text: "Cus Has Received",
+                  ),
+                  Tab(
                     text: "Delivered",
                   ),
                   Tab(
@@ -193,6 +196,7 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
             children: [
               OrderWidget1(),
               OrderWidget2(),
+              OrderWidget6(),
               OrderWidget3(),
               OrderWidget4(),
               OrderWidget5(),
