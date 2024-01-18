@@ -50,7 +50,12 @@ class SearchProduct extends SearchDelegate {
                                     width: 90,
                                     height: 90,
                                     child: Image.network(
-                                        snapshot.data![index].image),
+                                        snapshot.data![index].image,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                      return Image.asset(
+                                          'assets/images/default-photo.jpg');
+                                    }),
                                   ),
                                   const SizedBox(
                                     width: 1,
@@ -126,7 +131,12 @@ class SearchProduct extends SearchDelegate {
                                     width: 90,
                                     height: 90,
                                     child: Image.network(
-                                        snapshot.data![index].image),
+                                        snapshot.data![index].image,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                      return Image.asset(
+                                          'assets/images/default-photo.jpg');
+                                    }),
                                   ),
                                   const SizedBox(
                                     width: 1,

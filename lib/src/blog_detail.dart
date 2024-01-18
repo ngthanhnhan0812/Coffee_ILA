@@ -28,6 +28,7 @@ class Blog_Approved_detail extends StatefulWidget {
 
 // ignore: camel_case_types
 class _Blog_detailState extends State<Blog_Approved_detail> {
+  final ScrollController _scrollController = ScrollController();
   TextEditingController cmt = TextEditingController();
   final data = [1];
   bool c = true;
@@ -36,14 +37,33 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
   GlobalKey<_Blog_detailState> commentsBlogKey = GlobalKey<_Blog_detailState>();
   int? selectedCommentId;
 
+  int maxLine = 1;
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_updateMaxLines);
     fetchAllCommentFromAPI(widget.blog.id).then((comments) {
       setState(() {
         widget.comments.addAll(comments);
       });
     });
+  }
+
+   void _updateMaxLines() {
+    int newLineCount = '\n'.allMatches(cmt.text).length + 1;
+    if (newLineCount != maxLine) {
+      setState(() {
+        maxLine = newLineCount > 3 ? 3 : newLineCount;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    cmt.dispose();
+    super.dispose();
   }
 
   Future<http.Response> insertCommentBlog() async {
@@ -208,25 +228,29 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
             Form(
               key: _formKey,
               child: Container(
-                height: 50,
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                        maxLines: null,
-                        controller: cmt,
-                        decoration: InputDecoration(
-                          hintText: '',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        reverse: true,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                          maxLines: null,
+                          controller: cmt,
+                          decoration: InputDecoration(
+                            hintText: 'Comment',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(13),
+                            ),
                           ),
+                          keyboardType: TextInputType.multiline,
                         ),
                       ),
                     ),
@@ -584,7 +608,9 @@ class Blog_Hidden_detail extends StatefulWidget {
 class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
   TextEditingController cmt = TextEditingController();
   final data = [1];
-  bool c = false;
+  bool c = true;
+  CommentsBlog? _commentsBlog;
+  int? selectedCommentId;
   @override
   void dispose() {
     cmt.dispose();
@@ -691,11 +717,16 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
                   Column(
                     children: <Widget>[
                       c == true
-                          ? Container()
-                          : CommentsBlog(
+                          ? _commentsBlog ??= CommentsBlog(
+                              // key: commentsBlogKey,
                               idBlog: widget.blog.id,
                               textEditingController: cmt,
-                              blog: widget.blog),
+                              blog: widget.blog,
+                              onReplySelected: (commentId) {
+                                selectedCommentId = commentId;
+                              },
+                            )
+                          : Container(),
                     ],
                   )
                 ],
