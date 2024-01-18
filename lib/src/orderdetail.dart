@@ -352,9 +352,13 @@ class _Orderdetail extends State<Orderdetail> {
                                                               SizedBox(
                                                                 height: 5,
                                                               ),
-                                                              snaphot.data![index]
-                                                                          .isStatus ==
-                                                                      2
+                                                              (snaphot.data![index]
+                                                                          .isStatus !=
+                                                                      1 &&snaphot.data![index]
+                                                                          .isStatus !=
+                                                                      4&&snaphot.data![index]
+                                                                          .isStatus !=
+                                                                      0)==true
                                                                   ? Text(
                                                                       "   Canceled",
                                                                       style: TextStyle(
@@ -1144,7 +1148,7 @@ class _Orderdetail extends State<Orderdetail> {
     num sum = 0;
     List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
     for (int i = 0; i < inv.length; i++) {
-      if (inv[i].isStatus != 2) {
+      if (inv[i].isStatus != 2 &&inv[i].isStatus != 0&&inv[i].isStatus != 3) {
         num e = inv[i].price!;
         sum += e;
       }
@@ -1533,7 +1537,7 @@ class _OrderDetail1 extends State<OrderDetail1> {
                                                               ),
                                                              ( snaphot.data![index]
                                                                           .isStatus ==
-                                                                      1||snaphot.data![index].isStatus==3)==false
+                                                                      1&&snaphot.data![index].isStatus==4)==false
                                                                   ? Text(
                                                                       "Canceled",
                                                                       style: TextStyle(
@@ -1766,7 +1770,7 @@ totalODConfirmed() async {
     num sum = 0;
     List<InvoiceSupplier> inv = await fetchAllOrderdetailDelivered(widget.invoice.id);
     for (int i = 0; i < inv.length; i++) {
-      if (inv[i].isStatus ==1 || inv[i].isStatus ==3) {
+      if (inv[i].isStatus ==1 && inv[i].isStatus ==4) {
        num e = inv[i].price!;
         sum += e;
       }else{
@@ -2131,9 +2135,9 @@ class _OrderDetail2 extends State<OrderDetail2> {
                                                         ),
                                                        ( snaphot.data![index]
                                                                     .isStatus ==
-                                                                2||snaphot.data![index]
+                                                                3 &&snaphot.data![index]
                                                                     .isStatus ==
-                                                                9 )
+                                                                2)==true
                                                             ? Text(
                                                                 "Canceled",
                                                                 style: TextStyle(
@@ -2395,7 +2399,7 @@ totalODConfirmed() async {
     num sum = 0;
     List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
     for (int i = 0; i < inv.length; i++) {
-      if (inv[i].isStatus != 2) {
+      if (inv[i].isStatus != 3 && inv[i].isStatus !=2) {
         num e = inv[i].price!;
         sum += e;
       }
@@ -3084,9 +3088,11 @@ class _OrderDetail5 extends State<OrderDetail5> {
                                                         SizedBox(
                                                           height: 5,
                                                         ),
-                                                        snaphot.data![index]
-                                                                    .isStatus ==
-                                                                2
+                                                        (snaphot.data![index]
+                                                                    .isStatus !=
+                                                                2&& snaphot.data![index]
+                                                                    .isStatus !=
+                                                                3)==false
                                                             ? Text(
                                                                 "Canceled",
                                                                 style: TextStyle(
@@ -3318,9 +3324,12 @@ totalODConfirmed() async {
     num sum = 0;
     List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
     for (int i = 0; i < inv.length; i++) {
-      if (inv[i].isStatus != 2) {
+      if (inv[i].isStatus != 0 && inv[i].isStatus != 2&&inv[i].isStatus !=3) {
         num e = inv[i].price!;
         sum += e;
+      }
+      else{
+        continue;
       }
     }
 
@@ -3671,10 +3680,10 @@ class _OrderDetail6 extends State<OrderDetail6> {
                                                           height: 5,
                                                         ),
                                                        ( snaphot.data![index]
-                                                                    .isStatus ==
-                                                                2||snaphot.data![index]
-                                                                    .isStatus ==
-                                                                9 )
+                                                                    .isStatus !=
+                                                                3&&snaphot.data![index]
+                                                                    .isStatus !=
+                                                                2 )==false
                                                             ? Text(
                                                                 "Canceled",
                                                                 style: TextStyle(
@@ -3936,9 +3945,12 @@ totalODConfirmed() async {
     num sum = 0;
     List<InvoiceSupplier> inv = await fetchAllOrderdetail(widget.invoice.id);
     for (int i = 0; i < inv.length; i++) {
-      if (inv[i].isStatus != 2) {
+      if (inv[i].isStatus != 3 && inv[i].isStatus !=2) {
         num e = inv[i].price!;
         sum += e;
+      }
+      else{
+        continue;
       }
     }
 
