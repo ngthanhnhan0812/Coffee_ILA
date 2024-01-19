@@ -99,6 +99,30 @@ Future<http.Response> updateVoucherToEnd(
   return response;
 }
 
+batchAutoStartVoucher() async {
+  var id = await getIdSup();
+  final response =
+      await http.get(Uri.parse('$u/api/Batch/autoStartVoucher?userType=$id'));
+  if (response.statusCode == 200) {
+    print('check sVoucher successfully from The Rest API of voucher.dart');
+    return response.body;
+  } else {
+    throw Exception('Unexpected error occured!');
+  }
+}
+
+batchAutoEndVoucher() async {
+  var id = await getIdSup();
+  final response =
+      await http.get(Uri.parse('$u/api/Batch/autoEndVoucher?userType=$id'));
+  if (response.statusCode == 200) {
+    print('check eVoucher successfully from The Rest API of voucher.dart');
+    return response.body;
+  } else {
+    throw Exception('Unexpected error occured!');
+  }
+}
+
 // ignore: camel_case_types, must_be_immutable
 class Voucher_home extends StatefulWidget {
   int ind;
@@ -109,6 +133,13 @@ class Voucher_home extends StatefulWidget {
 
 // ignore: camel_case_types
 class _Voucher_home extends State<Voucher_home> {
+  @override
+  void initState() {
+    super.initState();
+    batchAutoStartVoucher();
+    batchAutoEndVoucher();
+  }
+
   @override
   Widget build(BuildContext context) {
     const int tabsCount = 3;

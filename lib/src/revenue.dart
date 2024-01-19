@@ -41,6 +41,19 @@ class Revenue extends StatefulWidget {
 
 class _RevenueState extends State<Revenue> {
   List<InvoiceSupplier> data = [];
+  int? selectedYear = 2024;
+
+  Future<void> fetchData() async {
+    try {
+      List<InvoiceSupplier> selectedData = await fetchRevenueSupplier(selectedYear!);
+      setState(() {
+        data = selectedData;
+      });
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +153,7 @@ class _RevenueState extends State<Revenue> {
         ),
         body: Column(children: [
           FutureBuilder(
-            future: fetchRevenueSupplier(2023),
+            future: fetchRevenueSupplier(selectedYear!),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 data = snapshot.data as List<InvoiceSupplier>;
@@ -154,12 +167,12 @@ class _RevenueState extends State<Revenue> {
                             context: context,
                             builder: (context) => SizedBox(
                               height: MediaQuery.of(context).size.height * 0.5,
-                              child: const Column(
+                              child: Column(
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
-                                  Row(
+                                  const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
@@ -170,15 +183,36 @@ class _RevenueState extends State<Revenue> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
+                                  Expanded(
+                                      child: ListView.builder(
+                                    itemCount: 5,
+                                    itemBuilder: (context, index) {
+                                      int year = DateTime.now().year + index;
+                                      return ListTile(
+                                        title: Text(year.toString()),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            selectedYear = year;
+                                          });
+                                          fetchData();
+                                        },
+                                      );
+                                    },
+                                  ))
                                 ],
                               ),
                             ),
                           );
                         },
-                        child: Text('Revenue in' ':' ' ${data[9].sumRevenue}')),
+                        child: Text('Revenue in'
+                            ' '
+                            '$selectedYear'
+                            ':'
+                            ' ${data[9].sumRevenue}')),
                     const SizedBox(height: 50),
                     SfCartesianChart(
                         primaryXAxis: const CategoryAxis(),

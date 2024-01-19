@@ -134,23 +134,31 @@ Future<void> updateAllDiscounts(
   for (var id in idEndUpdate) {
     await updateDiscountToEnd(id, discount, dateBegin, idProduct, indC);
   }
-  // List<Discount> groupedDiscounts = groupDiscountsByIndC(discounts);
-  // for (var groupedDiscount in groupedDiscounts) {
-  //   List<Discount> discountsToUpdate =
-  //       discounts.where((d) => d.indC == groupedDiscount.indC).toList();
-
-  //   for (var discount in discountsToUpdate) {
-  //     await updateDiscountToEnd(
-  //       discount.id,
-  //       discount.discount,
-  //       discount.dateBegin,
-  //       discount.idProduct,
-  //       discount.indC,
-  //     );
-  //   }
-  // }
 }
 
+batchAutoStartDiscount() async {
+  var id = await getIdSup();
+  final response =
+      await http.get(Uri.parse('$u/api/Batch/autoStartDiscount?idSupplier=$id'));
+  if (response.statusCode == 200) {
+    print('check sDiscount successfully from The Rest API of promotion.dart');
+    return response.body;
+  } else {
+    throw Exception('Unexpected error occured!');
+  }
+}
+
+batchAutoEndDiscount() async {
+  var id = await getIdSup();
+  final response =
+      await http.get(Uri.parse('$u/api/Batch/autoEndDiscount?idSupplier=$id'));
+  if (response.statusCode == 200) {
+    print('check eDiscount successfully from The Rest API of promotion.dart');
+    return response.body;
+  } else {
+    throw Exception('Unexpected error occured!');
+  }
+}
 // ignore: must_be_immutable
 class Promotion extends StatefulWidget {
   int ind;
@@ -164,6 +172,13 @@ class Promotion extends StatefulWidget {
 
 // ignore: camel_case_types
 class _Promotion extends State<Promotion> {
+  @override
+  initState() {
+    super.initState();
+    batchAutoStartDiscount();
+    batchAutoEndDiscount();
+  }
+
   @override
   Widget build(BuildContext context) {
     const tabsCount = 3;
