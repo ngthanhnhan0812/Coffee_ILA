@@ -40,7 +40,7 @@ class _Refund extends State<Refund> {
           child: Container(
               child: Column(
                 children: [
-                  Text(widget.flagRefund.toString()),
+                  Text('You must to refund'+widget.flagRefund.toString()+'for ILA'),
                     Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,

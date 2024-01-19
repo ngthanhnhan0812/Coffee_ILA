@@ -39,7 +39,7 @@ class _Editprofile extends State<Editprofile> {
   final TextEditingController _username = TextEditingController();
   String? password;
   var idcate;
-  String checkTitle = "true";
+  String checkTitle = "false";
   final picker = ImagePicker();
   @override
   void initState() {
@@ -93,6 +93,11 @@ class _Editprofile extends State<Editprofile> {
                                 fit: BoxFit.fitWidth,
                               )
                             : Image(
+                              errorBuilder: (context, url, error) =>
+                                    Image.asset(
+                                  "assets/images/default-product.jpg",
+                                  fit: BoxFit.fitWidth,
+                                ),
                                 image: FileImage(img!),
                                 fit: BoxFit.fitWidth,
                               ),
@@ -481,9 +486,16 @@ class _Editprofile extends State<Editprofile> {
       Uri.parse('$u/api/Supplier/checkExistsOrganizationName?title=$titleSup'),
     );
     if (response.statusCode == 200) {
-      setState(() {
+      if(widget.profile.title != _title.text.trim().replaceAll(regex, ' ')){
+         setState(() {
         checkTitle = response.body;
       });
+      }else{
+        setState(() {
+          checkTitle='false';
+        });
+      }
+     
     } else {
       throw Exception('Unable to fetch!');
     }
@@ -687,8 +699,10 @@ class _Editprofile extends State<Editprofile> {
     final metadata = SettableMetadata(contentType: "image/jpeg");
 
     if (img != null) {
-      final r = FirebaseStorage.instance.refFromURL(_image.toString());
+     if(_image != 'No Image'){
+       final r = FirebaseStorage.instance.refFromURL(_image.toString());
       r.delete();
+     }
       final imag = File(img!.path);
       final String imagePath = 'images/${DateTime.now()}.jpg';
       final ref =
