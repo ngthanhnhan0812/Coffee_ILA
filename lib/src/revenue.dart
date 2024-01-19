@@ -188,9 +188,9 @@ class _RevenueState extends State<Revenue> {
                                   ),
                                   Expanded(
                                       child: ListView.builder(
-                                    itemCount: 5,
+                                    itemCount: 7,
                                     itemBuilder: (context, index) {
-                                      int year = DateTime.now().year + index;
+                                      int year = selectedYear! - index;
                                       return ListTile(
                                         title: Text(year.toString()),
                                         onTap: () {
