@@ -1535,9 +1535,11 @@ class _OrderDetail1 extends State<OrderDetail1> {
                                                               SizedBox(
                                                                 height: 5,
                                                               ),
-                                                             ( snaphot.data![index]
-                                                                          .isStatus ==
-                                                                      1&&snaphot.data![index].isStatus==4)==false
+                                                              ( snaphot.data![index]
+                                                                    .isStatus !=
+                                                                3 &&snaphot.data![index]
+                                                                    .isStatus !=
+                                                                2)==false
                                                                   ? Text(
                                                                       "Canceled",
                                                                       style: TextStyle(
@@ -1770,7 +1772,7 @@ totalODConfirmed() async {
     num sum = 0;
     List<InvoiceSupplier> inv = await fetchAllOrderdetailDelivered(widget.invoice.id);
     for (int i = 0; i < inv.length; i++) {
-      if (inv[i].isStatus ==1 && inv[i].isStatus ==4) {
+      if (inv[i].isStatus != 3 && inv[i].isStatus !=2) {
        num e = inv[i].price!;
         sum += e;
       }else{
@@ -2134,10 +2136,10 @@ class _OrderDetail2 extends State<OrderDetail2> {
                                                           height: 5,
                                                         ),
                                                        ( snaphot.data![index]
-                                                                    .isStatus ==
+                                                                    .isStatus !=
                                                                 3 &&snaphot.data![index]
-                                                                    .isStatus ==
-                                                                2)==true
+                                                                    .isStatus !=
+                                                                2)==false
                                                             ? Text(
                                                                 "Canceled",
                                                                 style: TextStyle(

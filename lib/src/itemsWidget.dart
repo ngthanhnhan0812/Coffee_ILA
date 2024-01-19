@@ -315,7 +315,7 @@ class _ItemsWidget1 extends State<ItemsWidget1> {
                                                         ),
                                                         FutureBuilder(
                                                             future:
-                                                                fetchCountReviews(
+                                                                fetchCountSold(
                                                                     snapshot
                                                                         .data![
                                                                             index]
@@ -1643,7 +1643,7 @@ class _ItemsWidget3 extends State<ItemsWidget3> {
                                                         ),
                                                         FutureBuilder(
                                                             future:
-                                                                fetchCountReviews(
+                                                                fetchCountSold(
                                                                     snapshot
                                                                         .data![
                                                                             index]
@@ -1852,19 +1852,19 @@ fetchCountWatchList(idP) async {
   }
 }
 
-// fetchCountSold(idP) async {
-//    var ids =await getIdSup();
-//   final response = await http.get(Uri.parse(
-//       '$u/api/Supplier/Products/Supplier_SoldProd?idSupplier=$ids&idProduct=$idP '));
+fetchCountSold(idP) async {
+   var ids =await getIdSup();
+  final response = await http.get(Uri.parse(
+      '$u/api/Supplier/Products/Supplier_SoldProd?idSupplier=$ids&idProduct=$idP '));
 
-//   if (response.statusCode == 200) {
-//  var a = response.body;
-//     return a[''];
+  if (response.statusCode == 200) {
+ var jsonResponse = await json.decode(response.body);
+    return jsonResponse['soldProd'];
    
-//   } else {
-//     throw Exception('Unexpected error occured!');
-//   }
-// }
+  } else {
+    throw Exception('Unexpected error occured!');
+  }
+}
 
 fetchCountisActive(active) async {
    var ids =await getIdSup();
@@ -1931,7 +1931,7 @@ Future<List<Category>> fetchCategoryFilter(isActi) async {
       idCate.add(jsonResponse[i]["idcate"]);
     }
   }
-  final responsee = await http.get(Uri.parse('$u/api/Category/cateNew'));
+  final responsee = await http.get(Uri.parse('$u/api/Category/GetAllCate'));
   if (responsee.statusCode == 200) {
     List jsonResponsee = await json.decode(responsee.body);
     for (int j = 0; j < jsonResponsee.length; j++) {
