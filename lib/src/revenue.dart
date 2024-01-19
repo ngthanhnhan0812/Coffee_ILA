@@ -41,7 +41,7 @@ class Revenue extends StatefulWidget {
 
 class _RevenueState extends State<Revenue> {
   List<InvoiceSupplier> data = [];
-  int? selectedYear = 2024;
+  int? selectedYear = DateTime.now().year;
 
   Future<void> fetchData() async {
     try {
