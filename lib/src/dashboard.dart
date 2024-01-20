@@ -29,8 +29,8 @@ class _Dashboard extends State<Dashboard> {
             begin: Alignment.centerRight,
             end: Alignment(0.8, 1),
             colors: <Color>[
-              Color.fromARGB(255, 113, 33, 10),
-              Color.fromARGB(255, 0, 0, 0),
+              Color.fromARGB(255, 181, 57, 5),
+              Color.fromARGB(255, 255, 255, 255),
             ],
             tileMode: TileMode.mirror,
           ),
@@ -108,8 +108,8 @@ class _Dashboard extends State<Dashboard> {
                           Text(
                             'Orders',
                             style: TextStyle(
-                                color: const Color.fromARGB(255, 69, 68, 68)
-                                    .withOpacity(0.5),
+                                color: Color.fromARGB(255, 43, 43, 44)
+                                    ,
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500),
                           ),
@@ -154,9 +154,17 @@ class _Dashboard extends State<Dashboard> {
                                       height: 70,
                                       width: 130,
                                       decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(7),
-                                          color: AppColor.primary_color),
+                                        borderRadius: BorderRadius.circular(7),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: <Color>[
+                                            Color.fromARGB(255, 181, 57, 5),
+                                            Color.fromARGB(255, 67, 8, 33),
+                                          ],
+                                          tileMode: TileMode.mirror,
+                                        ),
+                                      ),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -193,7 +201,15 @@ class _Dashboard extends State<Dashboard> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(7),
-                                          color: AppColor.primary_color),
+                                         gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: <Color>[
+                                            Color.fromARGB(255, 181, 57, 5),
+                                            Color.fromARGB(255, 67, 8, 33),
+                                          ],
+                                          tileMode: TileMode.mirror,
+                                        ),),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -236,7 +252,15 @@ class _Dashboard extends State<Dashboard> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(7),
-                                          color: AppColor.primary_color),
+                                          gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: <Color>[
+                                            Color.fromARGB(255, 181, 57, 5),
+                                            Color.fromARGB(255, 67, 8, 33),
+                                          ],
+                                          tileMode: TileMode.mirror,
+                                        ),),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -273,7 +297,15 @@ class _Dashboard extends State<Dashboard> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(7),
-                                          color: AppColor.primary_color),
+                                          gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: <Color>[
+                                            Color.fromARGB(255, 181, 57, 5),
+                                            Color.fromARGB(255, 67, 8, 33),
+                                          ],
+                                          tileMode: TileMode.mirror,
+                                        ),),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -316,7 +348,7 @@ class _Dashboard extends State<Dashboard> {
                                 color: Colors.white,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Color.fromARGB(255, 249, 230, 230)
+                                    color: Color.fromARGB(255, 213, 211, 210)
                                         .withOpacity(0.5),
                                     spreadRadius: 4,
                                     blurRadius: 4,
@@ -335,9 +367,7 @@ class _Dashboard extends State<Dashboard> {
                                       Text(
                                         'Store',
                                         style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                    255, 69, 68, 68)
-                                                .withOpacity(0.5),
+                                            color:Color.fromARGB(255, 43, 43, 44),
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500),
                                       ),
@@ -531,8 +561,8 @@ class _Dashboard extends State<Dashboard> {
               MaterialButton(
                 minWidth: 40,
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => BlogView(ind: 0)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => BlogView(ind: 0)));
                 },
                 child: Icon(
                   Icons.app_registration,
