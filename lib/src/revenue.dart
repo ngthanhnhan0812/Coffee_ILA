@@ -190,7 +190,7 @@ class _RevenueState extends State<Revenue> {
                                       child: ListView.builder(
                                     itemCount: 7,
                                     itemBuilder: (context, index) {
-                                      int year = selectedYear! - index;
+                                      int year = DateTime.now().year - index;
                                       return ListTile(
                                         title: Text(year.toString()),
                                         onTap: () {
@@ -212,7 +212,7 @@ class _RevenueState extends State<Revenue> {
                             ' '
                             '$selectedYear'
                             ':'
-                            ' ${data[9].sumRevenue}')),
+                            ' ${data.fold(0, (sum, item) => sum + item.sumRevenue.toInt()).toStringAsFixed(2)}')),
                     const SizedBox(height: 50),
                     SfCartesianChart(
                         primaryXAxis: const CategoryAxis(),
