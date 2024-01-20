@@ -118,6 +118,7 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     batchConfirmS();
+    batchNotConfirmS();
     _tabController =
         TabController(length: 6, vsync: this, initialIndex: widget.initialPage);
 
@@ -208,6 +209,18 @@ class _Order extends State<Order> with SingleTickerProviderStateMixin {
   var ids =await getIdSup();
     final response = await http.get(Uri.parse(
         '$u/api/Batch/autoCheckConfirmS?idSupplier=$ids'));
+        if (response.statusCode == 200) { 
+          print("kkk ok nekk");
+          return response.body;
+        }else{
+          throw Exception('Unexpected error occured!');
+        }
+    
+  }
+  batchNotConfirmS() async {
+  var ids =await getIdSup();
+    final response = await http.get(Uri.parse(
+        '$u/api/Batch/autoCheckSupplierNotConfirmS?idSupplier=$ids'));
         if (response.statusCode == 200) { 
           print("kkk ok nekk");
           return response.body;
