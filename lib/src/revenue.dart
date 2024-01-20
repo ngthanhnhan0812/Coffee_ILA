@@ -45,7 +45,8 @@ class _RevenueState extends State<Revenue> {
 
   Future<void> fetchData() async {
     try {
-      List<InvoiceSupplier> selectedData = await fetchRevenueSupplier(selectedYear!);
+      List<InvoiceSupplier> selectedData =
+          await fetchRevenueSupplier(selectedYear!);
       setState(() {
         data = selectedData;
       });
@@ -159,7 +160,13 @@ class _RevenueState extends State<Revenue> {
                 data = snapshot.data as List<InvoiceSupplier>;
                 return Column(
                   children: [
-                    TextButton(
+                    OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                color: Color.fromARGB(255, 181, 57, 5)),
+                            minimumSize: const Size(200, 50),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14))),
                         onPressed: () {
                           showModalBottomSheet(
                             isScrollControlled: true,
@@ -208,11 +215,15 @@ class _RevenueState extends State<Revenue> {
                             ),
                           );
                         },
-                        child: Text('Revenue in'
-                            ' '
-                            '$selectedYear'
-                            ':'
-                            ' ${data.fold(0, (sum, item) => sum + item.sumRevenue.toInt()).toStringAsFixed(2)}')),
+                        child: Text(
+                          'Revenue in'
+                          ' '
+                          '$selectedYear'
+                          ':'
+                          ' ${data.fold(0, (sum, item) => sum + item.sumRevenue.toInt()).toStringAsFixed(2)}',
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.black),
+                        )),
                     const SizedBox(height: 50),
                     SfCartesianChart(
                         primaryXAxis: const CategoryAxis(),
