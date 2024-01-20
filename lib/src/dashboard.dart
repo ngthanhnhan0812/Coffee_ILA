@@ -497,7 +497,9 @@ bool isACtiveOfSup = false;
                                   )
                                 ],
                               ),
-                            ):SizedBox(height: 180,)
+                            ):SizedBox(height: 180,
+                            child: Center(child: Text('Your Account Is Disactive.'),),
+                            )
                           ],
                         ),
                       )
