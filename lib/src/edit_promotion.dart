@@ -280,7 +280,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                   .any((element) => element.price * 0.1 < discountValueInput!)) {
                 final snackBar = SnackBar(
                   content: const Text(
-                      'Discount must be filled with a number lower than price'),
+                      'Discount must be equal to 10% of the product price'),
                   action: SnackBarAction(
                     label: 'Dismiss',
                     onPressed: () {},

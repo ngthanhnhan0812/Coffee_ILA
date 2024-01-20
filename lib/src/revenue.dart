@@ -220,7 +220,7 @@ class _RevenueState extends State<Revenue> {
                           ' '
                           '$selectedYear'
                           ':'
-                          ' ${data.fold(0.00, (sum, item) => sum + item.sumRevenue).toStringAsFixed(2)}',
+                          ' ${data.fold(0.00, (sum, item) => sum + item.sumRevenue).toString()}',
                           style: const TextStyle(
                               fontSize: 15, color: Colors.black),
                         )),
