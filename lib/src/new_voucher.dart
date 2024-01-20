@@ -266,7 +266,7 @@ Row(
                 } else if (discount == condition) {
                   return 'Invalid input condition';
                 }
-               if (discount >= 20%condition) {
+               if (discount > 0.2*condition) {
                 return 'Discount is only equal to 80% condition!!';
                }
                 return null;
