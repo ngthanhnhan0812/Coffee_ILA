@@ -440,7 +440,7 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
       await updateSingleDiscount(
           UpdateData(discount: discount, products: tempNewProducts));
       if (tempNewProducts.isNotEmpty) {
-        int indC = discounts.first.indC - 1;
+        int indC = discounts.first.indC;
         await insertAllDiscount(indC, tempNewProducts);
         tempNewProducts.clear();
       }
