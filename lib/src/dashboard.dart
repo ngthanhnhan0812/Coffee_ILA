@@ -6,6 +6,7 @@ import 'package:coffee/src/sidebar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee/bundle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -15,6 +16,12 @@ class Dashboard extends StatefulWidget {
 }
 
 class _Dashboard extends State<Dashboard> {
+bool isACtiveOfSup = false;
+  @override
+  void initState() {
+ getIsActiveSup();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -340,7 +347,7 @@ class _Dashboard extends State<Dashboard> {
                             SizedBox(
                               height: 10,
                             ),
-                            Container(
+                           isACtiveOfSup? Container(
                               height: 180,
                               width: 400,
                               decoration: BoxDecoration(
@@ -490,7 +497,7 @@ class _Dashboard extends State<Dashboard> {
                                   )
                                 ],
                               ),
-                            )
+                            ):SizedBox(height: 180,)
                           ],
                         ),
                       )
@@ -500,7 +507,7 @@ class _Dashboard extends State<Dashboard> {
               ),
             ]),
       ),
-      bottomNavigationBar: BottomAppBar(
+    bottomNavigationBar:isACtiveOfSup? BottomAppBar(
         height: 50,
         color: Color.fromARGB(255, 255, 255, 255),
         child: Container(
@@ -573,7 +580,22 @@ class _Dashboard extends State<Dashboard> {
             ],
           ),
         ),
-      ),
+      ):SizedBox(height: 50,),
     );
   }
+  getIsActiveSup() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return int
+  int? isActiveS = prefs.getInt('isActiveSup');
+  if(isActiveS ==1){
+    setState(() {
+      isACtiveOfSup = true;
+    });
+  }else{
+    setState(() {
+      isACtiveOfSup = false;
+    });
+  }
+  return isActiveS;
+}
 }

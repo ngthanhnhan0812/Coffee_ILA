@@ -294,6 +294,7 @@ class _login extends State<login> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('userName', acc.username!);
       prefs.setInt('idSup', acc.id!);
+      prefs.setInt('isActiveSup',acc.isActive!);
 
       showDialog<void>(
           context: context,

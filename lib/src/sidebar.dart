@@ -220,6 +220,7 @@ Future<Supplier> fetchTitleSupplier() async {
   if (response.statusCode == 200) {
     List jsonResponse = await json.decode(response.body);
     var title = jsonResponse[0]["title"];
+  
     return title;
   } else {
     throw Exception('Unexpected error occured!');
