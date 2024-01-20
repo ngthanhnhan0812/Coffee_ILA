@@ -219,7 +219,7 @@ class _Dashboard extends State<Dashboard> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
                                         return Order(
-                                          initialPage: 2,
+                                          initialPage: 3,
                                         );
                                       }));
                                     })
@@ -262,7 +262,7 @@ class _Dashboard extends State<Dashboard> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
                                         return Order(
-                                          initialPage: 3,
+                                          initialPage: 4,
                                         );
                                       }));
                                     }),
@@ -299,7 +299,7 @@ class _Dashboard extends State<Dashboard> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) {
                                         return Order(
-                                          initialPage: 4,
+                                          initialPage: 5,
                                         );
                                       }));
                                     })
