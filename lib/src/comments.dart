@@ -119,6 +119,7 @@ class _CommentsState extends State<CommentsBlog> {
   List<Widget> commentWidgets = [];
   List<Widget> widgetsToDisplay = [];
   int? selectedCommentId;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   void onReplySelected(int id) {
     setState(() {
       selectedCommentId = id;
@@ -253,14 +254,23 @@ class _CommentsState extends State<CommentsBlog> {
                                                 ),
                                                 SizedBox(
                                                   width: 280,
-                                                  child: TextFormField(
-                                                    controller: widget
-                                                        .textEditingController,
-                                                    maxLines: null,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
+                                                  child: Form(
+                                                    child: TextFormField(
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return 'Please enter some text';
+                                                        }
+                                                        return null;
+                                                      },
+                                                      controller: widget
+                                                          .textEditingController,
+                                                      maxLines: null,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -268,10 +278,15 @@ class _CommentsState extends State<CommentsBlog> {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                editComment(
-                                                    widget.textEditingController
-                                                        .text,
-                                                    commentMainId[snapshot]!);
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  editComment(
+                                                      widget
+                                                          .textEditingController
+                                                          .text,
+                                                      commentMainId[snapshot]!);
+                                                }
+
                                                 Navigator.pop(context);
                                                 Navigator.pop(context);
                                                 Navigator.pop(context);
@@ -418,14 +433,24 @@ class _CommentsState extends State<CommentsBlog> {
                                                 ),
                                                 SizedBox(
                                                   width: 280,
-                                                  child: TextFormField(
-                                                    controller: widget
-                                                        .textEditingController,
-                                                    maxLines: null,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
+                                                  child: Form(
+                                                    key: _formKey,
+                                                    child: TextFormField(
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return 'Please enter some text';
+                                                        }
+                                                        return null;
+                                                      },
+                                                      controller: widget
+                                                          .textEditingController,
+                                                      maxLines: null,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -433,10 +458,15 @@ class _CommentsState extends State<CommentsBlog> {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                editComment(
-                                                    widget.textEditingController
-                                                        .text,
-                                                    commentSubId[snapshot]!);
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  editComment(
+                                                      widget
+                                                          .textEditingController
+                                                          .text,
+                                                      commentSubId[snapshot]!);
+                                                }
+
                                                 Navigator.pop(context);
                                                 Navigator.pop(context);
                                                 Navigator.pop(context);
@@ -502,10 +532,10 @@ class _CommentsState extends State<CommentsBlog> {
                         ),
                         Text(
                           snapshot.content.toString(),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontSize: 14,
-                                  color: Colors.black),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(fontSize: 14, color: Colors.black),
                         ),
                       ],
                     ),
