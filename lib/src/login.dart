@@ -115,7 +115,11 @@ class _login extends State<login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return WillPopScope(
+      onWillPop: () async {
+        return _onWillPop();
+      },
+    child: Scaffold(
       resizeToAvoidBottomInset: false,
       body: Form(
         key: _formKey,
@@ -279,8 +283,8 @@ class _login extends State<login> {
           ),
         ),
       ),
-    );
-  }
+    )
+ ) ;}
 
   Future<void> checkLogin() async {
     SupInf acc = await loginSup();
@@ -382,4 +386,9 @@ class _login extends State<login> {
       throw Exception('Unexpected error occured!');
     }
   }
+   Future<bool> _onWillPop() async {
+   return   false;
+  }
+
+
 }
