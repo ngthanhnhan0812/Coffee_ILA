@@ -233,10 +233,10 @@ class _Voucher_home extends State<Voucher_home> {
                 MaterialButton(
                   minWidth: 40,
                   onPressed: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Revenue()));
                   },
                   child: const Icon(
                     Icons.leaderboard,

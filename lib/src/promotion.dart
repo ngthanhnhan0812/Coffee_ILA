@@ -138,8 +138,8 @@ Future<void> updateAllDiscounts(
 
 batchAutoStartDiscount() async {
   var id = await getIdSup();
-  final response =
-      await http.get(Uri.parse('$u/api/Batch/autoStartDiscount?idSupplier=$id'));
+  final response = await http
+      .get(Uri.parse('$u/api/Batch/autoStartDiscount?idSupplier=$id'));
   if (response.statusCode == 200) {
     print('check sDiscount successfully from The Rest API of promotion.dart');
     return response.body;
@@ -159,6 +159,7 @@ batchAutoEndDiscount() async {
     throw Exception('Unexpected error occured!');
   }
 }
+
 // ignore: must_be_immutable
 class Promotion extends StatefulWidget {
   int ind;
@@ -270,10 +271,10 @@ class _Promotion extends State<Promotion> {
                 MaterialButton(
                   minWidth: 40,
                   onPressed: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Revenue()));
                   },
                   child: const Icon(
                     Icons.leaderboard,
