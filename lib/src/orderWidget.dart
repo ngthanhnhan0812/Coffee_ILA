@@ -982,7 +982,11 @@ void initState(){
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
-            return AlertDialog(
+             return WillPopScope(
+      onWillPop: () async {
+        return _onWillPop();
+      },
+            child: AlertDialog(
               title: const Text(
                 'Received Money',
                 style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
@@ -1006,13 +1010,15 @@ void initState(){
                   },
                 ),
               ],
-            );
+            ));
           },
         );
       },
     );
   }
-
+Future<bool> _onWillPop() async {
+   return   false;
+  }
 }
 
 class OrderWidget4 extends StatefulWidget {

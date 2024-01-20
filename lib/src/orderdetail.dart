@@ -71,6 +71,7 @@ class _Orderdetail extends State<Orderdetail> {
 
   @override
   Widget build(BuildContext build) {
+    
     return Scaffold(
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
@@ -1000,7 +1001,9 @@ class _Orderdetail extends State<Orderdetail> {
                 )),
         ));
   }
-
+Future<bool> _onWillPop() async {
+   return   false;
+  }
   Future<void> areyousure() async {
     return showDialog<void>(
         context: context,
@@ -1050,7 +1053,11 @@ class _Orderdetail extends State<Orderdetail> {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
+           return WillPopScope(
+      onWillPop: () async {
+        return _onWillPop();
+      },
+          child: AlertDialog(
             title: const Text(
               'Confirm Order',
               style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
@@ -1074,7 +1081,7 @@ class _Orderdetail extends State<Orderdetail> {
                 },
               ),
             ],
-          );
+          ));
         },
       );
     } else {
