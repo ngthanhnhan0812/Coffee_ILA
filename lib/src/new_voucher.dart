@@ -540,16 +540,15 @@ class _NewVoucher extends State<NewVoucher> {
                             Row(
                               children: [
                                 Container(
-                                  width: 80,
-                                  height: 80,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(7),
-                                      image: const DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            'https://firebasestorage.googleapis.com/v0/b/ilacoffeeproject.appspot.com/o/voucher-black-friday-related-filled-icon-vector-28114495%20(1).jpg?alt=media&token=e4033924-00dd-4ae2-95a0-3b3241913755&_gl=1*nd2x0w*_ga*MzY4MTI3NTExLjE2OTMwMjA0ODk.*_ga_CW55HF8NVT*MTY5Nzc4NzcyNi44MC4xLjE2OTc3ODc4NTkuMzIuMC4w'),
-                                      )),
-                                ),
+                                    width: 80,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
+                                        image: const DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: AssetImage(
+                                              'assets/images/voucher-black-friday-related-filled-icon-vector-28114495 (1).jpg'),
+                                        ))),
                                 const SizedBox(
                                   width: 10,
                                 ),

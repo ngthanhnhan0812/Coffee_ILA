@@ -163,7 +163,7 @@ class _EditVoucher extends State<EditVoucher> {
                           child: TextFormField(
                         validator: (value) {
                           final RegExp regExpdOtAndComma = RegExp(r'[.,]');
-                          if (value == null) {
+                          if (value == null || value.isEmpty) {
                             return 'Please enter condition';
                           } else if (value.length > 5) {
                             return 'The limitation of amount voucher is 99999';

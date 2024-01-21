@@ -172,7 +172,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText: 'Show less',
+                                    trimExpandedText:  ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
@@ -469,7 +469,7 @@ class _Blog_Waiting_detailState extends State<Blog_Waiting_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText: 'Show less',
+                                    trimExpandedText:  ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
@@ -571,7 +571,7 @@ class _Blog_Cancelled_detailState extends State<Blog_Cancelled_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText: 'Show less',
+                                    trimExpandedText:  ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
@@ -683,7 +683,7 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText: 'Show less',
+                                    trimExpandedText:  ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
