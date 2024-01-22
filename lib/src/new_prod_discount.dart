@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
-import 'package:coffee/src/search_Prod_discount.dart';
+// import 'package:coffee/src/search_Prod_discount.dart';
 
 class FetchProduct {
   // ignore: non_constant_identifier_names
@@ -131,14 +131,14 @@ class _New_Prod_Product extends State<New_Prod_Product> {
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            tooltip: 'Open search future',
-            onPressed: () {
-              showSearch(context: context, delegate: SearchProduct());
-            },
-          ),
+        actions: const[
+          // IconButton(
+          //   icon: const Icon(Icons.search),
+          //   tooltip: 'Open search future',
+          //   onPressed: () {
+          //     showSearch(context: context, delegate: SearchProduct());
+          //   },
+          // ),
         ],
       ),
       // body: fakeViewData(),
