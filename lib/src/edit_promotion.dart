@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:coffee/bundle.dart';
 import 'package:coffee/ip/ip.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -223,6 +224,12 @@ class _Edit_PromotionState extends State<Edit_Promotion> {
                           }
                           return null;
                         },
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(5),
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                FilteringTextInputFormatter.deny(
+                                    RegExp(r'^0+')),
+                        ],
                         maxLines: 1,
                         decoration: const InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),

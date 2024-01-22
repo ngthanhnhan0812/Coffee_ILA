@@ -524,16 +524,13 @@ class _UpComing_Voucher extends State<UpComing_Voucher> {
                                             ],
                                           ),
                                           const SizedBox(
-                                            width: 6,
+                                            width: 5,
                                           ),
                                           Container(
                                             height: 40,
                                             width: 1,
                                             color: const Color.fromARGB(
                                                 255, 167, 167, 167),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
                                           ),
                                           IconButton(
                                               onPressed: () {
@@ -551,9 +548,7 @@ class _UpComing_Voucher extends State<UpComing_Voucher> {
                                                 color: Color.fromARGB(
                                                     255, 148, 148, 148),
                                               )),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
+                                          
                                           ElevatedButton(
                                             onPressed: () async {
                                               await deleteVoucher(
@@ -834,7 +829,7 @@ class _Active_Voucher extends State<Active_Voucher> {
                                                 255, 167, 167, 167),
                                           ),
                                           const SizedBox(
-                                            width: 60,
+                                            width: 30
                                           ),
                                           ElevatedButton(
                                             onPressed: () {

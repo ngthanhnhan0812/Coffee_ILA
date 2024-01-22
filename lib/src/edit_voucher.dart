@@ -117,21 +117,24 @@ class _EditVoucher extends State<EditVoucher> {
                             },
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(5),
-                              FilteringTextInputFormatter.deny(RegExp(r'-')),
-                              FilteringTextInputFormatter.deny(RegExp(r' ')),
-                              FilteringTextInputFormatter.deny(RegExp(r'^-+')),
-                              FilteringTextInputFormatter.deny(RegExp(r'^,+')),
-                              FilteringTextInputFormatter.deny(RegExp(r'^ +')),
-                              // FilteringTextInputFormatter.deny(
-                              //     RegExp(r'^.+')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\.\.')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\.\,')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\.\-')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\.\ ')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\,\,')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\,\.')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\,\-')),
-                              FilteringTextInputFormatter.deny(RegExp(r'\,\ '))
+                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  FilteringTextInputFormatter.deny(
+                                      RegExp(r'^0+')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'-')),
+                              // FilteringTextInputFormatter.deny(RegExp(r' ')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'^-+')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'^,+')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'^ +')),
+                              // // FilteringTextInputFormatter.deny(
+                              // //     RegExp(r'^.+')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\.\.')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\.\,')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\.\-')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\.\ ')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\,\,')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\,\.')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\,\-')),
+                              // FilteringTextInputFormatter.deny(RegExp(r'\,\ '))
                             ],
                             maxLines: 1,
                             decoration: const InputDecoration(
@@ -195,21 +198,24 @@ class _EditVoucher extends State<EditVoucher> {
                         },
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(5),
-                          FilteringTextInputFormatter.deny(RegExp(r'-')),
-                          FilteringTextInputFormatter.deny(RegExp(r' ')),
-                          FilteringTextInputFormatter.deny(RegExp(r'^-+')),
-                          FilteringTextInputFormatter.deny(RegExp(r'^,+')),
-                          FilteringTextInputFormatter.deny(RegExp(r'^ +')),
-                          // FilteringTextInputFormatter.deny(
-                          //     RegExp(r'^.+')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\.\.')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\.\,')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\.\-')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\.\ ')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\,\,')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\,\.')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\,\-')),
-                          FilteringTextInputFormatter.deny(RegExp(r'\,\ '))
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  FilteringTextInputFormatter.deny(
+                                      RegExp(r'^0+')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'-')),
+                          // FilteringTextInputFormatter.deny(RegExp(r' ')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'^-+')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'^,+')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'^ +')),
+                          // // FilteringTextInputFormatter.deny(
+                          // //     RegExp(r'^.+')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\.\.')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\.\,')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\.\-')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\.\ ')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\,\,')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\,\.')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\,\-')),
+                          // FilteringTextInputFormatter.deny(RegExp(r'\,\ '))
                         ],
                         maxLines: 1,
                         decoration: const InputDecoration(
