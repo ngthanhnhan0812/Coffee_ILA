@@ -44,6 +44,7 @@ class _Edit_BlogState extends State<Edit_Blog> {
   File? img;
   final picker = ImagePicker();
   bool imgCheck = true;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -83,6 +84,7 @@ class _Edit_BlogState extends State<Edit_Blog> {
         ),
         body: SingleChildScrollView(
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 Center(
@@ -280,8 +282,10 @@ class _Edit_BlogState extends State<Edit_Blog> {
                               return 'Please enter content here';
                             } else if (value.length > 2000) {
                               return 'The limitation of description is 2000';
-                            } else if (value.contains('  ')) {
+                            } else if (value.contains(' ')) {
                               return 'Check your space between';
+                            } else if (!value.startsWith(RegExp(r'[A-Za-z0-9]'))) {
+                              return 'The first character must be a letter';
                             }
                             return null;
                           },
@@ -310,7 +314,9 @@ class _Edit_BlogState extends State<Edit_Blog> {
             Expanded(
                 child: ElevatedButton(
               onPressed: () {
-                updateBlogDialog();
+                if (_formKey.currentState!.validate()) {
+                  updateBlogDialog();
+                }
               },
               child: const Text('Update', textAlign: TextAlign.center),
             ))
@@ -384,10 +390,11 @@ class _Edit_BlogState extends State<Edit_Blog> {
         _image = urlDownload;
       });
     }
-
+    var ids = await getIdSup();
     var bg = {};
     bg['id'] = widget.blog.id;
     bg['title'] = _title.text;
+    bg['userCreate'] = ids;
     bg['description'] = _description.text;
     bg['image'] = _image;
     bg['createDate'] = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -404,7 +411,9 @@ class _Edit_BlogState extends State<Edit_Blog> {
 
   Future<void> updateBlogDialog() async {
     // ignore: unrelated_type_equality_checks
-    if (imgCheck == false || _title.text == '' || _description.text == '') {
+    if (imgCheck == false ||
+        _title.text == '' ||
+        _description.text == '') {
       return showDialog<void>(
         context: context,
         barrierDismissible: false,

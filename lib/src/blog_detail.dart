@@ -50,7 +50,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
     });
   }
 
-   void _updateMaxLines() {
+  void _updateMaxLines() {
     int newLineCount = '\n'.allMatches(cmt.text).length + 1;
     if (newLineCount != maxLine) {
       setState(() {
@@ -82,8 +82,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
 
     if (response.statusCode == 200) {
       // ignore: avoid_print
-      print(
-          'Add comment successfully from The Rest API of blog_detail.dart');
+      print('Add comment successfully from The Rest API of blog_detail.dart');
     }
     return response;
   }
@@ -172,7 +171,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText:  ' Show less',
+                                    trimExpandedText: ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
@@ -348,7 +347,7 @@ class _Blog_detailState extends State<Blog_Approved_detail> {
 
 Future<http.Response> hideBlog(
     id, title, image, description, createDate) async {
-        int idc = await getIdSup();
+  int idc = await getIdSup();
   var p = {};
   p['id'] = id;
   p['title'] = title;
@@ -356,7 +355,7 @@ Future<http.Response> hideBlog(
   p['description'] = description;
   p['createDate'] = createDate;
   p['isStatus'] = 3;
-  p['userCreate']=idc;
+  p['userCreate'] = idc;
   final response = await http.post(Uri.parse('$u/api/Blog/updateBlog'),
       headers: <String, String>{'Content-Type': 'application/json'},
       body: jsonEncode(p));
@@ -469,7 +468,7 @@ class _Blog_Waiting_detailState extends State<Blog_Waiting_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText:  ' Show less',
+                                    trimExpandedText: ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
@@ -571,7 +570,7 @@ class _Blog_Cancelled_detailState extends State<Blog_Cancelled_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText:  ' Show less',
+                                    trimExpandedText: ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
@@ -683,7 +682,7 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
                                     colorClickableText: Colors.pink,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
-                                    trimExpandedText:  ' Show less',
+                                    trimExpandedText: ' Show less',
                                     moreStyle: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
@@ -735,6 +734,96 @@ class _Blog_Hidden_detailState extends State<Blog_Hidden_detail> {
               );
             }))
           ]),
-        ));
+          floatingActionButton: SizedBox(
+            height: 40,
+            width: 40,
+            child: FloatingActionButton(
+              backgroundColor: const Color.fromARGB(255, 250, 211, 211),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(50.0))),
+              onPressed: () {
+                Dialog_UnhideBlog();
+              },
+              child: const Icon(
+                Icons.settings_backup_restore_outlined,
+                size: 25,
+                color: Color.fromARGB(255, 21, 33, 202)),
+              ),
+            ),
+          ),
+        );
+  }
+
+  Future<http.Response> unhideBlog(
+      id, title, image, description, createDate) async {
+    int idc = await getIdSup();
+    var p = {};
+    p['id'] = id;
+    p['title'] = title;
+    p['image'] = image;
+    p['description'] = description;
+    p['createDate'] = createDate;
+    p['isStatus'] = 1;
+    p['userCreate'] = idc;
+    final response = await http.post(Uri.parse('$u/api/Blog/updateBlog'),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(p));
+    if (response.statusCode == 200) {
+      // ignore: avoid_print
+      print('Hide blog successfully from The Rest API of blog_detail.dart');
+    } else {
+      // ignore: avoid_print
+      print('Error when updating data in blog_detail.dart');
+    }
+    return response;
+  }
+
+  // ignore: non_constant_identifier_names
+  Future<void> Dialog_UnhideBlog() async {
+    // ignore: unrelated_type_equality_checks
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+    await unhideBlog(widget.blog.id, widget.blog.title, widget.blog.image,
+            widget.blog.description, widget.blog.createDate)
+        .whenComplete(
+      () {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(
+                'Unhidden Blog',
+                style: TextStyle(color: Color.fromARGB(255, 181, 57, 5)),
+              ),
+              content: const SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Success'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Approve',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => BlogView(ind: 0)));
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }
